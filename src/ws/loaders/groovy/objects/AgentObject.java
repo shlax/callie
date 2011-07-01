@@ -203,12 +203,12 @@ public final class AgentObject extends FactoryElement {
             bs.setToTransform(name, itemTransform, trans, false);            
         }
         
-        ObjSwitch sw; // = activeDistance == null ? null : new ObjSwitch(ObjSwitch.CHILD_NONE);;
+        Switch sw; // = activeDistance == null ? null : new ObjSwitch(ObjSwitch.CHILD_NONE);;
 
         if(activeDistance != null){
-            sw = new ObjSwitch(ObjSwitch.CHILD_NONE);
+            sw = new Switch(Switch.CHILD_NONE);
             sw.addChild(chracterTransform);
-            sw.setCapability(ObjSwitch.ALLOW_SWITCH_WRITE);
+            sw.setCapability(Switch.ALLOW_SWITCH_WRITE);
             //bhoneSkin = bs.getBhoneSkin(chracterTransform);
             //chracterTransform.addChild(sw);
             activeNode.addChild(sw);

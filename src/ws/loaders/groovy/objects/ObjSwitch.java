@@ -1,23 +1,34 @@
 package ws.loaders.groovy.objects;
 
+import ws.tools.OnOff;
+
+import javax.media.j3d.Group;
 import javax.media.j3d.Switch;
+import java.util.Map;
 
-public class ObjSwitch {
+public class ObjSwitch extends GroupObject{
 
-    Switch sw = new Switch();
-
-    public ObjSwitch() {
+    public ObjSwitch(Object value, Map attributes) {
+        super(value, attributes);
     }
 
-    public final Switch getSwitch(){
+    private boolean enabled = false;
+
+    public final void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    @Override
+    protected Group getGroup() {
+        sw.setCapability(Switch.ALLOW_SWITCH_WRITE);
+        if(enabled)cnt.on();
         return sw;
     }
 
-    public final void on(){
-        getSwitch().setWhichChild(Switch.CHILD_ALL);
-    }
+    private Switch sw = new Switch();
+    private OnOff cnt = new OnOff(sw);
 
-    public final void off(){
-        getSwitch().setWhichChild(Switch.CHILD_NONE);
+    public final OnOff control(){
+        return cnt;
     }
 }

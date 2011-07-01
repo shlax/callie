@@ -1,5 +1,6 @@
 package ws.loaders.tools.map;
 
+import ws.map.DynamicY25Triangle;
 import ws.map.Type;
 import ws.map.Y25Triangle;
 import ws.map.ai.NodeMap;
@@ -127,7 +128,7 @@ public final class LoadedTriangle {
         if(tr == null){
             Y25Triangle nn[] = new Y25Triangle[n.size()];
             Y25Triangle ff[] = new Y25Triangle[f.size()];
-            tr = new Y25Triangle(a, b, c, t, nn, ff);
+            tr = dynamic ? new DynamicY25Triangle(a, b, c, t, nn, ff) : new Y25Triangle(a, b, c, t, nn, ff);
             for(int i = 0; i < n.size(); i++)nn[i] = n.get(i).getY25Triangle();
             for(int i = 0; i < f.size(); i++)ff[i] = f.get(i).getY25Triangle();
         }

@@ -197,8 +197,9 @@ public final class ControlObject extends FactoryElement {
     public final CharacterCamera buildCharacterCamera(BranchGroup cameraNode, BranchGroup activeNode, BranchGroup efectNode) throws IOException {
         Y25MapBuilder mapBuilder = new Y25MapBuilder();
       //  if(lsObject != null) mapBuilder.addLoadedMap(lsObject.getTriangles());
-        for(MapObject tmp : mapObject)mapBuilder.addLoadedMap(tmp.getTriangles());        
+        for(MapObject tmp : mapObject)mapBuilder.addLoadedMap(tmp.getTriangles(), tmp.getSceneAction());
         Y25Map mapa = mapBuilder.getMap();
+        for(MapObject tmp : mapObject) tmp.postProcess();
 
         // ---------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -263,10 +264,10 @@ public final class ControlObject extends FactoryElement {
 
         item.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
                
-        ObjSwitch sw;
+        Switch sw;
         if(weaponPick){
-            sw = new ObjSwitch(ObjSwitch.CHILD_NONE);
-            sw.setCapability(ObjSwitch.ALLOW_SWITCH_WRITE);
+            sw = new Switch(Switch.CHILD_NONE);
+            sw.setCapability(Switch.ALLOW_SWITCH_WRITE);
             sw.addChild(item);
             chracterTransform.addChild(sw);
         }else{
@@ -356,7 +357,7 @@ public final class ControlObject extends FactoryElement {
         }
     }
 
-    private final Animation loadAnimation(Character c, ObjSwitch sw, LoadedBhoneSkin loadedBhoneSkin, AnimationTransformObject ato, Y25MapBuilder mapBuilder) {
+    private final Animation loadAnimation(Character c, Switch sw, LoadedBhoneSkin loadedBhoneSkin, AnimationTransformObject ato, Y25MapBuilder mapBuilder) {
         try {
             Float keyFrameRatio = ato.getAnimationObject().getKeyFrameRatio();
 

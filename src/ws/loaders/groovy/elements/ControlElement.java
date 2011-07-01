@@ -22,7 +22,8 @@ public final class ControlElement extends AbstractFactory {
     @Override
     public final ControlObject newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes) throws InstantiationException, IllegalAccessException {
         ControlObject c = new ControlObject(value, attributes, this.bhoneFrameLoader);
-        
+
+
         Object tmp = attributes.get(SceneBuilder.startPosition);
         if(tmp != null){
             if(tmp instanceof Vector3f)c.setStartPosition( (Vector3f)tmp );

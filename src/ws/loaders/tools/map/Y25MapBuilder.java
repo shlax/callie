@@ -1,8 +1,7 @@
 package ws.loaders.tools.map;
 
-import ws.map.Type;
-import ws.map.Y25Map;
-import ws.map.Y25Triangle;
+import ws.SceneAction;
+import ws.map.*;
 
 import javax.vecmath.Point3f;
 import java.util.ArrayList;
@@ -11,8 +10,10 @@ import java.util.Arrays;
 public final class Y25MapBuilder{
 
     private final ArrayList<LoadedTriangle[]> parts = new ArrayList<LoadedTriangle[]>();
-    public final void addLoadedMap(LoadedTriangle[] m){
+    private final ArrayList<SceneAction> actions = new ArrayList<SceneAction>();
+    public final void addLoadedMap(LoadedTriangle[] m, SceneAction act){
         this.parts.add(m);
+        this.actions.add(act);
     }
 
     private Y25Map map = null;
@@ -20,7 +21,13 @@ public final class Y25MapBuilder{
 
     public final Y25Map getMap() {
         if(map == null){
-            for(LoadedTriangle[] tmp : parts)trg.addAll(Arrays.asList(tmp));
+            int pocActions = 0;
+
+            for(int i = 0; i < parts.size(); i++){
+                trg.addAll(Arrays.asList(parts.get(i)));
+                if(actions.get(i) != null) pocActions ++;
+            }
+
             for(LoadedTriangle a : trg){
                 for(LoadedTriangle b : trg){
                     if(a == b) continue;
@@ -35,7 +42,25 @@ public final class Y25MapBuilder{
                 LoadedTriangle tmp = trg.get(i);
                 t[i] = tmp.getY25Triangle();
             }
-            map = new Y25Map(t, t[0]);
+
+            if(pocActions != 0){
+
+                MapGroup groups[] = new MapGroup[pocActions];
+                int j = 0;
+                for(int i = 0; i < parts.size(); i++){
+                    if(actions.get(i) != null){
+                        LoadedTriangle[] q = parts.get(i);
+                        Y25Triangle[] w = new Y25Triangle[q.length];
+                        for(int k = 0; k < q.length; k++)w[k] = q[k].getY25Triangle();
+
+                        groups[j] = new MapGroup(w, actions.get(i) );
+                        j++;
+                    }
+                }
+                map = new Y25GroupMap(t, t[0], groups);
+            }else{
+                map = new Y25Map(t, t[0]);
+            }
         }
         return map;
     }

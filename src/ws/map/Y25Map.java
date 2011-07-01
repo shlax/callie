@@ -45,7 +45,8 @@ public class Y25Map {
 
 		for (Y25Triangle t : triangles){
             if( set.contains(t.getTyp()) && t.getY(p)){
-                last = t;
+                setLastY25Triangle(t);
+               // last = t;
                 return r;
             }
         }
@@ -58,14 +59,16 @@ public class Y25Map {
 
         //System.out.println("c "+last.getNear().length);
 		for(Y25Triangle t : last.getNear()) if(set.contains(t.getTyp()) && t.getY(p)){
-            last = t;
+            // last = t;
+            setLastY25Triangle(t);
             //System.out.println("a "+t.getTyp());
             return t.getTyp();                           
 		}
 
         //System.out.println("d "+last.getFear().length);
         for(Y25Triangle t : last.getFear()) if(set.contains(t.getTyp()) && t.getY(p)){
-            last = t;
+            // last = t;
+            setLastY25Triangle(t);
             //System.out.println("b "+t.getTyp());
             return t.getTyp();                            
 		}

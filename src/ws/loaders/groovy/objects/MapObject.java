@@ -1,8 +1,11 @@
 package ws.loaders.groovy.objects;
 
+import groovy.lang.Closure;
+import ws.SceneAction;
+import ws.loaders.groovy.ClosureSceneAction;
 import ws.loaders.tools.map.LoadedTriangle;
 import ws.loaders.tools.map.MapLoader;
-import ws.map.Type;
+import ws.map.*;
 
 import java.io.IOException;
 
@@ -30,17 +33,25 @@ public final class MapObject {
     private boolean dynamic = false;
     private boolean active = true;
 
-    public void setDynamic(boolean dynamic) {
-        this.dynamic = dynamic;
-    }
-
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    private Closure onEnter = null;
+    private Closure onExit = null;
+
+    public void setOnEnter(Closure onEnter) {
+        this.onEnter = onEnter;
+    }
+
+    public void setOnExit(Closure onExit) {
+        this.onExit = onExit;
     }
 
     public final LoadedTriangle[] getTriangles() {
         if(tr == null){
             try {
+                //System.out.println("get");
                 tr = mapLoader.getLoadedTriangle(file, t, dynamic);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -49,5 +60,28 @@ public final class MapObject {
         return tr;
     }
 
+    public final ClosureSceneAction getSceneAction(){
+        if(onEnter == null && onExit == null) return null;
+        return new ClosureSceneAction(onEnter, onExit);
+    }
 
+    private ActiveMapGroup activeMapGroup = null;
+    public ActiveMapGroup control(){
+        //System.out.println("control");
+        dynamic = true;
+        if (activeMapGroup == null) activeMapGroup = new ActiveMapGroup();
+        return activeMapGroup;
+    }
+
+    /**
+     * call affter build map
+     */
+    public void postProcess(){
+        if(activeMapGroup != null){
+            DynamicY25Triangle[] triangles = new DynamicY25Triangle[tr.length];
+            for(int i = 0; i < tr.length; i++)triangles[i] = (DynamicY25Triangle)tr[i].getY25Triangle();
+            activeMapGroup.setTriangles(triangles);
+            if(!active) activeMapGroup.off();
+        }
+    }
 }

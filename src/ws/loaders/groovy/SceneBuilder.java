@@ -25,6 +25,9 @@ public final class SceneBuilder extends FactoryBuilderSupport {
     public static final SceneObjectType sceneTypeCAMERA = SceneObjectType.CAMERA;
     public static final String name = "name";
 
+    public static final String onEnter = "onEnter";
+    public static final String onExit = "onExit";
+
     public static final String point = "point";
     public static final String vector = "vector";
     public static final String color = "color";
@@ -164,7 +167,7 @@ public final class SceneBuilder extends FactoryBuilderSupport {
     public static final String mapType = "mapType";
     public static final Type jump = Type.JUMP;
     public static final Type terain = Type.TERAIN;
-    public static final String dynamic = "dynamic";
+    //public static final String dynamic = "dynamic";
     public static final String active = "active";
 
     public static final String shotSource = "shotSource";
@@ -274,6 +277,8 @@ public final class SceneBuilder extends FactoryBuilderSupport {
 
     public static final String group = "group";
     public static final String onOff = "onOff";
+    public static final String enabled = "enabled";
+
     //public static final String destinationLocator = "destinationLocator";
     //public static final String enemyLocator = "enemyLocator";
 
