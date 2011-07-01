@@ -1,0 +1,164 @@
+package ws.camera;
+
+import ws.ai.Target;
+import ws.camera.animation.Animation;
+import ws.camera.areas.ActionArea;
+import ws.camera.areas.Colision;
+import ws.map.Y25Map;
+import ws.map.Y25Triangle;
+
+import javax.media.j3d.BranchGroup;
+import javax.media.j3d.Shape3D;
+import javax.vecmath.Point3f;
+import javax.vecmath.Tuple3d;
+import javax.vecmath.Tuple3f;
+import javax.vecmath.Vector3f;
+import java.util.ArrayList;
+
+public final class UserCamera extends KillCamera implements Target {
+    public static UserCamera TARGET;
+
+    public static final String CHARACTER = "CHARACTER";
+    //public static final float USER_TARGET = 1.5f;
+
+    @Override
+    public final float getTargetRadius() {
+        return 0.33f;
+    }
+
+    public UserCamera(float shotHeight,// HitArea areas[],
+                      Shape3D shape,
+                      ArrayList<Animation> anim,
+                      float heightUp, float heightDown, Character c, float jumpSpeed, float jumpSpeedStart, float runSpeed, float walkSpeed, float actionDuration,
+                      float userColideRadius, float angleAceleration, float speedAceleration, ActionArea[] areas, Colision[] col, Y25Map mapa,
+                      BranchGroup colide, Vector3f startPosition, Y25Triangle startTriangle, float minDistance, float maxDistance, float height, float maxSide) {
+        super(// areas,
+              shape,  
+              anim,
+              heightUp, heightDown, c, jumpSpeed, jumpSpeedStart, runSpeed, walkSpeed, actionDuration,
+              userColideRadius, angleAceleration, speedAceleration, areas, col, mapa,
+              colide, startPosition, startTriangle, minDistance, maxDistance, height, maxSide);
+
+        this.shotHeight = shotHeight;
+
+        TARGET = this;
+    }
+
+    private static volatile float live = 1.5f;
+
+    @Override
+    public final void hit(float power) {
+        live -= multiply*power;
+    }
+
+    @Override
+    public final boolean isTargetActive() {
+        return live > 0f;
+    }
+    
+    public final static boolean isTargetActiveStatic() {
+        return live > 0f;
+    }
+
+    public static final float getLive(){
+        return live;
+    }
+
+    private static float multiply = 1f;
+    public static void reset(float l){
+        AnimationCamera.isActionPosible = false;
+        multiply = 1f/l;
+        //System.out.println(multiply);
+        wrongMove = false;
+        live = 1.5f;
+        userPosition.set(0, 0, 0);
+        userY25Triangle = null;
+    }
+
+    // -------------------------------------------------------------
+
+    private static boolean wrongMove = false;
+
+    public static final boolean isWrongMove(){
+        return wrongMove;
+    }
+
+    public static final void wrongMove(){
+        wrongMove = true;
+        live = -1f;
+    }
+
+    // -------------------------------------------------------------
+
+    private static boolean hasWeapon = false;
+    public static final void equiptWeapon(boolean status){
+        hasWeapon = status;
+    }
+
+    public static final boolean hasWeapon(){
+        return hasWeapon; 
+    }
+
+    // --------------------------------------------------------------------------------------------------------------------------
+
+    public final void getLookTargetPoint(Tuple3f t) {
+        c.getTarget(t);
+    }
+
+    @Override
+    public final void getTargetPoint(Tuple3f t) {
+        synchronized (userPosition){
+            t.set(userPosition.x, userPosition.y + targerHeight, userPosition.z);
+        }
+    }
+
+    @Override
+    public void getTargetPoint(Tuple3d t) {
+        synchronized (userPosition){
+            t.set(userPosition.x, userPosition.y + targerHeight, userPosition.z);
+        }
+    }
+
+
+/*    @Override
+    public static final void getTargetPoint(Tuple3d t) {
+        synchronized (userPosition){
+            t.set(userPosition.x, userPosition.y + targerHeight, userPosition.z);
+        }
+    } */
+
+
+    private static final Point3f userPosition = new Point3f();
+    private static volatile Y25Triangle userY25Triangle = null;
+
+    public static final void setUserPosition(Y25Triangle t, Tuple3f p){
+        userY25Triangle = t;
+        synchronized (userPosition){
+            userPosition.x = p.x;
+            userPosition.y = p.y;
+            userPosition.z = p.z;
+        }
+	}
+
+    /*public static final float getUserHeight(){
+        return targerHeight;
+	}*/
+
+	public static final void getUserPositionTo(Tuple3f p){
+        synchronized (userPosition){
+            p.set(userPosition);
+        }
+	}
+
+    private final float shotHeight;
+
+    public final void getUserPositionTo(Tuple3d p){
+        synchronized (userPosition){
+            p.set(userPosition.x, userPosition.y + shotHeight, userPosition.z);
+        }
+	}
+
+    public static final Y25Triangle getUserY25Triangle(){
+        return userY25Triangle;
+    }
+}
