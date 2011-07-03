@@ -4,13 +4,7 @@ scene = BUILDER._scene(){
     map("data/house/run.str", mapType:terain);
 
     control( startPosition: _point(x:-4.923f,y:4.003f,z:-0.399f), shotSource:_point(x:-0.033f,y: 1.301f,z: 0.588f), targetBhone:"joint3", disArmedBhone:"joint30", armedBhone:"joint24", armedTransform:_transform(x:-0.07f, y:-0.015f, z:0.044f, rotX:75.337f, rotY:-13.041f, rotZ:-84.067f), disArmedTransform:_transform(x:-0.097f, y:-0.116f, z:-0.027f, rotX:103.154f, rotY:0.387f, rotZ:4.691f) ){
-        jumpMap = map("data/house/jump.str", mapType:jump, onEnter:{
-            println("enter");
-            // tools.off(); //hide tools
-        }, onExit:{
-            println("exit");
-            // jumpMap.off(); //disable jumpMap
-        }).control();
+        map("data/house/jump.str", mapType:jump);
 
         shot( appearance:shotMat, clip:"data/amy/sounds/shot.wav" )
         bhoneSkin( appearance:_appearance(texture:"data/amy/amy.png", alphaTestFunction:greater, mipMap:true, format:formatRGBA), bhoneFile:"data/amy/amy.bon", skinFile:"data/amy/amy.skn" ){
@@ -61,7 +55,7 @@ scene = BUILDER._scene(){
                 check(x:-7.289f, y:-0.008f, z:-6.61f);
                 check(x:10.1f, y:-0.008f, z:-6.62f);
             }],
-            [start: _point(x:-9.515f, y:-0.008f, z:-6.61f), points:{} ]  // purple
+            [start: _point(x:-5.552f, y:-0.008f, z:-7.289f), points:{} ]  // purple
         ].each(){ a ->
             agent(shotSource: _point(x:-0.065f, y:1.322f, z:0.588f), lookAtSource: _point(x:-0.027f, y:1.66f, z:0.154f), startPosition:a.start){
                 shot( appearance:shotMat, firePower:0.001f, cadence:500f, clip:"data/soldier/sounds/shot.wav" )
@@ -77,13 +71,28 @@ scene = BUILDER._scene(){
         };
     };
 
-    tools = onOff(true){
-        model(file:"data/house/tools.mto", appearance:_appearance(){
-            texture(texture:"data/house/tools.png",mipMap:true);
-            texture(texture:"data/house/toolsLight.png",mipMap:true);
-        });
-    }.control();
+    KBpath( _time(time:45f), sceneType:sceneTypeEFFECT){
+        key(0.0f    ,x: -7.288f, y: 2.347f, z: 13.291f, rotY:-90f );
+        key(0.25f ,x: -4.449f, y: 5.319f, z: 6.605f, rotY:-100f );
+        key(0.5f ,x: -3.032f, y: 5.832f, z: 0.92f, rotY:-100f );
+        key(0.75f ,x: -1.828f, y: 5.172f, z: -5.289f, rotY:-100f );
+        key(1.0f  ,x: -1.147f, y: 2.347f, z: -11.43f, rotY:-110f);
 
+        wingTime = _time(time:0.2f, mode:incDec, ramp:0.02f);
+        wingAxis = _transform(rotZ:90f);
+
+        wing = _shared(){ model(file:"data/butterfly/wing.mod", appearance:_appearance(texture:"data/butterfly/butterfly.png",mipMap:true, cull:cullNone, alphaTestFunction:greater, format:formatRGBA )); }
+
+        rotation(wingTime, transform:wingAxis, min:53f, max:105f ){ link(wing); };
+        rotation(wingTime, transform:wingAxis, min:-53f, max:-105f ){ link(wing); };
+
+        model(file:"data/butterfly/body.mod", appearance:_appearance(texture:"data/butterfly/butterfly.png",mipMap:true ));
+    };
+
+    model(file:"data/house/tools.mto", appearance:_appearance(){
+        texture(texture:"data/house/tools.png",mipMap:true);
+        texture(texture:"data/house/toolsLight.png",mipMap:true);
+    });
     model(file:"data/house/outerWall.mto", appearance:_appearance(){
         texture(texture:"data/house/outerWall.png",mipMap:true);
         texture(texture:"data/house/outerWallLight.png",mipMap:true);

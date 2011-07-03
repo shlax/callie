@@ -86,7 +86,9 @@ public class AnimationCamera extends CharacterCamera{
 
             float rt = this.actual.animation(time, this.objectPosition);
             if( rt < 0f ){
-                this.mapa.setLastY25Triangle(this.actual.getEndTriangle());
+                Y25Triangle triangle = this.actual.getEndTriangle();
+                UserCamera.setUserPosition(triangle, this.objectPosition);
+                this.mapa.setLastY25Triangle(triangle);
 
                 this.actual = null;
 

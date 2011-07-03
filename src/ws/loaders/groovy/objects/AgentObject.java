@@ -110,12 +110,12 @@ public final class AgentObject extends FactoryElement {
         this.lookAtSource = lookAtSource;
     }
 
-    private final ArrayList<AiItemObject> aiItemObjects = new ArrayList<AiItemObject>();
+    private ArrayList<AiItemObject> aiItemObjects = new ArrayList<AiItemObject>();
     public final void addAiItemObject(AiItemObject o){
         this.aiItemObjects.add(o);
     }
 
-    private final ArrayList<AiCheckObject> aiChecks = new ArrayList<AiCheckObject>();
+    private ArrayList<AiCheckObject> aiChecks = new ArrayList<AiCheckObject>();
     public final void addAiCheck(AiCheckObject c){
         this.aiChecks.add(c);
     }
@@ -159,7 +159,7 @@ public final class AgentObject extends FactoryElement {
                         sp.set(pp);
                     }
 
-                    check.add(mapBuilder.getNodeMapAt(pp));
+                    check.addKeyFrameObj(mapBuilder.getNodeMapAt(pp));
                 }
             }else{
                 check = null;
@@ -231,6 +231,9 @@ public final class AgentObject extends FactoryElement {
 
         //bs.setUserData(aiW);
         setUserData(chracterTransform, aiW);
+
+        aiChecks = null;
+        aiItemObjects = null;
         return aiW;
     }
 

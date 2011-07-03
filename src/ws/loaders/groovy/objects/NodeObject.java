@@ -3,8 +3,10 @@ package ws.loaders.groovy.objects;
 import ws.loaders.groovy.FactoryElement;
 import ws.loaders.groovy.SceneBuilder;
 
-import javax.media.j3d.Group;
+import javax.media.j3d.Node;
 import java.util.Map;
+
+//import javax.media.j3d.Group;
 
 public abstract class NodeObject extends FactoryElement {
 
@@ -12,7 +14,8 @@ public abstract class NodeObject extends FactoryElement {
         super(value, attributes);
     }
 
-    public abstract void getNode(Group g);
+    //public abstract void getNode(Group g);
+    public abstract Node getNode();
 
     private SceneBuilder.SceneObjectType sceneObjectType = SceneBuilder.SceneObjectType.NORMAL;
     

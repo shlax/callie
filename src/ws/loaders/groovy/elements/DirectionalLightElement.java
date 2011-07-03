@@ -3,7 +3,6 @@ package ws.loaders.groovy.elements;
 import groovy.util.FactoryBuilderSupport;
 import ws.loaders.groovy.FactoryElement;
 import ws.loaders.groovy.SceneBuilder;
-import ws.loaders.groovy.objects.ColisionObject;
 import ws.loaders.groovy.objects.DirectionalLightObject;
 import ws.loaders.groovy.objects.Point;
 import ws.loaders.groovy.objects.Vector;

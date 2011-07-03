@@ -71,9 +71,21 @@ public final class SceneObject extends FactoryElement {
 
         characterCamera = controlObject.buildCharacterCamera(cameraNode, aiNode, rootNode);
         
-        for(NodeObject t : roots)t.getNode(this.aiNode);
-        for(NodeObject t : effects)t.getNode(this.rootNode);        
-        for(NodeObject t : cameraColisions)t.getNode(this.cameraNode);
+        for(NodeObject t : roots){
+            this.aiNode.addChild(t.getNode());
+            //t.getNode(this.aiNode);
+            //t.postProcess();
+        }
+        for(NodeObject t : effects){
+            this.rootNode.addChild(t.getNode());
+//            t.getNode();
+            //t.postProcess();
+        }
+        for(NodeObject t : cameraColisions){
+            this.cameraNode.addChild(t.getNode());
+            //t.getNode(this.cameraNode);
+            //t.postProcess();
+        }
         if(aiObject != null)aiObject.buildAi(activeNode, this.aiNode, rootNode);
 
         activeNode.addChild(aiNode);
@@ -97,24 +109,38 @@ public final class SceneObject extends FactoryElement {
         return characterCamera;
     }
 
-    private final BranchGroup activeNode = new BranchGroup();
+    private BranchGroup activeNode = new BranchGroup();
 	public final BranchGroup getActiveNode() {
 		return activeNode;
 	}
 
-	private final BranchGroup rootNode = new BranchGroup();
+	private BranchGroup rootNode = new BranchGroup();
 	public final BranchGroup getRootNode() {
 		return rootNode;
 	}
 
-	private final BranchGroup cameraNode = new BranchGroup();
+	private BranchGroup cameraNode = new BranchGroup();
 	public final BranchGroup getCameraNode() {
 		return cameraNode;
 	}
 
-	private final BranchGroup aiNode = new BranchGroup();
+	private BranchGroup aiNode = new BranchGroup();
 	public final BranchGroup getAiNode() {
 		return aiNode;
 	}
 
+    public final void clean() {
+        cameraColisions = null;
+        roots = null;
+        effects = null;
+        maps = null;
+
+        controlObject = null;
+        aiObject = null;
+        characterCamera = null;
+        activeNode = null;
+        rootNode = null;
+        cameraNode = null;
+        aiNode = null;
+    }
 }

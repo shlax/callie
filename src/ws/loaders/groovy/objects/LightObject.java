@@ -1,7 +1,6 @@
 package ws.loaders.groovy.objects;
 
 import javax.media.j3d.BoundingSphere;
-import javax.media.j3d.Group;
 import javax.media.j3d.Light;
 import javax.vecmath.Color3f;
 import javax.vecmath.Point3d;
@@ -15,10 +14,10 @@ public abstract class LightObject extends NodeObject {
         super(value, attributes);
     }
 
-    private BoundingSphere region = null;
+    /*private BoundingSphere region = null;
     public void setRegion(BoundingSphere region) {
         this.region = region;
-    }
+    } */
 
     private Color3f color = null;
     public final void setColor(Color3f color) {
@@ -26,10 +25,10 @@ public abstract class LightObject extends NodeObject {
     }
 
     @Override
-    public void getNode(Group g) {
+    public Light getNode() {
         Light l = getLight(color == null ? white :color);
-        l.setInfluencingBounds(region == null ? this.maxRegion : region);
-        g.addChild(l);
+        l.setInfluencingBounds(this.maxRegion);
+        return l;
     }
 
     protected abstract Light getLight(Color3f c);

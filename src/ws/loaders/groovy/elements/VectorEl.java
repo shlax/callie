@@ -10,7 +10,7 @@ import java.util.Map;
 public final class VectorEl extends AbstractFactory {
 
     @Override
-    public final Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes) throws InstantiationException, IllegalAccessException {
+    public final Vector newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes) throws InstantiationException, IllegalAccessException {
         Float x = null;
         Float y = null;
         Float z = null;

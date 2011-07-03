@@ -9,9 +9,9 @@ import java.util.Map;
 
 public abstract class Tuple extends FactoryElement {
 
-    private final float x;
-    private final float y;
-    private final float z;
+    protected final float x;
+    protected final float y;
+    protected final float z;
 
     public Tuple(float x, float y, float z, Object value, Map attributes) {
         super(value, attributes);

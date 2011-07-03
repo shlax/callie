@@ -11,7 +11,7 @@ import java.util.Map;
 public final class PointEl extends AbstractFactory {
 
     @Override
-    public final Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes) throws InstantiationException, IllegalAccessException {
+    public final Point newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes) throws InstantiationException, IllegalAccessException {
         Float x = null;
         Float y = null;
         Float z = null;

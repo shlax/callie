@@ -1,6 +1,8 @@
 package ws.loaders.groovy.elements;
 
 import groovy.util.AbstractFactory;
+import groovy.util.FactoryBuilderSupport;
+import ws.loaders.groovy.FactoryElement;
 import ws.loaders.groovy.SceneBuilder;
 import ws.loaders.groovy.objects.NodeObject;
 
@@ -17,6 +19,11 @@ public abstract class NodeElement extends AbstractFactory {
                 sceneObject.setSceneObjectType( (SceneBuilder.SceneObjectType)val );
             }
         }
-        
+    }
+
+    @Override
+    public void setChild(FactoryBuilderSupport builder, Object parent, Object child) {
+        if(child instanceof FactoryElement) if(((FactoryElement)child).isUsed())return;
+        System.err.println(parent+" -> "+child);
     }
 }

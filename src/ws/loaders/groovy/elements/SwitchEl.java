@@ -3,11 +3,10 @@ package ws.loaders.groovy.elements;
 import groovy.util.FactoryBuilderSupport;
 import ws.loaders.groovy.SceneBuilder;
 import ws.loaders.groovy.objects.ObjSwitch;
-import ws.map.Type;
 
 import java.util.Map;
 
-public class SwitchEl extends GroupElement {
+public final class SwitchEl extends GroupElement {
 
     @Override
     public final ObjSwitch newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes) throws InstantiationException, IllegalAccessException {

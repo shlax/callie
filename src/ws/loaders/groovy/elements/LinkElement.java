@@ -4,7 +4,6 @@ import groovy.util.FactoryBuilderSupport;
 import ws.loaders.groovy.objects.LinkObject;
 import ws.loaders.groovy.objects.SharedGroupObject;
 
-import javax.media.j3d.SharedGroup;
 import java.util.Map;
 
 public final class LinkElement extends NodeElement {
@@ -13,10 +12,11 @@ public final class LinkElement extends NodeElement {
     public final LinkObject newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes) throws InstantiationException, IllegalAccessException {
         LinkObject o = new LinkObject(value, attributes);
 
-        if(value instanceof SharedGroup){
+        /*if(value instanceof SharedGroup){
             o.setSharedGroup((SharedGroup)value);
-        }else if(value instanceof SharedGroupObject){
-            o.setSharedGroup(((SharedGroupObject)value).getSharedGroup());
+        }else */
+        if(value instanceof SharedGroupObject){
+            o.setSharedGroup((SharedGroupObject)value);
         }
 
         return o;

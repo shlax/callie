@@ -4,7 +4,10 @@ import com.sun.j3d.utils.geometry.GeometryInfo;
 import com.sun.j3d.utils.geometry.Stripifier;
 import ws.loaders.tools.GeometryLoader;
 
-import javax.media.j3d.*;
+import javax.media.j3d.Appearance;
+import javax.media.j3d.GeometryArray;
+import javax.media.j3d.OrientedShape3D;
+import javax.media.j3d.Shape3D;
 import javax.vecmath.Vector3f;
 import java.io.IOException;
 import java.util.Map;
@@ -45,7 +48,7 @@ public final class ModelObject extends NodeObject {
     }
 
     @Override
-    public final void getNode(Group g) {
+    public final Shape3D getNode() {
         try {
             GeometryArray ta = this.geometryLoader.getIndexedTriangleArray(this.file);
             if(this.allowStripes){
@@ -56,9 +59,10 @@ public final class ModelObject extends NodeObject {
             // Appearance ap = appearanceObject.getAppearance();
             Shape3D s = orient ? new OrientedShape3D(ta, appearance, OrientedShape3D.ROTATE_ABOUT_AXIS, new Vector3f(0.0f, 1.0f, 0.0f)) : new Shape3D(ta, appearance);
             if(userData != null) s.setUserData(userData);
-            g.addChild(s);
+
+            return s;
         } catch (IOException e) {
-            e.printStackTrace();
-        }        
+            throw new RuntimeException(e);
+        }
     }
 }

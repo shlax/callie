@@ -8,7 +8,6 @@ import ws.loaders.groovy.objects.MapObject;
 import ws.loaders.tools.map.MapLoader;
 import ws.map.Type;
 
-import java.util.Arrays;
 import java.util.Map;
 
 public final class MapElement extends AbstractFactory {

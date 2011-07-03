@@ -22,15 +22,15 @@ public final class AiItemObject extends FactoryElement {
         this.transform = transform;
     }
 
-    private TransformGroup transformGroup = null;
-    public final void setTransformGroup(TransformGroup transformGroup) {
-        this.transformGroup = transformGroup;
+    private TransformGroupObject transformGroupObj = null;
+    public final void setTransformGroup(TransformGroupObject transformGroup) {
+        this.transformGroupObj = transformGroup;
     }
 
     // ------------------------------------------------------------------------------------------------------
 
     public final TransformGroup getTransformGroup(){
-        return this.transformGroup;
+        return this.transformGroupObj.getNode();
     }
 
     public final String getBhoneName() {

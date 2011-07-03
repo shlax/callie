@@ -14,7 +14,8 @@ public abstract class GroupElement extends NodeElement {
         if(parent instanceof GroupObject && child instanceof NodeObject){
             GroupObject g = (GroupObject)parent;
             NodeObject so = (NodeObject)child;
-            g.addNodeObject(so);            
+            //System.out.println(parent.getClass()+" "+child.getClass());
+            g.addNodeObject(so);
         }else System.err.println(parent+" -> "+child);
     }
 }

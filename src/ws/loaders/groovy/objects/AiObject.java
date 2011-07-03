@@ -17,12 +17,12 @@ public final class AiObject extends FactoryElement {
         super(value, attributes);
     }
 
-    private final ArrayList<MapObject> mapObject = new ArrayList<MapObject>();
+    private ArrayList<MapObject> mapObject = new ArrayList<MapObject>();
     public final void addMapObject(MapObject mapObject) {
         this.mapObject.add(mapObject);
     }
 
-    private final ArrayList<AgentObject> agentObjects = new ArrayList<AgentObject>();
+    private ArrayList<AgentObject> agentObjects = new ArrayList<AgentObject>();
     public final void addAgentObject(AgentObject a){
         this.agentObjects.add(a);
     }
@@ -52,5 +52,8 @@ public final class AiObject extends FactoryElement {
             activeNode.addChild(w);
             Ai.addTargetWolker(w);
         }
+
+        mapObject = null;
+        agentObjects = null;
     }
 }

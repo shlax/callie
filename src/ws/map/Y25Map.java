@@ -1,7 +1,5 @@
 package ws.map;
 
-import sun.nio.cs.ext.TIS_620;
-
 import javax.vecmath.Tuple3f;
 import java.util.EnumSet;
 

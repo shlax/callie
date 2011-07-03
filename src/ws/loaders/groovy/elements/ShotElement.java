@@ -2,6 +2,7 @@ package ws.loaders.groovy.elements;
 
 import groovy.util.AbstractFactory;
 import groovy.util.FactoryBuilderSupport;
+import ws.loaders.groovy.FactoryElement;
 import ws.loaders.groovy.SceneBuilder;
 import ws.loaders.groovy.objects.AppearanceObject;
 import ws.loaders.groovy.objects.ShotObject;
@@ -54,10 +55,12 @@ public final class ShotElement extends AbstractFactory {
 
     @Override
     public void setChild(FactoryBuilderSupport builder, Object parent, Object child) {
+        if(child instanceof FactoryElement) if(((FactoryElement)child).isUsed())return;
+
         if(parent instanceof ShotObject && child instanceof AppearanceObject){
             ShotObject g = (ShotObject)parent;
             AppearanceObject so = (AppearanceObject)child;
             g.setAppearance(so);
-        }
+        }else System.err.println(parent+" -> "+child);
     }
 }

@@ -25,6 +25,7 @@ public final class GroovyLoader implements Loader{
         activeNode = scene.getActiveNode();
         this.backFlipDistance = scene.getBackFlipDistance();
         this.detectDistance = scene.getDetectDistance();
+        scene.clean();
     }
 
     private final CharacterCamera characterCamera;

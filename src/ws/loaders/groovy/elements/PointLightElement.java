@@ -5,7 +5,6 @@ import ws.loaders.groovy.FactoryElement;
 import ws.loaders.groovy.SceneBuilder;
 import ws.loaders.groovy.objects.Point;
 import ws.loaders.groovy.objects.PointLightObject;
-import ws.loaders.groovy.objects.SpotLightObject;
 import ws.loaders.groovy.objects.Vector;
 
 import javax.vecmath.Point3f;

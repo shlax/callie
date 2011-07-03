@@ -1,11 +1,12 @@
 package ws.loaders.groovy.objects;
 
 import groovy.lang.Closure;
-import ws.SceneAction;
 import ws.loaders.groovy.ClosureSceneAction;
 import ws.loaders.tools.map.LoadedTriangle;
 import ws.loaders.tools.map.MapLoader;
-import ws.map.*;
+import ws.map.ActiveMapGroup;
+import ws.map.DynamicY25Triangle;
+import ws.map.Type;
 
 import java.io.IOException;
 
@@ -83,5 +84,8 @@ public final class MapObject {
             activeMapGroup.setTriangles(triangles);
             if(!active) activeMapGroup.off();
         }
+        tr = null;
+        onEnter = null;
+        onExit = null;
     }
 }

@@ -6,7 +6,6 @@ import ws.loaders.groovy.SceneBuilder;
 import ws.loaders.groovy.objects.Color;
 import ws.loaders.groovy.objects.LightObject;
 
-import javax.media.j3d.BoundingSphere;
 import javax.vecmath.Color3f;
 import java.util.Map;
 
@@ -23,8 +22,8 @@ public abstract class LightElement extends NodeElement {
                 else if (attr instanceof Color) lo.setColor( ((Color)attr).getColor3f() );
             }
 
-            attr = attributes.get(SceneBuilder.region);
-            if(attr != null && attr instanceof BoundingSphere) lo.setRegion( (BoundingSphere)attr );
+            /*attr = attributes.get(SceneBuilder.region);
+            if(attr != null && attr instanceof BoundingSphere) lo.setRegion( (BoundingSphere)attr ); */
         }
     }
 

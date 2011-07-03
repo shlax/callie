@@ -7,6 +7,7 @@ public final class SharedGroupObject extends GroupObject {
 
     public SharedGroupObject(Object value, Map attributes) {
         super(value, attributes);
+        this.use();
     }
 
     @Override
@@ -14,8 +15,14 @@ public final class SharedGroupObject extends GroupObject {
         return new SharedGroup();
     }
 
-    public final SharedGroup getSharedGroup(){
-        if(bg == null) bg = getGroup();
-        return (SharedGroup)bg;
+    private SharedGroup sharedGroup = null;
+
+    @Override
+    public SharedGroup getNode() {
+        if(sharedGroup == null){
+            sharedGroup = (SharedGroup)super.getNode();
+            sharedGroup.compile();
+        }
+        return sharedGroup;
     }
 }

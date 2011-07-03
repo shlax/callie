@@ -1,6 +1,7 @@
 package ws.loaders.groovy.objects;
 
 import javax.media.j3d.Group;
+import java.util.ArrayList;
 import java.util.Map;
 
 public abstract class GroupObject extends NodeObject {
@@ -9,20 +10,31 @@ public abstract class GroupObject extends NodeObject {
         super(value, attributes);
     }
 
+    private ArrayList<NodeObject> nodes = new ArrayList<NodeObject>();
     public final void addNodeObject(NodeObject s){
-        if(bg == null) bg = getGroup();
-        s.getNode(bg);
+        nodes.add(s);
+        //if(bg == null) bg = getGroup();
+        //s.getNode(bg);
         //bg.addChild();
     }
 
     protected abstract javax.media.j3d.Group getGroup();
 
-    protected javax.media.j3d.Group bg = null;
+    //protected javax.media.j3d.Group bg = null;
+
+    private Group g = null;
 
     @Override
-    public void getNode(Group g){
-        if(bg == null) bg = getGroup();                    
-        g.addChild(bg);
+    public Group getNode(){
+//        new Exception().printStackTrace();
+        if(g == null){
+            g = getGroup();
+            for(NodeObject no : nodes)g.addChild(no.getNode());
+            nodes = null;
+        }
+
+        return g;
+        //g.addChild(bg);
     }
 
 }

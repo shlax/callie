@@ -4,7 +4,9 @@ import groovy.util.AbstractFactory;
 import groovy.util.FactoryBuilderSupport;
 import ws.loaders.groovy.FactoryElement;
 import ws.loaders.groovy.SceneBuilder;
-import ws.loaders.groovy.objects.*;
+import ws.loaders.groovy.objects.AiCheckObject;
+import ws.loaders.groovy.objects.Point;
+import ws.loaders.groovy.objects.Vector;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Tuple3f;
@@ -50,7 +52,7 @@ public final class AiCheckElement extends AbstractFactory {
             AiCheckObject g = (AiCheckObject)parent;
             Vector so = (Vector)child;
             g.setPoint(so.getPoint3f());
-        }
+        }else System.err.println(parent+" -> "+child);
     }
     
 }

@@ -1,8 +1,6 @@
 package ws.loaders.groovy.objects;
 
-import javax.media.j3d.Group;
 import javax.media.j3d.Link;
-import javax.media.j3d.SharedGroup;
 import java.util.Map;
 
 public final class LinkObject extends NodeObject {
@@ -11,13 +9,13 @@ public final class LinkObject extends NodeObject {
         super(value, attributes);
     }
 
-    private SharedGroup sg;
-    public final void setSharedGroup(SharedGroup sg) {
+    private SharedGroupObject sg;
+    public final void setSharedGroup(SharedGroupObject sg) {
         this.sg = sg;
     }
 
     @Override
-    public final void getNode(Group g) {
-        g.addChild(new Link(sg));
+    public final Link getNode() {
+        return new Link(sg.getNode());
     }
 }

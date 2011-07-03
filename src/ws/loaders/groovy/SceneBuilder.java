@@ -9,6 +9,7 @@ import ws.loaders.tools.TextureLoader;
 import ws.loaders.tools.joint.BhoneFrameLoader;
 import ws.loaders.tools.map.MapLoader;
 import ws.map.Type;
+import ws.tools.Timer;
 
 import javax.media.j3d.PolygonAttributes;
 import javax.media.j3d.RenderingAttributes;
@@ -31,13 +32,33 @@ public final class SceneBuilder extends FactoryBuilderSupport {
     public static final String point = "point";
     public static final String vector = "vector";
     public static final String color = "color";
+    public static final String rotate = "rotate";
+
+    public static final String posPath = "posPath";
+    public static final String rotPath = "rotPath";
+    public static final String posRotPath = "posRotPath";
+    public static final String posRotScalePath = "posRotScalePath";
+
+    public static final String TCBpath = "TCBpath";
+    public static final String KBpath = "KBpath";
+
+    public static final String key = "key";
+
+    public static final String bias = "bias";
+    public static final String continuity = "continuity";
+    public static final String tension = "tension";
+    public static final String linear  = "linear";
+
+    //public static final String bank  = "bank";
+    //public static final String heading  = "heading";
+    //public static final String pitch  = "pitch";
 
     public static final String r = "r";
     public static final String g = "g";
     public static final String b = "b";
     public static final String a = "a";
 
-    public static final String region = "region";
+    //public static final String region = "region";
 
     public static final String appearance = "appearance";
     public static final String file = "file";
@@ -154,7 +175,9 @@ public final class SceneBuilder extends FactoryBuilderSupport {
     public static final String x = "x";
     public static final String y = "y";
     public static final String z = "z";
+    public static final String w = "w";
     public static final String xyz = "xyz";
+
     public static final String rotX = "rotX";
     public static final String rotY = "rotY";
     public static final String rotZ = "rotZ";    
@@ -268,6 +291,30 @@ public final class SceneBuilder extends FactoryBuilderSupport {
     public static final String size = "size";
     public static final String sizeY = "sizeY";
 
+    public static final String time = "time";
+    public static final String loopCount = "loopCount";
+    public static final Integer loop = -1;
+
+    public static final String atZeroOne = "atZeroOne";
+    public static final String atOne = "atOne";
+    public static final String atZero = "atZero";
+
+    public static final String ramp = "ramp";
+    public static final String incRamp = "incRamp";
+    public static final String decRamp = "decRamp";
+
+    public static final String mode = "mode";
+    public static final Timer.Mode inc = Timer.Mode.INC;
+    public static final Timer.Mode dec = Timer.Mode.DEC;
+    public static final Timer.Mode incDec = Timer.Mode.INCDEC;
+
+    public static final String rotation = "rotation";
+    public static final String translation = "translation";
+    public static final String scaling = "scaling";
+
+    public static final String min = "min";
+    public static final String max = "max";
+
     public static final String minX = "minX";
     public static final String maxX = "maxX";
     public static final String minY = "minY";
@@ -341,10 +388,26 @@ public final class SceneBuilder extends FactoryBuilderSupport {
         tmp.put(shot, new ShotElement(soundLoader));
 
         tmp.put(onOff, new SwitchEl());
+        tmp.put(time, new TimerEl());
+
+        tmp.put(rotation, new RotationEl());
+        tmp.put(translation, new PositionEl());
+        tmp.put(scaling, new ScalingEl());
 
         tmp.put(point, new PointEl());
         tmp.put(vector, new VectorEl());
         tmp.put(color, new ColorEl());
+        tmp.put(scale, new ScaleEl());
+        tmp.put(rotate, new QuatEl());
+
+        tmp.put(key, new KeyFrameEl());
+
+        tmp.put(posPath, new PositionPathInterpolatorEl());
+        tmp.put(posRotPath, new RotPosPathEl());
+        tmp.put(rotPath, new RotationPathIntEl());
+        tmp.put(posRotScalePath, new RotPosScalePathEl());
+        tmp.put(TCBpath, new TCBSplineInt());
+        tmp.put(KBpath, new KBSplineEl());
 
         /* tmp.put(lsSystem, new LsElement(textureLoader, geometryLoader, mapLoader));
         tmp.put(lsBlok, new LsBlokElement());

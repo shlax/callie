@@ -1,10 +1,13 @@
 package ws.loaders.groovy.elements;
 
+import groovy.lang.Closure;
 import groovy.util.AbstractFactory;
 import groovy.util.FactoryBuilderSupport;
 import ws.loaders.groovy.FactoryElement;
 import ws.loaders.groovy.SceneBuilder;
-import ws.loaders.groovy.objects.*;
+import ws.loaders.groovy.objects.ColisionObject;
+import ws.loaders.groovy.objects.Point;
+import ws.loaders.groovy.objects.Vector;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Tuple3f;
@@ -29,6 +32,30 @@ public final class ColisionElement extends AbstractFactory {
 
             tmp = attributes.get(SceneBuilder.colisionRadius);
             o.setRadius(tmp instanceof Float ? (Float)tmp : Float.parseFloat(tmp.toString()) );
+
+            tmp = attributes.get(SceneBuilder.minX);
+            o.setMinX(tmp instanceof Float ? (Float)tmp : Float.parseFloat(tmp.toString()) );
+
+            tmp = attributes.get(SceneBuilder.maxX);
+            o.setMaxX(tmp instanceof Float ? (Float)tmp : Float.parseFloat(tmp.toString()) );
+
+            tmp = attributes.get(SceneBuilder.minY);
+            o.setMinY(tmp instanceof Float ? (Float)tmp : Float.parseFloat(tmp.toString()) );
+
+            tmp = attributes.get(SceneBuilder.maxY);
+            o.setMaxY(tmp instanceof Float ? (Float)tmp : Float.parseFloat(tmp.toString()) );
+
+            tmp = attributes.get(SceneBuilder.minZ);
+            o.setMinZ(tmp instanceof Float ? (Float)tmp : Float.parseFloat(tmp.toString()) );
+
+            tmp = attributes.get(SceneBuilder.maxZ);
+            o.setMaxZ(tmp instanceof Float ? (Float)tmp : Float.parseFloat(tmp.toString()) );
+
+            tmp = attributes.get(SceneBuilder.onEnter);
+            if(tmp instanceof Closure)o.setOnEnter((Closure)tmp);
+
+            tmp = attributes.get(SceneBuilder.onExit);
+            if(tmp instanceof Closure)o.setOnExit((Closure)tmp);
 
             attributes.clear();
         }

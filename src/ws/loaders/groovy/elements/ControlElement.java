@@ -139,7 +139,7 @@ public final class ControlElement extends AbstractFactory {
         }else if(parent instanceof ControlObject && child instanceof TransformGroupObject){
             ControlObject g = (ControlObject)parent;
             TransformGroupObject so = (TransformGroupObject)child;
-            g.setItem(so.getTransformGroup());
+            g.setItem(so);
         }else if(parent instanceof AgentObject && child instanceof AiItemObject){
             AgentObject g = (AgentObject)parent;
             AiItemObject so = (AiItemObject)child;

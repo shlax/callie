@@ -42,7 +42,7 @@ public final class AiItemElement extends AbstractFactory {
         }else if(parent instanceof AiItemObject && child instanceof TransformGroupObject){
             AiItemObject g = (AiItemObject)parent;
             TransformGroupObject so = (TransformGroupObject)child;
-            g.setTransformGroup(so.getTransformGroup()); 
+            g.setTransformGroup(so);
         }else System.err.println(parent+" -> "+child);
 
     }

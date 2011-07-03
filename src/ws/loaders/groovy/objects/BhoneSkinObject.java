@@ -36,18 +36,20 @@ public final class BhoneSkinObject {
         this.accStartTime = accStartTime;
     }
 
-    private final ArrayList<BhoneSkinRestriction> bhoneSkinRestrictions = new ArrayList<BhoneSkinRestriction>();
+    private ArrayList<BhoneSkinRestriction> bhoneSkinRestrictions = null; // = new ArrayList<BhoneSkinRestriction>();
     public final void addBhoneSkinRestriction(BhoneSkinRestriction r){
+        if(bhoneSkinRestrictions == null) bhoneSkinRestrictions = new ArrayList<BhoneSkinRestriction>();
         this.bhoneSkinRestrictions.add(r);
     }
 
-    private final HashMap<String, BhoneSkinFrameObject> bhoneSkinFrames = new HashMap<String, BhoneSkinFrameObject>();
+    private HashMap<String, BhoneSkinFrameObject> bhoneSkinFrames = null; // = new HashMap<String, BhoneSkinFrameObject>();
     public final void addBhoneSkinFrame(String s, BhoneSkinFrameObject f){
+        if(bhoneSkinFrames == null) bhoneSkinFrames = new HashMap<String, BhoneSkinFrameObject>();
         this.bhoneSkinFrames.put(s == null ? f.getName() : s, f);
     }
 
     public BhoneSkinFrameObject getBhoneSkinFrameObject(String key){
-        return bhoneSkinFrames.get(key);
+        return bhoneSkinFrames == null ? null : bhoneSkinFrames.get(key);
     }
 
     private Float scale = 1f;
@@ -59,7 +61,7 @@ public final class BhoneSkinObject {
         try {
             //System.out.println(bhoneFile);
             LoadedBhone loadedBhone = this.bhoneLoader.loadBhone(bhoneFile, scale);
-            for(BhoneSkinRestriction tmp : bhoneSkinRestrictions){
+            if(bhoneSkinRestrictions != null)for(BhoneSkinRestriction tmp : bhoneSkinRestrictions){
                 if(tmp.getAxis() == BhoneSkinRestriction.Axis.X){
                     loadedBhone.setXaccelerator(tmp.getName(), tmp.getAcceleratedValue() );
                 }else if(tmp.getAxis() == BhoneSkinRestriction.Axis.Y){
@@ -80,13 +82,15 @@ public final class BhoneSkinObject {
                 if(tmp == null) System.err.println(sTmp);
                 loadedBhoneSkin.addLoadedBhoneFrame(tmp.getBhoneFrame(scale), tmp.getClip());
             }
-            
+
+            //bhoneSkinRestrictions = null;
+            //bhoneSkinFrames = null;
+
             return loadedBhoneSkin;
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        
-        return null;
+
     }
 
     

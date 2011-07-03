@@ -9,6 +9,7 @@ public class BinGeometry {
         process(new File("data/house"));
         process(new File("data/amy"));
         process(new File("data/soldier"));
+        process(new File("data/butterfly"));
     }
 
     private static void process(File f) throws Exception{
@@ -314,7 +315,7 @@ public class BinGeometry {
 				os.writeInt( Integer.parseInt(cnt[1]) );
 				os.writeInt( Integer.parseInt(cnt[2]) );
 
-				//add(vertexNormal, coordIndexes[(i*3)+k], normalIndexes[(i*3)+k]);
+				//addKeyFrameObj(vertexNormal, coordIndexes[(i*3)+k], normalIndexes[(i*3)+k]);
 			}
 		}
 
@@ -442,7 +443,7 @@ public class BinGeometry {
                         int ind = al.indexOf(coord);
                         if(ind == -1){
                             ind = al.size();
-                            al.add(coord);
+                            al.addKeyFrameObj(coord);
                         }*/
                         //textureIndexes[l][(i*3)+k] = Integer.parseInt(txIndex[l]);
                         os.writeInt( Integer.parseInt(txIndex[l]) );

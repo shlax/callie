@@ -1,10 +1,11 @@
 package ws.loaders.groovy.elements;
 
 import groovy.util.FactoryBuilderSupport;
-import sun.rmi.transport.ObjectTable;
 import ws.loaders.groovy.FactoryElement;
 import ws.loaders.groovy.SceneBuilder;
-import ws.loaders.groovy.objects.*;
+import ws.loaders.groovy.objects.Point;
+import ws.loaders.groovy.objects.SpotLightObject;
+import ws.loaders.groovy.objects.Vector;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Tuple3f;

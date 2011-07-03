@@ -63,7 +63,7 @@ public final class AppearanceObject extends TextureObject {
     private ArrayList<TextureSourceObject> textureSourceObjects = null;
     public final void addTextureSourceObject(TextureSourceObject o){
         if(this.textureSourceObjects == null) this.textureSourceObjects = new ArrayList<TextureSourceObject>();
-        this.textureSourceObjects.add(o);
+        this.textureSourceObjects.addKeyFrameObj(o);
     }
 
     private Color4f blendColor = null;
@@ -365,7 +365,9 @@ public final class AppearanceObject extends TextureObject {
                 returnAppearance.setRenderingAttributes(ra);
             }
         }
-        
+
+        textureObjects = null;
+
         return returnAppearance;
     }
 

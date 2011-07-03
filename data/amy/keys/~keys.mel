@@ -1,0 +1,169 @@
+proc int isLinear(string $name){
+	string $arg[];
+	$arg = `listAttr -st "LinX" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "LinY" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "LinZ" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "LinXY" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "LinXZ" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "LinYX" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "LinYZ" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "LinZX" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "LinZY" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	return 0;
+}
+
+proc exportJointsAngels(string $name,int $filename, int $height){
+	
+	$is = 0;
+	$sep = 0;
+
+	$src_connections = `listConnections -d true -s false -t jointCluster $name`;
+	for( $cluster in $src_connections ){
+		
+		
+		$A = `listSets -o $cluster`;
+		for( $b in $A ){
+			select $b;
+			$c = `ls -selection`;
+			for($q in $c){
+				if($is == 0){
+					$is = 1;
+					fprint($filename, $name+" ");
+						
+					string $arg;					
+
+					if($height == 1){
+						$arg = `getAttr ($name+".translateX")`;
+						fprint($filename, $arg+" ");
+
+						$arg = `getAttr ($name+".translateY")`;
+						fprint($filename, $arg+" ");
+
+						$arg = `getAttr ($name+".translateZ")`;
+						fprint($filename, $arg+" ");
+
+					}
+
+					$arg = `getAttr ($name+".rotateX")`;
+					fprint($filename, $arg+" ");
+
+					$arg = `getAttr ($name+".rotateY")`;
+					fprint($filename, $arg+" ");
+
+					$arg = `getAttr ($name+".rotateZ")`;
+					fprint($filename, $arg+"\n");
+
+				}				
+			}
+			
+		}
+	}
+	
+
+	$src_connections = `listConnections -d true -s false -t joint $name`;
+	for($joint in $src_connections){
+		int $lin = isLinear($joint);
+		if($lin == 0) exportJointsAngels($joint, $filename, false);
+	}
+		
+
+}
+
+proc exportJointsAngelsFile(string $name,string $filename){
+
+	int $file = `fopen $filename "w"`;
+
+	exportJointsAngels($name, $file, 1);
+
+	fclose $file;
+
+}
+
+
+currentTime 10 ;
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\stand.ang");
+
+
+currentTime 20 ;
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\run1.ang");
+
+currentTime 30 ;
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\run2.ang");
+
+currentTime 40 ;
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\run3.ang");
+
+currentTime 50 ;
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\run4.ang");
+
+
+currentTime 60 ;
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\jumpl1.ang");
+
+currentTime 70 ;
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\jumpl2.ang");
+
+currentTime 80 ;
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\jumpl3.ang");
+
+
+currentTime 90 ;
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\jumpr1.ang");
+
+currentTime 100 ;
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\jumpr2.ang");
+
+currentTime 110 ;
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\jumpr3.ang");
+
+
+currentTime 120 ;
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\down.ang");
+
+currentTime 130 ;
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\deadJump.ang");
+
+currentTime 140 ;
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\deadShot.ang");
+
+
+currentTime 150 ;
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\riflePick.ang");
+
+currentTime 160 ;
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\rifleFire.ang");
+
+
+currentTime 170 ;
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\rifleStand.ang");
+
+
+currentTime 180 ;
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\rifleRun1.ang");
+
+currentTime 190 ;
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\rifleRun2.ang");
+
+currentTime 200 ;
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\rifleRun3.ang");
+
+currentTime 210 ;
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\rifleRun4.ang");

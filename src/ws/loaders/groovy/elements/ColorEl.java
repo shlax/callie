@@ -10,7 +10,7 @@ import java.util.Map;
 public final class ColorEl extends AbstractFactory {
 
     @Override
-    public final Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes) throws InstantiationException, IllegalAccessException {
+    public final Color newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes) throws InstantiationException, IllegalAccessException {
         Float r = 0f;
         Float g = 0f;
         Float b = 0f;

@@ -2,10 +2,10 @@ package ws.loaders.groovy.objects;
 
 import ws.camera.Character;
 import ws.camera.CharacterCamera;
-import ws.camera.areas.ActionArea;
-import ws.camera.areas.Colision;
 import ws.camera.UserCamera;
 import ws.camera.animation.*;
+import ws.camera.areas.ActionArea;
+import ws.camera.areas.Colision;
 import ws.joint.AceleratedBhone;
 import ws.joint.ActiveTransformBhone;
 import ws.joint.BhoneSkin;
@@ -33,13 +33,15 @@ public final class ControlObject extends FactoryElement {
         this.bhoneFrameLoader = bhoneFrameLoader;
     }
 
-    private final ArrayList<AiItemObject> aiItemObjects = new ArrayList<AiItemObject>();
+    private ArrayList<AiItemObject> aiItemObjects = null; // = new ArrayList<AiItemObject>();
     public final void addAiItemObject(AiItemObject o){
+        if(aiItemObjects == null) aiItemObjects = new ArrayList<AiItemObject>();
         this.aiItemObjects.add(o);
     }
 
-    private final ArrayList<MapObject> mapObject = new ArrayList<MapObject>();
+    private ArrayList<MapObject> mapObject = null; // new ArrayList<MapObject>();
     public final void addMapObject(MapObject mapObject) {
+        if(this.mapObject == null) this.mapObject = new ArrayList<MapObject>();
         //System.out.println(mapObject);
         this.mapObject.add(mapObject);
     }
@@ -143,9 +145,9 @@ public final class ControlObject extends FactoryElement {
         this.weaponPick = weaponPick;
     }
 
-    private TransformGroup item = null;
-    public final void setItem(TransformGroup item) {
-        this.item = item;
+    private TransformGroupObject itemObj = null;
+    public final void setItem(TransformGroupObject item) {
+        this.itemObj = item;
     }
 
     private String disArmedBhone = null;
@@ -173,8 +175,9 @@ public final class ControlObject extends FactoryElement {
         this.armedTransform = armedTransform;
     }
 
-    private final ArrayList<ColisionObject> colisionObjects = new ArrayList<ColisionObject>();
+    private ArrayList<ColisionObject> colisionObjects = null; // = new ArrayList<ColisionObject>();
     public final void addColisionObject(ColisionObject o){
+        if(colisionObjects == null) colisionObjects = new ArrayList<ColisionObject>();
         this.colisionObjects.add(o);
     }
 
@@ -183,23 +186,27 @@ public final class ControlObject extends FactoryElement {
         hitAreaObjects.addAnimationFrameObject(o);
     }*/
 
-    private final ArrayList<AnimationTransformObject> animationObjects = new ArrayList<AnimationTransformObject>();
+    private ArrayList<AnimationTransformObject> animationObjects = null;// new ArrayList<AnimationTransformObject>();
     public final void addAnimationObject(AnimationTransformObject o){
+        if(animationObjects == null) animationObjects = new ArrayList<AnimationTransformObject>();
         this.animationObjects.add(o);
     }
 
-    private final TransformGroup chracterTransform = new TransformGroup();
+    // private final TransformGroup chracterTransform = new TransformGroup();
+    private ArrayList<NodeObject> nodes = null; // new ArrayList<NodeObject>();
     public final void addNodeObject(NodeObject o){
-        o.getNode(chracterTransform);
+        if(nodes == null) nodes = new ArrayList<NodeObject>();
+        nodes.add(o);
+        //o.getNode(chracterTransform);
         //chracterTransform.addChild(o.getNode());
     }
 
     public final CharacterCamera buildCharacterCamera(BranchGroup cameraNode, BranchGroup activeNode, BranchGroup efectNode) throws IOException {
         Y25MapBuilder mapBuilder = new Y25MapBuilder();
       //  if(lsObject != null) mapBuilder.addLoadedMap(lsObject.getTriangles());
-        for(MapObject tmp : mapObject)mapBuilder.addLoadedMap(tmp.getTriangles(), tmp.getSceneAction());
+        if(mapObject != null)for(MapObject tmp : mapObject)mapBuilder.addLoadedMap(tmp.getTriangles(), tmp.getSceneAction());
         Y25Map mapa = mapBuilder.getMap();
-        for(MapObject tmp : mapObject) tmp.postProcess();
+        if(mapObject != null)for(MapObject tmp : mapObject) tmp.postProcess();
 
         // ---------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -234,6 +241,10 @@ public final class ControlObject extends FactoryElement {
                     "DEAD_SHOT", "DEAD_JUMP" // 20 21
                 });
 
+
+        TransformGroup chracterTransform = new TransformGroup();
+        if(nodes != null)for(NodeObject no : nodes) chracterTransform.addChild(no.getNode());
+
         chracterTransform.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
         activeNode.addChild(chracterTransform);
 
@@ -262,6 +273,7 @@ public final class ControlObject extends FactoryElement {
             chracterTransform.addChild(sp);
         }*/
 
+        TransformGroup item = itemObj.getNode();
         item.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
                
         Switch sw;
@@ -298,7 +310,7 @@ public final class ControlObject extends FactoryElement {
         tg.addChild(new Sphere(0.25f));
         efectNode.addChild(tg);*/
 
-        for(AiItemObject tmp : aiItemObjects){
+        if(aiItemObjects != null)for(AiItemObject tmp : aiItemObjects){
             String name = tmp.getBhoneName();
             Transform3D trans = tmp.getTransform();
 
@@ -318,17 +330,18 @@ public final class ControlObject extends FactoryElement {
 
         // animations
         ArrayList<Animation> ani = new ArrayList<Animation>(this.animationObjects.size());
-        if(!animationObjects.isEmpty()){
+        if(animationObjects != null && !animationObjects.isEmpty()){
 
             for(AnimationTransformObject tmp : animationObjects) ani.add(loadAnimation(c, sw, bs, tmp, mapBuilder));
-            //for(AnimationTransformObject tmp : this.lsObject.processAnimations()) ani.add(loadAnimation(c, sw, bs, tmp, mapBuilder));
+            //for(AnimationTransformObject tmp : this.lsObject.processAnimations()) ani.addKeyFrameObj(loadAnimation(c, sw, bs, tmp, mapBuilder));
         }
         
         ArrayList<Colision> aCol = new ArrayList<Colision>();
         ArrayList<ActionArea> aAra = new ArrayList<ActionArea>();
-        if(!this.colisionObjects.isEmpty()){
+        if(colisionObjects != null && !this.colisionObjects.isEmpty()){
             for(ColisionObject tmp : colisionObjects){
-                aCol.add(tmp.getColision());
+                if (tmp.isAction())aAra.add(tmp.getActionArea());
+                else aCol.add(tmp.getColision());
             }
         }
 
@@ -346,6 +359,13 @@ public final class ControlObject extends FactoryElement {
                                cameraNode, startPosition, startTriangle, cameraMinDistance, cameraMaxDistance, cameraHeight, cameraSide);
 
         setUserData(chracterTransform);
+
+        aiItemObjects = null;
+        mapObject = null;
+        animationObjects = null;
+        nodes = null;
+        colisionObjects = null;
+
         return uc;
     }
 
@@ -412,9 +432,9 @@ public final class ControlObject extends FactoryElement {
             //System.out.println("");
             return new Animation(removeAfterPlay, ato.getSource(), sourceRadius, ato.getSourceAnge()+(float)Math.PI, sourceAngleTolerantion, destination, endTriangle, keyFrameRatio, frames);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return null;
+      //  return null;
     }
 
 }

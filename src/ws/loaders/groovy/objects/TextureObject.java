@@ -129,6 +129,8 @@ public class TextureObject extends FactoryElement {
         if(blendColor != null) ta.setTextureBlendColor(blendColor);
         if(textureTransform != null) ta.setTextureTransform(textureTransform);
 
+        textureSourceObjects = null;
+
         return ta;
     }
 

@@ -135,7 +135,7 @@ public final class GeometryLoader {
                         int ind = al.indexOf(coord);
                         if(ind == -1){
                             ind = al.size();
-                            al.add(coord);
+                            al.addKeyFrameObj(coord);
                         }*/
                         textureIndexes[l][(i*3)+k] = bi.readInt();
                     }
@@ -290,7 +290,7 @@ public final class GeometryLoader {
                         int ind = al.indexOf(coord);
                         if(ind == -1){
                             ind = al.size();
-                            al.add(coord);
+                            al.addKeyFrameObj(coord);
                         }*/
                         textureIndexes[l][(i*3)+k] = Integer.parseInt(txIndex[l]);
                     }

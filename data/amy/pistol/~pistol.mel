@@ -1,0 +1,160 @@
+proc export( string $mesh, string $filename ){
+
+	$file = `fopen $filename "w"`;
+	
+	// vertex
+	int $vertexCount[] = `polyEvaluate -v $mesh`;
+	fprint $file ( "numVertices=" + $vertexCount[0] + "\n" );
+	
+	for( $i=0;$i<$vertexCount[0];$i++){
+		float $vert[]   = `getAttr ($mesh+".vt["+$i+"]")`;
+		float $offset[] = `getAttr ($mesh+".pt["+$i+"]")`;
+		
+		$vert[0] += $offset[0];
+		$vert[1] += $offset[1];
+		$vert[2] += $offset[2];
+		
+	
+		fprint $file ( "["+$vert[0]+","+$vert[1]+","+$vert[2]+"]" );
+	}
+	fprint $file "\n";
+	
+	// uv
+	
+	float $uvArray[];
+	$maxUvCount = 0;
+	
+	int $uvCount[] = `polyEvaluate -uv $mesh`;
+	
+	for( $i=0;$i<$uvCount[0];$i++){
+		float $uvs[] = `getAttr ($mesh + ".uv[" +$i+"]")`;
+		
+		int $is = 0;
+		for($k = 0; $k < $maxUvCount && $is == 0 ; $k +=2 ){
+			if( $uvArray[$k] == $uvs[0] && $uvArray[$k+1] == $uvs[1] ){
+				$is = 1;
+			}
+		}
+		if($is == 0){
+			$uvArray[$maxUvCount] = $uvs[0];
+			$uvArray[$maxUvCount+1] = $uvs[1];
+			
+			$maxUvCount += 2;
+		}
+		
+		
+	}
+	
+	fprint $file ( "numTexCoords=" + ($maxUvCount/2) + "\n" );
+	for($k = 0; $k < $maxUvCount; $k +=2 ){
+		fprint $file ( "["+$uvArray[$k]+","+$uvArray[$k+1]+"]" );	
+	}	
+	fprint $file "\n";
+	
+	// normal
+	select -r $mesh;
+	int $faceCount[] = `polyEvaluate -f`;
+	
+	float $normArray[];
+	$maxCount = 0;
+	
+	for( $i=0;$i<$faceCount[0];$i++){
+		int $vCount =0;
+		
+		select -r ( $mesh+".f["+$i+"]");
+		
+		string $vinds[] = `polyInfo -fv`;
+		
+		string $split[];
+		tokenize $vinds[0] $split;
+		
+		for($j=0;$j<(size($split)-2);$j++){
+			select -r ($mesh+".vtxFace["+$split[($j+2)]+"]["+$i+"]");
+			float $norm[] = `polyNormalPerVertex -q -xyz`;
+			
+			int $is = 0;
+			for($k = 0; $k < $maxCount && $is == 0 ; $k +=3 ){
+				if( $normArray[$k] == $norm[0] && $normArray[$k+1] == $norm[1] && $normArray[$k+2] == $norm[2] ){
+					$is = 1;
+				}
+			}
+			if($is == 0){
+				$normArray[$maxCount] = $norm[0];
+				$normArray[$maxCount+1] = $norm[1];
+				$normArray[$maxCount+2] = $norm[2];
+				
+				$maxCount += 3;
+			}
+
+		}
+		
+	}
+	
+	fprint $file ( "numNormals="+($maxCount/3)+"\n" );
+
+	for($k = 0; $k < $maxCount; $k +=3 ){
+		fprint $file ( "["+$normArray[$k]+","+$normArray[$k+1]+","+$normArray[$k+2]+"]" );	
+	}
+	
+	fprint $file "\n";
+
+	// faces
+
+	select -r $mesh;
+	int $faceCount[] = `polyEvaluate -f`;
+	fprint $file ( "numFaces=" + $faceCount[0]+"\n" );
+	
+	for( $i=0;$i<$faceCount[0];$i++){
+		int $vCount =0;
+		
+		select -r ( $mesh+".f["+$i+"]");
+		
+		string $vinds[] = `polyInfo -fv`;
+		
+		string $split[];
+		tokenize $vinds[0] $split;
+		
+		fprint $file "{";
+		for($j=0;$j<(size($split)-2);$j++){
+			select -r ($mesh+".vtxFace["+$split[($j+2)]+"]["+$i+"]");
+			float $norm[] = `polyNormalPerVertex -q -xyz`;
+			
+			int $is = 0;
+			int $nIndex = -1;
+			for($k = 0; $k < $maxCount && $is == 0 ; $k +=3 ){
+				if( $normArray[$k] == $norm[0] && $normArray[$k+1] == $norm[1] && $normArray[$k+2] == $norm[2] ){
+					$is = 1;
+					$nIndex = $k/3;
+				}
+			}
+
+			string $tinds[] = `polyListComponentConversion -fvf -tuv ($mesh+".vtxFace["+$split[($j+2)]+"]["+$i+"]")`;
+			
+			string $buffer[];
+			tokenize $tinds[0] "[]" $buffer;
+			
+			float $uvs[] = `getAttr ($mesh + ".uv[" +($buffer[1])+"]")`;			
+		
+			$is = 0;
+			int $uvIndex = -1;
+			for($k = 0; $k < $maxUvCount && $is == 0 ; $k +=2 ){
+				if( $uvArray[$k] == $uvs[0] && $uvArray[$k+1] == $uvs[1] ){
+					$is = 1;
+					$uvIndex = $k/2;
+				}
+			}
+			
+			fprint $file ( "["+$split[(2+$j)]+","+$uvIndex+","+$nIndex+"]" );
+		//	fprint $file ( "["+$split[(2+$j)]+","+$buffer[1]+","+$nIndex+"]" );
+
+		}
+		fprint $file "}";
+
+	}	
+	fprint $file "\n";
+
+	
+	fclose $file;
+}
+
+export( "polySurface821", "c:\\Users\\root\\IdeaProjects\\syberia\\data\\main\\pistol\\pistol.mod" );
