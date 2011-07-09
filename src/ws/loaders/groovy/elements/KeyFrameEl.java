@@ -2,16 +2,73 @@ package ws.loaders.groovy.elements;
 
 import groovy.util.AbstractFactory;
 import groovy.util.FactoryBuilderSupport;
+import ts.doc.*;
 import ws.loaders.groovy.FactoryElement;
 import ws.loaders.groovy.SceneBuilder;
-import ws.loaders.groovy.objects.*;
+import ws.loaders.groovy.objects.KeyFrameObj;
+import ws.loaders.groovy.objects.Quat;
+import ws.loaders.groovy.objects.Scale;
+import ws.loaders.groovy.objects.Tuple;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Tuple3f;
 import java.util.Map;
 
-public final class KeyFrameEl extends AbstractFactory {
+public final class KeyFrameEl extends AbstractFactory implements Doc{
+
+    @Override
+    public String docDescription() {
+        return "path animation frame";
+    }
+
+    @Override
+    public String[] docExamples() {
+        return new String[]{
+            "KBpath( _time(time:45f), sceneType:sceneTypeEFFECT){\n" +
+            "   key(0.0f, x: -7.288f, y: 2.347f, z: 13.291f, rotY:-90f );\n" +
+            "};"
+        };
+    }
+
+    @Override
+    public String docValue() {
+        return "as: |time|";
+    }
+
+    @Override
+    public DocAction[] docActions() {
+        return null;
+    }
+
+    @Override
+    public DocControl[] docControl() {
+        return null;
+    }
+
+    @Override
+    public DocAttr[] docAtributes() {
+        return new DocAttr[]{
+            new DocAttr("*", "time", "Float", "//<0,1>"),
+            new DocAttr("*/1", "point", "point|vector"),
+            new DocAttr("*/1", "x", "Float"),
+            new DocAttr("*/1", "y", "Float"),
+            new DocAttr("*/1", "z", "Float"),
+            new DocAttr("*/2", "rotate", "rotate"),
+            new DocAttr("*/2", "rotX", "Float"),
+            new DocAttr("*/2", "rotY", "Float"),
+            new DocAttr("*/2", "rotZ", "Float"),
+            new DocAttr("*/3", "scale", "scale", "(1f, 1f, 1f)", null),
+            new DocAttr("*/3", "scaleX", "Float", "1f", null),
+            new DocAttr("*/3", "scaleY", "Float", "1f", null),
+            new DocAttr("*/3", "scaleZ", "Float", "1f", null),
+            new DocAttr("*/", "bias", "Float", "0f", null),
+            new DocAttr("*/", "continuity", "Float", "0f", null),
+            new DocAttr("*/", "tension", "Float", "0f", null),
+            new DocAttr(null, "linear", "Boolean", "false", null),
+
+        };
+    }
 
     @Override
     public final KeyFrameObj newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes) throws InstantiationException, IllegalAccessException {
@@ -99,11 +156,11 @@ public final class KeyFrameEl extends AbstractFactory {
         a = attributes.get(SceneBuilder.rotX);
         if(a != null) frameObj.setPitch(a instanceof Float ? (Float) a : Float.parseFloat(a.toString()));
 
-        a = attributes.get(SceneBuilder.bias);
-        if(a != null) frameObj.setBias(a instanceof Float ? (Float) a : Float.parseFloat(a.toString()));
-
         a = attributes.get(SceneBuilder.rotZ);
         if(a != null) frameObj.setBank(a instanceof Float ? (Float) a : Float.parseFloat(a.toString()));
+
+        a = attributes.get(SceneBuilder.bias);
+        if(a != null) frameObj.setBias(a instanceof Float ? (Float) a : Float.parseFloat(a.toString()));
 
         a = attributes.get(SceneBuilder.continuity);
         if(a != null) frameObj.setContinuity( a instanceof Float ? (Float)a : Float.parseFloat(a.toString()) );
@@ -120,6 +177,16 @@ public final class KeyFrameEl extends AbstractFactory {
     }
 
     @Override
+    public DocSubNode[] docSubNodes() {
+        return new DocSubNode[]{
+            new DocSubNode("*/", "point", "[0..1]", "as: |point|"),
+            new DocSubNode("*/", "vector", "[0..1]", "as: |point|"),
+            new DocSubNode("*/", "scale", "[0..1]", "as: |scale|"),
+            new DocSubNode("*/", "rotate", "[0..1]", "as: |rotate|"),
+        };
+    }
+
+    @Override
     public final void setChild(FactoryBuilderSupport builder, Object parent, Object child) {
         if(child instanceof FactoryElement) if(((FactoryElement)child).isUsed())return;
 
@@ -131,9 +198,9 @@ public final class KeyFrameEl extends AbstractFactory {
             KeyFrameObj g = (KeyFrameObj)parent;
             Scale so = (Scale)child;
             g.setScalePont(so.getPoint3f());
-        }else if(parent instanceof KeyFrameObj && child instanceof Point){
+        }else if(parent instanceof KeyFrameObj && child instanceof Tuple){
             KeyFrameObj g = (KeyFrameObj)parent;
-            Point so = (Point)child;
+            Tuple so = (Tuple)child;
             g.setPoint(so.getPoint3f());
         }else System.err.println(parent+" -> "+child);
     }

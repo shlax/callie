@@ -114,10 +114,10 @@ public final class AppearanceObject extends TextureObject {
 */
     // -----------------------------------------------------------------------------------------------------
 
-    private PolygonAttributes pa = null;
+    /* private PolygonAttributes pa = null;
     public final void setPolygonAttributes(PolygonAttributes p){
         this.pa = p;
-    }
+    } */
 
     private int cull = PolygonAttributes.CULL_BACK;
     public final void setCull(int cull){
@@ -298,12 +298,12 @@ public final class AppearanceObject extends TextureObject {
                 returnAppearance = new Appearance();
             }
 
-            if(pa == null){
+        //    if(pa == null){
                 PolygonAttributes tmp = new PolygonAttributes();
                 //tmp.setPolygonMode(PolygonAttributes.POLYGON_LINE);
                 tmp.setCullFace(this.cull);
                 returnAppearance.setPolygonAttributes(tmp);
-            }else returnAppearance.setPolygonAttributes(pa);
+          //  }else returnAppearance.setPolygonAttributes(pa);
 
             if(textureObjects == null || textureObjects.size() == 1){
                 Texture texture = getTexture();

@@ -1,7 +1,7 @@
 package ws.loaders.tools.map;
 
-import ws.SceneAction;
 import ws.map.*;
+import ws.tools.SceneAction;
 
 import javax.vecmath.Point3f;
 import java.util.ArrayList;

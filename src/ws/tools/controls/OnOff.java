@@ -1,4 +1,4 @@
-package ws.tools;
+package ws.tools.controls;
 
 import javax.media.j3d.Switch;
 

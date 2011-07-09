@@ -1,9 +1,9 @@
 package ws.loaders.groovy;
 
 import groovy.lang.Closure;
-import ws.SceneAction;
+import ws.tools.SceneAction;
 
-public final class ClosureSceneAction implements SceneAction{
+public final class ClosureSceneAction implements SceneAction {
 
     private final Closure onEnter;
     private final Closure onExit;

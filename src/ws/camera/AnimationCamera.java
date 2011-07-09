@@ -2,7 +2,6 @@ package ws.camera;
 
 import ws.Gui;
 import ws.camera.animation.Animation;
-import ws.camera.areas.ActionArea;
 import ws.camera.areas.Colision;
 import ws.map.Y25Map;
 import ws.map.Y25Triangle;
@@ -18,16 +17,16 @@ public class AnimationCamera extends CharacterCamera{
 
     public AnimationCamera(ArrayList<Animation> anim,
                            float heightUp, float heightDown, Character c, float jumpSpeed, float jumpSpeedStart, float runSpeed, float walkSpeed, float actionDuration,
-                           float userColideRadius, float angleAceleration, float speedAceleration, ActionArea[] areas, Colision[] col, Y25Map mapa,
-                           BranchGroup colide, Vector3f startPosition, Y25Triangle startTriangle, float minDistance, float maxDistance, float height, float maxSide) {
+                           float userColideRadius, float angleAceleration, float speedAceleration, Colision[] col, Y25Map mapa,
+                           BranchGroup colide, Vector3f startPosition, Y25Triangle startTriangle, float minDistance, float maxDistance, float defMaxMinDistance, float height, float maxSide) {
         super(heightUp, heightDown, c, jumpSpeed, jumpSpeedStart, runSpeed, walkSpeed, actionDuration,
-              userColideRadius, angleAceleration, speedAceleration, areas, col, mapa,
-              colide, startPosition, startTriangle, minDistance, maxDistance, height, maxSide);
+              userColideRadius, angleAceleration, speedAceleration, col, mapa,
+              colide, startPosition, startTriangle, minDistance, maxDistance, defMaxMinDistance, height, maxSide);
 
         this.animations = anim;
     }
 
-    private Animation actual = null; 
+    private Animation actual = null;
 
     public static boolean isActionPosible = false;
 
@@ -45,7 +44,7 @@ public class AnimationCamera extends CharacterCamera{
                     break;
                 }
 
-                if( a!= null && Gui.keys.contains(KeyEvent.VK_E)){
+                if( a!= null && ( a.isAutopay() || Gui.keys.contains(KeyEvent.VK_E) ) ){
                     isActionPosible = true;
                     this.reqAngele = a.getSourceAnge();
 

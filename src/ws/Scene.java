@@ -129,7 +129,7 @@ public class Scene extends ViewPlatformBehavior {
             Target target = null;
 
             for(Target tar : targets){
-                UserCamera.TARGET.getUserPositionTo(source);
+                UserCamera.TARGET.getUserShotPositionTo(source);
 //                                        direction.set( tmp.getClosestIntersectionPoint() );
                 tar.getTargetPoint(direction);
                 direction.set(direction.x - source.x, direction.y - source.y, direction.z - source.z);

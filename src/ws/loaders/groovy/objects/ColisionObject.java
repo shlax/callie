@@ -1,12 +1,10 @@
 package ws.loaders.groovy.objects;
 
 import groovy.lang.Closure;
-import ws.camera.areas.ActionArea;
-import ws.camera.areas.BoxColision;
-import ws.camera.areas.CircleColision;
-import ws.camera.areas.Colision;
+import ws.camera.areas.*;
 import ws.loaders.groovy.ClosureSceneAction;
 import ws.loaders.groovy.FactoryElement;
+import ws.tools.controls.OnOffObject;
 
 import javax.vecmath.Point3f;
 import java.util.Map;
@@ -70,16 +68,33 @@ public final class ColisionObject extends FactoryElement {
         this.onExit = onExit;
     }
 
-    public boolean isAction(){
+    private boolean isAction(){
         return onEnter != null || onExit != null;
     }
 
-    public final ActionArea getActionArea(){
-        return new ActionArea(new ClosureSceneAction(onEnter, onExit), getColision());
-    }
+    private Colision ret = null;
 
     public final Colision getColision(){
-        return point != null ? new CircleColision(point, radius) : new BoxColision(minX, maxX, minY, maxY, minZ, maxZ);
+        if(ret == null){
+            Colision cc = point != null ? new CircleColision(point, radius) : new BoxColision(minX, maxX, minY, maxY, minZ, maxZ);
+            if(isAction()) cc = new ActionArea(new ClosureSceneAction(onEnter, onExit), cc);
+            ret = active ? new ActiveCilision(cc) : cc;
+        }
+        return ret;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    private boolean enabled = true;
+    private boolean active = false;
+
+    public final OnOffObject control(){
+        active = true;
+        ActiveCilision actrLoc = (ActiveCilision)getColision();
+        if(!enabled || isAction()) actrLoc.setActive(false);
+        return new OnOffObject( actrLoc );
     }
 
 }

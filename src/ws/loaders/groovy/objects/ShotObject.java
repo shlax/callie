@@ -53,7 +53,7 @@ public final class ShotObject{
     }
 
     public final void setCadence(Float cadence) {
-        this.cadence = cadence;
+        this.cadence = cadence * 1000f;
     }
 
     public final void setFirePower(Float firePower) {
@@ -69,7 +69,7 @@ public final class ShotObject{
     }
 
     public final void setShotDuration(Float shotDuration) {
-        this.shotDuration = shotDuration;
+        this.shotDuration = shotDuration * 1000f;
     }
 
     public final void setShotRadius(Float shotRadius) {

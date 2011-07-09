@@ -2,11 +2,13 @@ package ws.loaders.groovy.objects;
 
 import ws.loaders.tools.SoundLoader;
 import ws.loaders.tools.joint.BhoneFrameLoader;
+import ws.loaders.tools.joint.FrameType;
 import ws.loaders.tools.joint.LoadedBhoneFrame;
 
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.*;
 import java.io.IOException;
 
 public final class BhoneSkinFrameObject {
@@ -64,5 +66,25 @@ public final class BhoneSkinFrameObject {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private FrameType frameType = null;
+
+    public final FrameType getFrameType() {
+        return frameType;
+    }
+
+    public final void setFrameType(FrameType frameType) {
+        this.frameType = frameType;
+    }
+
+    private Integer keyCode = null;
+
+    public final Integer getKeyCode() {
+        return keyCode;
+    }
+
+    public final void setKeyCode(Character keyCode) {
+        this.keyCode = KeyStroke.getKeyStroke(keyCode).getKeyCode();
     }
 }

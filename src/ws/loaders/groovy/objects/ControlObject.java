@@ -4,18 +4,21 @@ import ws.camera.Character;
 import ws.camera.CharacterCamera;
 import ws.camera.UserCamera;
 import ws.camera.animation.*;
-import ws.camera.areas.ActionArea;
 import ws.camera.areas.Colision;
 import ws.joint.AceleratedBhone;
 import ws.joint.ActiveTransformBhone;
 import ws.joint.BhoneSkin;
 import ws.loaders.groovy.FactoryElement;
+import ws.loaders.groovy.OnOfInterface;
 import ws.loaders.tools.joint.*;
 import ws.loaders.tools.map.Y25MapBuilder;
 import ws.map.Type;
 import ws.map.Y25Map;
 import ws.map.Y25Triangle;
+import ws.tools.SceneAction;
 import ws.tools.Shot;
+import ws.tools.controls.CharacterControl;
+import ws.tools.controls.OnOffObject;
 
 import javax.media.j3d.*;
 import javax.vecmath.Point3f;
@@ -56,71 +59,76 @@ public final class ControlObject extends FactoryElement {
         this.startPosition = startPosition;
     }
 
-    private Float jumpSpeed = 0.002f;
-    public final void setJumpSpeed(Float jumpSpeed) {
-        this.jumpSpeed = jumpSpeed;
+    private float jumpSpeed = 0.002f;
+    public final void setJumpSpeed(float jumpSpeed) {
+        this.jumpSpeed = jumpSpeed * 1000f;
     }
 
-    private Float jumpSpeedRun = 0.00375f;
-    public final void setJumpSpeedRun(Float jumpSpeedRun) {
-        this.jumpSpeedRun = jumpSpeedRun;
+    private float jumpSpeedRun = 0.00375f;
+    public final void setJumpSpeedRun(float jumpSpeedRun) {
+        this.jumpSpeedRun = jumpSpeedRun * 1000f;
     }
 
-    private Float runSpeed = 0.003f;
-    public final void setRunSpeed(Float runSpeed) {
-        this.runSpeed = runSpeed;
+    private float runSpeed = 0.003f;
+    public final void setRunSpeed(float runSpeed) {
+        this.runSpeed = runSpeed * 1000f;
     }
 
     private Float walkSpeed = 0.0015f;
-    public final void setWalkSpeed(Float walkSpeed) {
-        this.walkSpeed = walkSpeed;
+    public final void setWalkSpeed(float walkSpeed) {
+        this.walkSpeed = walkSpeed * 1000f;
     }
 
-    private Float frameWindow = 250f;
-    public final void setFrameWindow(Float frameWindow) {
-        this.frameWindow = frameWindow;
+    private float frameWindow = 250f;
+    public final void setFrameWindow(float frameWindow) {
+        this.frameWindow = frameWindow * 1000f;
     }
 
-    private Float colisionRadius = 0.5f;
-    public final void setColisionRadius(Float colisionRadius) {
+    private float colisionRadius = 0.5f;
+    public final void setColisionRadius(float colisionRadius) {
         this.colisionRadius = colisionRadius;
     }
 
-    private Float rotateAceleration = 0.01f;
+    private float rotateAceleration = 0.01f;
     public final void setRotateAceleration(Float rotateAceleration) {
-        this.rotateAceleration = rotateAceleration;
+        this.rotateAceleration = rotateAceleration * 1000f;
     }
 
-    private Float speedAceleration = 0.001f;
-    public final void setSpeedAceleration(Float speedAceleration) {
-        this.speedAceleration = speedAceleration;
+    private float speedAceleration = 0.001f;
+    public final void setSpeedAceleration(float speedAceleration) {
+        this.speedAceleration = speedAceleration * 1000f;
     }
 
-    private Float cameraMinDistance = 1f;
-    public final void setCameraMinDistance(Float cameraMinDistance) {
+    private float cameraMinDistance = 1f;
+    public final void setCameraMinDistance(float cameraMinDistance) {
         this.cameraMinDistance = cameraMinDistance;
     }
 
-    private Float cameraMaxDistance = 5f;
-    public final void setCameraMaxDistance(Float cameraMaxDistance) {
+    private float cameraMaxDistance = 5f;
+    public final void setCameraMaxDistance(float cameraMaxDistance) {
         this.cameraMaxDistance = cameraMaxDistance;
     }
 
-    private Float cameraHeight = 1.65f;
-    public final void setCameraHeight(Float cameraHeight) {
+    private float defMaxMinDistance = 2.5f;
+    public final void setCameraMaxMinDistance(float cameraMaxDistance) {
+        this.defMaxMinDistance = cameraMaxDistance;
+    }
+
+    private float cameraHeight = 1.65f;
+    public final void setCameraHeight(float cameraHeight) {
         this.cameraHeight = cameraHeight;
     }
 
-    private Float cameraSide = 0.25f;
-    public final void setCameraSide(Float cameraSide) {
+    private float cameraSide = 0.25f;
+    public final void setCameraSide(float cameraSide) {
         this.cameraSide = cameraSide;
     }
-    private Float heightUp = 1.4f;
-    public void setHeightUp(Float heightUp) {
+    private float heightUp = 1.4f;
+    public void setHeightUp(float heightUp) {
         this.heightUp = heightUp;
     }
 
-    private Float heightDown = 0.8f;
+    private float heightDown = 0.8f;
     public void setHeightDown(Float heightDown) {
         this.heightDown = heightDown;
     }
@@ -145,8 +153,8 @@ public final class ControlObject extends FactoryElement {
         this.weaponPick = weaponPick;
     }
 
-    private TransformGroupObject itemObj = null;
-    public final void setItem(TransformGroupObject item) {
+    private WeaponObj itemObj = null;
+    public final void setItem(WeaponObj item) {
         this.itemObj = item;
     }
 
@@ -314,7 +322,7 @@ public final class ControlObject extends FactoryElement {
             String name = tmp.getBhoneName();
             Transform3D trans = tmp.getTransform();
 
-            TransformGroup itemTransform = tmp.getTransformGroup();
+            TransformGroup itemTransform = tmp.getNode();
             itemTransform.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
             //if(bg == null){
             chracterTransform.addChild(itemTransform);
@@ -337,11 +345,12 @@ public final class ControlObject extends FactoryElement {
         }
         
         ArrayList<Colision> aCol = new ArrayList<Colision>();
-        ArrayList<ActionArea> aAra = new ArrayList<ActionArea>();
+    //    ArrayList<ActionArea> aAra = new ArrayList<ActionArea>();
         if(colisionObjects != null && !this.colisionObjects.isEmpty()){
             for(ColisionObject tmp : colisionObjects){
-                if (tmp.isAction())aAra.add(tmp.getActionArea());
-                else aCol.add(tmp.getColision());
+              //  if (tmp.isAction())aAra.add(tmp.getActionArea());
+                //if( tmp.isColision() )
+                aCol.add(tmp.getColision());
             }
         }
 
@@ -355,8 +364,8 @@ public final class ControlObject extends FactoryElement {
                                bs.getShape(),
                                ani,
                                heightUp, heightDown, c, jumpSpeed, jumpSpeedRun, runSpeed, walkSpeed, frameWindow,
-                               colisionRadius, rotateAceleration, speedAceleration, aAra.toArray(new ActionArea[aAra.size()]), aCol.toArray(new Colision[aCol.size()]),  mapa,
-                               cameraNode, startPosition, startTriangle, cameraMinDistance, cameraMaxDistance, cameraHeight, cameraSide);
+                               colisionRadius, rotateAceleration, speedAceleration,  aCol.toArray(new Colision[aCol.size()]),  mapa,
+                               cameraNode, startPosition, startTriangle, cameraMinDistance, cameraMaxDistance, defMaxMinDistance, cameraHeight, cameraSide);
 
         setUserData(chracterTransform);
 
@@ -367,6 +376,10 @@ public final class ControlObject extends FactoryElement {
         colisionObjects = null;
 
         return uc;
+    }
+
+    public final CharacterControl control(){
+        return new CharacterControl();
     }
 
     private void setUserData(Group g){
@@ -385,7 +398,8 @@ public final class ControlObject extends FactoryElement {
 
             Float sourceAngleTolerantion = ato.getAnimationObject().getSourceAngleTolerantion();
 
-            Boolean removeAfterPlay = ato.getAnimationObject().isRemoveAfterPlay();
+            boolean removeAfterPlay = ato.isRemoveAfterPlay();
+            boolean autoplay = ato.isAutolay();
 
             Point3f destination = new Point3f(ato.getAnimationObject().getDestination());
 
@@ -398,7 +412,7 @@ public final class ControlObject extends FactoryElement {
             Y25Triangle endTriangle = mapBuilder.getNear(destination, Type.TERAIN).getY25Triangle();
             endTriangle.getY(destination);
 
-            ArrayList<AnimationFrameObject> keyFrames = ato.getAnimationObject().getAnimationFrameObjects();
+            ArrayList<BhoneSkinFrameObject> keyFrames = ato.getAnimationObject().getAnimationFrameObjects();
             KeyFrame[] frames = new KeyFrame[keyFrames.size() + 1];
 
             for(int i = 0; i < frames.length; i++){
@@ -429,8 +443,18 @@ public final class ControlObject extends FactoryElement {
                 }
             }
 
-            //System.out.println("");
-            return new Animation(removeAfterPlay, ato.getSource(), sourceRadius, ato.getSourceAnge()+(float)Math.PI, sourceAngleTolerantion, destination, endTriangle, keyFrameRatio, frames);
+            SceneAction sa = ato.getSceneAction();
+            OnOffObject of = ato.isOnOff();
+            if(of == null){
+                if(sa != null) return new ClosureAnimation(autoplay, sa, removeAfterPlay, ato.getSource(), sourceRadius, ato.getSourceAnge()+(float)Math.PI, sourceAngleTolerantion, destination, endTriangle, keyFrameRatio, frames);
+                else return new Animation(autoplay, removeAfterPlay, ato.getSource(), sourceRadius, ato.getSourceAnge()+(float)Math.PI, sourceAngleTolerantion, destination, endTriangle, keyFrameRatio, frames);
+            }else{
+                Animation ani = sa != null ? new ActiveClosureAnimation(autoplay, sa, removeAfterPlay, ato.getSource(), sourceRadius, ato.getSourceAnge()+(float)Math.PI, sourceAngleTolerantion, destination, endTriangle, keyFrameRatio, frames) : new ActiveAnimation(autoplay, removeAfterPlay, ato.getSource(), sourceRadius, ato.getSourceAnge()+(float)Math.PI, sourceAngleTolerantion, destination, endTriangle, keyFrameRatio, frames);
+                OnOfInterface inter = (OnOfInterface) ani;
+                if(!ato.isActive())inter.setActive(false);
+                of.setCon(inter);
+                return ani;
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -19,10 +19,11 @@ public class AtakWolker extends BhoneSkinWolker{
     private final Point3f lookAtSource;
 
     private final float lookDistance;
-    private final float lookAngle;
-    //private final float criticalLookDistance;
+    private final float lookAngleHorizontal;
+    private final float lookAngleVertical;
+    private final float shotDistance;
 
-    protected AtakWolker(Shot shot, Point3f shotSource, Point3f lookAtSource, float lookDistance, float lookAngle, /*, float criticalLookDistance, */
+    protected AtakWolker(Shot shot, Point3f shotSource, Point3f lookAtSource, float lookDistance, float lookAngleHorizontal, float lookAngleVertical, float shotDistance,
                          BhoneSkin bs, float frameWindow,
                          float colisionRadius,
                          Y25Triangle actualTriangle, Vector3f startPosition, float startAngle, float speedA, float rotateA, float rotateCicleA, float maxV,
@@ -37,8 +38,9 @@ public class AtakWolker extends BhoneSkinWolker{
         this.lookAtSource = lookAtSource;
 
         this.lookDistance = lookDistance*lookDistance;
-       // this.criticalLookDistance = criticalLookDistance*criticalLookDistance;
-        this.lookAngle = lookAngle;
+        this.shotDistance = shotDistance*shotDistance;
+        this.lookAngleHorizontal = lookAngleHorizontal;
+        this.lookAngleVertical = lookAngleVertical;
 
     }
 
@@ -94,28 +96,42 @@ public class AtakWolker extends BhoneSkinWolker{
                 if(dstAngle > angle) dy = PIf*2f - ( dstAngle - angle );
                 else dy = angle - dstAngle;
 
-                if(Math.min(dx, dy) < lookAngle){ // je spravne natoceny
+                if(Math.min(dx, dy) < lookAngleHorizontal){ // je spravne natoceny
                     this.motTrans.transform(lookAtSource, myPosition);
                     UserCamera.TARGET.getLookTargetPoint(userPosition);   //  += UserCamera.getUserHeight();
+                    direction.sub(userPosition, myPosition);
+
+                    dy = Math.abs(myPosition.y - userPosition.y);
+                    dx = Math.abs((float)Math.asin(dy / direction.length()));
                     //System.out.println(myPosition);
                     //System.out.println(userPosition);
-                    direction.sub(userPosition, myPosition);
-                    Node n = this.getColision(myPosition, direction);
-                    //System.out.println(n);
-                    see = (n != null && UserCamera.CHARACTER.equals(n.getUserData()));
 
+                   // System.out.println(dx+" "+lookAngleVertical);
+
+                    if(dx < lookAngleVertical){
+                        Node n = this.getColision(myPosition, direction);
+                    //System.out.println(n);
+                        see = (n != null && UserCamera.CHARACTER.equals(n.getUserData()));
+                    }
                     //this.shot.fire(myPosition, UserCamera.TARGET, time);
                 }
 
                 if(see && UserCamera.isTargetActiveStatic()){
-                    synchronized (this){
-                        ataking = true;
-                    }
-                    Ai.userDetected();
 
-                    this.moveTo(null, new Float[]{dstAngle}, false);
-                    this.motTrans.transform(shotSource, myPosition);
-                    this.shot.fire(myPosition, UserCamera.TARGET, time);
+                    boolean canShot = vzdialenost < shotDistance;
+                    if(canShot){
+
+                        synchronized (this){
+                            ataking = true;
+                        }
+                        Ai.userDetected();
+
+                        this.moveTo(null, new Float[]{dstAngle}, false);
+                        this.motTrans.transform(shotSource, myPosition);
+                        this.shot.fire(myPosition, UserCamera.TARGET, time);
+                    }else {
+                        Ai.userDetected();
+                    }
 
                 }else{
                     boolean pred = ataking;
@@ -124,7 +140,6 @@ public class AtakWolker extends BhoneSkinWolker{
                         ataking = false;
                     }
                     if(pred){
-
                         Ai.notifiAI();
                     }
                 }

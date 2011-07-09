@@ -8,8 +8,8 @@ public abstract class SimpleInterpolator extends Interpolator {
         super(value, attributes);
     }
 
-    protected Float max = null;
-    protected Float min = null;
+    protected Float max = 0f;
+    protected Float min = 0f;
 
     public final void setMax(Float max) {
         this.max = max;

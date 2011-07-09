@@ -2,7 +2,6 @@ package ws.camera;
 
 import ws.ai.Target;
 import ws.camera.animation.Animation;
-import ws.camera.areas.ActionArea;
 import ws.camera.areas.Colision;
 import ws.map.Y25Map;
 import ws.map.Y25Triangle;
@@ -30,14 +29,14 @@ public final class UserCamera extends KillCamera implements Target {
                       Shape3D shape,
                       ArrayList<Animation> anim,
                       float heightUp, float heightDown, Character c, float jumpSpeed, float jumpSpeedStart, float runSpeed, float walkSpeed, float actionDuration,
-                      float userColideRadius, float angleAceleration, float speedAceleration, ActionArea[] areas, Colision[] col, Y25Map mapa,
-                      BranchGroup colide, Vector3f startPosition, Y25Triangle startTriangle, float minDistance, float maxDistance, float height, float maxSide) {
+                      float userColideRadius, float angleAceleration, float speedAceleration, Colision[] col, Y25Map mapa,
+                      BranchGroup colide, Vector3f startPosition, Y25Triangle startTriangle, float minDistance, float maxDistance, float defMaxMinDistance, float height, float maxSide) {
         super(// areas,
               shape,  
               anim,
               heightUp, heightDown, c, jumpSpeed, jumpSpeedStart, runSpeed, walkSpeed, actionDuration,
-              userColideRadius, angleAceleration, speedAceleration, areas, col, mapa,
-              colide, startPosition, startTriangle, minDistance, maxDistance, height, maxSide);
+              userColideRadius, angleAceleration, speedAceleration, col, mapa,
+              colide, startPosition, startTriangle, minDistance, maxDistance, defMaxMinDistance, height, maxSide);
 
         this.shotHeight = shotHeight;
 
@@ -66,6 +65,7 @@ public final class UserCamera extends KillCamera implements Target {
 
     private static float multiply = 1f;
     public static void reset(float l){
+        //if(TARGET != null)TARGET.actual = null;
         AnimationCamera.isActionPosible = false;
         multiply = 1f/l;
         //System.out.println(multiply);
@@ -73,6 +73,10 @@ public final class UserCamera extends KillCamera implements Target {
         live = 1.5f;
         userPosition.set(0, 0, 0);
         userY25Triangle = null;
+    }
+
+    public static final void heal(float power) {
+        live = Math.min(power+live, 1.5f);
     }
 
     // -------------------------------------------------------------
@@ -152,7 +156,7 @@ public final class UserCamera extends KillCamera implements Target {
 
     private final float shotHeight;
 
-    public final void getUserPositionTo(Tuple3d p){
+    public final void getUserShotPositionTo(Tuple3d p){
         synchronized (userPosition){
             p.set(userPosition.x, userPosition.y + shotHeight, userPosition.z);
         }
@@ -161,4 +165,6 @@ public final class UserCamera extends KillCamera implements Target {
     public static final Y25Triangle getUserY25Triangle(){
         return userY25Triangle;
     }
+
+
 }

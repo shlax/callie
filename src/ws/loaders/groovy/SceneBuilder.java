@@ -3,13 +3,15 @@ package ws.loaders.groovy;
 import groovy.util.AbstractFactory;
 import groovy.util.FactoryBuilderSupport;
 import ws.loaders.groovy.elements.*;
+import ws.loaders.groovy.objects.WeaponEl;
 import ws.loaders.tools.GeometryLoader;
 import ws.loaders.tools.SoundLoader;
 import ws.loaders.tools.TextureLoader;
 import ws.loaders.tools.joint.BhoneFrameLoader;
+import ws.loaders.tools.joint.FrameType;
 import ws.loaders.tools.map.MapLoader;
 import ws.map.Type;
-import ws.tools.Timer;
+import ws.tools.controls.Timer;
 
 import javax.media.j3d.PolygonAttributes;
 import javax.media.j3d.RenderingAttributes;
@@ -66,7 +68,7 @@ public final class SceneBuilder extends FactoryBuilderSupport {
     public static final String orient = "orient";
     public static final String userData = "userData";
     
-    public static final String polygonAttributes = "polygonAttributes";
+    //public static final String polygonAttributes = "polygonAttributes";
 
     public static final String cull = "cull";
     public static final int cullBack = PolygonAttributes.CULL_BACK;
@@ -75,6 +77,8 @@ public final class SceneBuilder extends FactoryBuilderSupport {
 
     public static final String vertexShader = "vertexShader";
     public static final String fragmentShader = "fragmentShader";
+
+    public static final String textureCombine = "textureCombine";
 
     public static final String texture = "texture";
     public static final String mipMap = "mipMap";
@@ -154,7 +158,7 @@ public final class SceneBuilder extends FactoryBuilderSupport {
     public static final int blendSrcAlpha = TransparencyAttributes.BLEND_SRC_ALPHA;
     public static final int blendOneMinusSrcAlpha = TransparencyAttributes.BLEND_ONE_MINUS_SRC_ALPHA;
 
-    public static final String rendering = "rendering";
+    public static final String alphaTestValue = "alphaTestValue";
     public static final String alphaTestFunction = "alphaTestFunction";
     public static final int always = RenderingAttributes.ALWAYS;
     public static final int never = RenderingAttributes.NEVER;
@@ -165,7 +169,7 @@ public final class SceneBuilder extends FactoryBuilderSupport {
     public static final int greater = RenderingAttributes.GREATER;
     public static final int greaterOrEqual = RenderingAttributes.GREATER_OR_EQUAL;
 
-    public static final String textureAttributes = "textureAttributes";
+    //public static final String textureAttributes = "textureAttributes";
     public static final String textureTransform = "textureTransform";
 
     //public static final String combine = "combine";
@@ -176,7 +180,7 @@ public final class SceneBuilder extends FactoryBuilderSupport {
     public static final String y = "y";
     public static final String z = "z";
     public static final String w = "w";
-    public static final String xyz = "xyz";
+    //public static final String xyz = "xyz";
 
     public static final String rotX = "rotX";
     public static final String rotY = "rotY";
@@ -185,7 +189,7 @@ public final class SceneBuilder extends FactoryBuilderSupport {
     public static final String scaleX = "scaleX";
     public static final String scaleY = "scaleY";
     public static final String scaleZ = "scaleZ";    
-    public static final String scaleXYZ = "scaleXYZ";
+    //public static final String scaleXYZ = "scaleXYZ";
     
     public static final String mapType = "mapType";
     public static final Type jump = Type.JUMP;
@@ -203,7 +207,7 @@ public final class SceneBuilder extends FactoryBuilderSupport {
     public static final String startAngle = "startAngle";
 
     public static final String jumpSpeed = "jumpSpeed";
-    public static final String jumpSpeedToRun = "jumpSpeedToRun";
+    public static final String runToJumpSpeed = "runToJumpSpeed";
     public static final String runSpeed = "runSpeed";
     public static final String walkSpeed = "walkSpeed";
 
@@ -222,20 +226,24 @@ public final class SceneBuilder extends FactoryBuilderSupport {
     public static final String item = "item";
     public static final String bhone = "bhone";
     public static final String check = "check";
+    public static final String weapon = "weapon";
 
     public static final String frame = "frame";
-    public static final String animationFrame = "animationFrame";
+    //public static final String animationFrame = "animationFrame";
     public static final String animation = "animation";
     public static final String animationTransform = "animationTransform";
 
     public static final String keyCode = "keyCode";
     public static final String frameType = "frameType";
+    public static final FrameType enableWeapon = FrameType.EnableWeapon;
+    public static final FrameType disableWeapon = FrameType.DisableWeapon;
 
     public static final String destination = "destination";
     public static final String source = "source";
     public static final String sourceRadius = "sourceRadius";
     public static final String sourceAngle = "sourceAngle";
     public static final String removeAfterPlay = "removeAfterPlay";
+    public static final String autoplay = "autoplay";
 
     public static final String frameWindow = "frameWindow";
     public static final String scene = "scene";
@@ -243,7 +251,7 @@ public final class SceneBuilder extends FactoryBuilderSupport {
     public static final String map = "map";
     public static final String model = "model";
     public static final String transform = "transform";
-    public static final String transformGroup = "transformGroup";
+    //public static final String transformGroup = "transformGroup";
     public static final String shot = "shot";
 
     public static final String colision = "colision";
@@ -251,7 +259,9 @@ public final class SceneBuilder extends FactoryBuilderSupport {
 
     public static final String live = "live";
     public static final String lookDistance = "lookDistance";
-    public static final String lookAngle = "lookAngle";
+    public static final String shotDistance = "shotDistance";
+    public static final String lookAngleHorizontal = "lookAngleHorizontal";
+    public static final String lookAngleVertical = "lookAngleVertical";
     //public static final String criticalLookDistance = "criticalLookDistance";
     public static final String targetHeight = "targetHeight";
     public static final String targetRadius = "targetRadius";
@@ -262,6 +272,7 @@ public final class SceneBuilder extends FactoryBuilderSupport {
 
     public static final String cameraMinDistance = "cameraMinDistance";
     public static final String cameraMaxDistance = "cameraMaxDistance";
+    public static final String cameraMaxMinDistance = "cameraMaxMinDistance";
     public static final String cameraHeight = "cameraHeight";
     public static final String cameraSide = "cameraSide";
 
@@ -283,15 +294,19 @@ public final class SceneBuilder extends FactoryBuilderSupport {
     public static final String spotLight = "spotLight";
 
     public static final String activeDistance = "activeDistance";
-    public static final String lsSystem = "lsSystem";
+    public static final String onDettect = "onDettect";
+
+    /*public static final String lsSystem = "lsSystem";
     public static final String lsBlok = "lsBlok";
-    public static final String lsCell = "lsCell";
+    public static final String lsCell = "lsCell"; */
     public static final String index = "index";
-    public static final String cell = "cell";
-    public static final String size = "size";
-    public static final String sizeY = "sizeY";
+    //public static final String cell = "cell";
+    //public static final String size = "size";
+    //public static final String sizeY = "sizeY";
 
     public static final String time = "time";
+    public static final String incTime = "incTime";
+    public static final String decTime = "decTime";
     public static final String loopCount = "loopCount";
     public static final Integer loop = -1;
 
@@ -326,6 +341,8 @@ public final class SceneBuilder extends FactoryBuilderSupport {
     public static final String onOff = "onOff";
     public static final String enabled = "enabled";
 
+    public static final String onTime = "onTime";
+
     //public static final String destinationLocator = "destinationLocator";
     //public static final String enemyLocator = "enemyLocator";
 
@@ -355,11 +372,12 @@ public final class SceneBuilder extends FactoryBuilderSupport {
         tmp.put(agent, new AgentElment());
         tmp.put(item, new AiItemElement());
         tmp.put(check, new AiCheckElement());
+        tmp.put(weapon, new WeaponEl());
 
         tmp.put(bhoneSkin, new BhoneSkinElement());
         tmp.put(frame, new BhoneSkinFrameElement(bhoneFrameLoader, soundLoader));
 
-        tmp.put(animationFrame, new AnimationFrameElement());
+   //     tmp.put(animationFrame, new AnimationFrameElement());
         tmp.put(animation, new AnimationElement());
         tmp.put(animationTransform, new AnimationTransformElement());
 
@@ -371,11 +389,12 @@ public final class SceneBuilder extends FactoryBuilderSupport {
 
         tmp.put(appearance, new AppearanceElement(textureLoader));
         tmp.put(texture, new TextureElement(textureLoader));
-        tmp.put(shaderParameter, new ShaderParameterElement());
-        
-        tmp.put(group, new BranchGroupElement());
+        tmp.put(shaderParameter, new ShaderParameterElement(textureLoader));
+        tmp.put(textureCombine, new TextureSourceElement());
 
-        tmp.put(transformGroup, new TransformGroupElement());
+        tmp.put(group, new TransformGroupElement());
+
+    //    tmp.put(transformGroup, new TransformGroupElement());
 
         tmp.put(link, new LinkElement());
         tmp.put(shared, new SharedGroupElement());
@@ -409,6 +428,9 @@ public final class SceneBuilder extends FactoryBuilderSupport {
         tmp.put(TCBpath, new TCBSplineInt());
         tmp.put(KBpath, new KBSplineEl());
 
+        tmp.put(onTime, new BehaviorEl());
+
+        //new ts.doc.DocGenerator().create(tmp); //TODO: generate documenation
         /* tmp.put(lsSystem, new LsElement(textureLoader, geometryLoader, mapLoader));
         tmp.put(lsBlok, new LsBlokElement());
         tmp.put(lsCell, new LsCellElement()); */

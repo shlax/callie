@@ -1,9 +1,11 @@
 package ws.ai;
 
+import groovy.lang.Closure;
 import ws.ai.agents.AiWolker;
 import ws.camera.UserCamera;
 import ws.map.Y25Triangle;
 import ws.map.ai.NodeMap;
+import ws.tools.controls.Location;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Tuple3f;
@@ -34,59 +36,98 @@ public final class Ai implements Runnable{
         ArrayList<AiWolker> localWolkers = new ArrayList<AiWolker>();
         while (stillRun.get()){
             //System.out.println(".");
-            localWolkers.clear();
-            synchronized (agents){
-                localWolkers.addAll(agents);
-            }
-            //System.out.println("AiObject .");
-            for(AiWolker aw : localWolkers){
-                //TODO: change AI logic
-
-                Y25Triangle lastUserPosition = Ai.lastUserPosition;
-
-                if(aw.changeUserPosition(lastUserPosition)){
-
-                    Y25Triangle actT = aw.getActualTriangle();
-                    NodeMap[] movingMap = aw.getMovingMap();
-                    NodeMap p = null;
-                    NodeMap t = null;
-                    for(NodeMap tmp : movingMap){
-                        if(tmp.getY25Triangle() == actT) p = tmp;
-                        if(tmp.getY25Triangle() == lastUserPosition) t = tmp;
-                    }
-
-                    if(t != null){
-                        NodeMap[] path = p.getPath(t);
-                        //System.out.println(path.length);
-                        if(path != null){
-                        //    System.out.println(aw+" "+path[path.length - 1].getY25Triangle());
-                            if(!aw.moveTo(path, angles, false)) aw.resetUserPosition();
-                        }
-                    }
-                    //else aw.moveTo(null, null, false);
+            boolean fail = false;
+            do{
+                localWolkers.clear();
+                synchronized (agents){
+                    localWolkers.addAll(agents);
                 }
 
-                //System.out.println( aw.processing()+ " "+ aw.secondaryProcessing() );
-                if(!aw.processing() || aw.secondaryProcessing()){
-                    //System.out.println("AiObject ..");
-                    
-                    NodeMap t = aw.getGuardTriangle();
-                    if(t != null){
+                //System.out.println("AiObject .");
+                for(AiWolker aw : localWolkers){
+                    if(!aw.isAiContoled()){
+                        Location l = aw.navigateTo();
+                        if(l!= null){
+                            Y25Triangle actT = aw.getActualTriangle();
+                            Y25Triangle dsT = l._getDestination();
+                            NodeMap[] movingMap = aw.getMovingMap();
+                            NodeMap p = null;
+                            NodeMap t = null;
+                            for(NodeMap tmp : movingMap){
+                                if(tmp.getY25Triangle() == actT) p = tmp;
+                                if(tmp.getY25Triangle() == dsT) t = tmp;
+                            }
+
+                            if(t != null){
+                                NodeMap[] path = p.getPath(t);
+                                if(path != null){
+                                    if(!aw.moveTo(path, angles, false)){
+                                        fail = true;
+                                        aw.navigateBack(l);
+                                    }
+                                }
+                            }
+                        }
+                        continue;
+                    }
+
+                    //TODO: change AI logic
+                    Y25Triangle lastUserPosition = Ai.lastUserPosition;
+
+                    if(aw.changeUserPosition(lastUserPosition)){
+
                         Y25Triangle actT = aw.getActualTriangle();
                         NodeMap[] movingMap = aw.getMovingMap();
-
                         NodeMap p = null;
-                        for(NodeMap tmp : movingMap) if(tmp.getY25Triangle() == actT) p = tmp;
-                        if(p == null) aw.moveTo(null, null, false);
-                        else{
-                            NodeMap[] path = p.getPath(t);
-                            if(path != null) aw.moveTo(path, null, false);
-                            else aw.moveTo(null, null, false);
+                        NodeMap t = null;
+                        for(NodeMap tmp : movingMap){
+                            if(tmp.getY25Triangle() == actT) p = tmp;
+                            if(tmp.getY25Triangle() == lastUserPosition) t = tmp;
                         }
-                    }else if(!aw.secondaryProcessing()) aw.moveTo(null, null, true);
 
+                        if(t != null){
+                            NodeMap[] path = p.getPath(t);
+                            //System.out.println(path.length);
+                            if(path != null){
+                            //    System.out.println(aw+" "+path[path.length - 1].getY25Triangle());
+                                if(!aw.moveTo(path, angles, false)){
+                                    fail = true;
+                                    aw.resetUserPosition();
+                                }
+                            }
+                        }
+                        //else aw.moveTo(null, null, false);
+                    }
+
+                    //System.out.println( aw.processing()+ " "+ aw.secondaryProcessing() );
+                    if(!aw.processing() || aw.secondaryProcessing()){
+                        //System.out.println("AiObject ..");
+
+                        NodeMap t = aw.getGuardTriangle();
+                        if(t != null){
+                            Y25Triangle actT = aw.getActualTriangle();
+                            NodeMap[] movingMap = aw.getMovingMap();
+
+                            NodeMap p = null;
+                            for(NodeMap tmp : movingMap) if(tmp.getY25Triangle() == actT) p = tmp;
+                            if(p == null) aw.moveTo(null, null, false);
+                            else{
+                                NodeMap[] path = p.getPath(t);
+                                if(path != null) aw.moveTo(path, null, false);
+                                else aw.moveTo(null, null, false);
+                            }
+                        }else if(!aw.secondaryProcessing()) aw.moveTo(null, null, true);
+
+                    }
                 }
-            }
+                if(fail){
+                    try {
+                        AI.wait(250);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }while (fail);
             synchronized (AI){
                 try {
                     AI.wait();
@@ -137,6 +178,7 @@ public final class Ai implements Runnable{
                 e.printStackTrace();
             }
         }
+        onDettect = null;
     }
 
     public static final void removeTargetWolker(Object tv){
@@ -151,9 +193,16 @@ public final class Ai implements Runnable{
         }
     }
 
+    private static Closure onDettect = null;
+    public static final void setOnDettect(Closure onDettect) {
+        Ai.onDettect = onDettect;
+    }
+
     public static final void userDetected(){
         Y25Triangle tmp = UserCamera.getUserY25Triangle();
         if(tmp != lastUserPosition){
+            if(onDettect != null)onDettect.call(new Location(tmp));
+
             lastUserPosition = tmp;
            // System.out.println(lastUserPosition);
             synchronized (AI){

@@ -70,7 +70,7 @@ public final class LoadedBhoneSkin {
             Vector3f[] offsets = this.off.toArray(new Vector3f[off.size()]);
 
             shape = new Shape3D(this.loadedSkin.getGeometry(), this.appearance);
-            shape.setUserData("BhoneSkinObject");
+            //shape.setUserData("BhoneSkinObject");
             tg.addChild(shape);
 
             bs = new BhoneSkin(bhone, s, t1, tg, sounds, offsets);

@@ -2,6 +2,7 @@ package ws.loaders.groovy.elements;
 
 import groovy.util.AbstractFactory;
 import groovy.util.FactoryBuilderSupport;
+import ts.doc.*;
 import ws.loaders.groovy.FactoryElement;
 import ws.loaders.groovy.SceneBuilder;
 import ws.loaders.groovy.objects.AiCheckObject;
@@ -12,8 +13,45 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Tuple3f;
 import java.util.Map;
 
-public final class AiCheckElement extends AbstractFactory {
-    
+public final class AiCheckElement extends AbstractFactory implements Doc {
+
+    @Override
+    public String docDescription() {
+        return null;
+    }
+
+    @Override
+    public String[] docExamples() {
+        return null;
+    }
+
+    @Override
+    public String docValue() {
+        return "as: |point|";
+    }
+
+    @Override
+    public DocAction[] docActions() {
+        return null;
+    }
+
+    @Override
+    public DocControl[] docControl() {
+        return new DocControl[]{
+            new DocControl("#[<a href=\"location.php\">location</a>] location()"),
+        };
+    }
+
+    @Override
+    public DocAttr[] docAtributes() {
+        return new DocAttr[]{
+            new DocAttr("*1", "point", "point|vector", null),
+            new DocAttr("*1", "x", "Float", null),
+            new DocAttr("*1", "y", "Float", null),
+            new DocAttr("*1", "z", "Float", null),
+        };
+    }
+
     @Override
     public final AiCheckObject newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes) throws InstantiationException, IllegalAccessException {
         AiCheckObject o = new AiCheckObject(value, attributes);
@@ -24,6 +62,14 @@ public final class AiCheckElement extends AbstractFactory {
             else if(value instanceof Point)o.setPoint(((Point) value).getPoint3f());
             else if(value instanceof Vector)o.setPoint( ((Vector) value).getPoint3f() );
         }else{
+
+            Object tmp = attributes.get(SceneBuilder.point);
+            if(tmp != null){
+                if(tmp instanceof Point3f) o.setPoint((Point3f)tmp);
+                else if(tmp instanceof Tuple3f) o.setPoint( new Point3f((Tuple3f)tmp) );
+                else if(tmp instanceof Point)o.setPoint(((Point) tmp).getPoint3f());
+                else if(tmp instanceof Vector)o.setPoint( ((Vector) tmp).getPoint3f() );
+            }
 
             Object x = attributes.get(SceneBuilder.x);
             Object y = attributes.get(SceneBuilder.y);
@@ -39,6 +85,15 @@ public final class AiCheckElement extends AbstractFactory {
         if(attributes != null) attributes.clear();
         return o;
     }
+
+    @Override
+    public DocSubNode[] docSubNodes() {
+        return new DocSubNode[]{
+            new DocSubNode("*1", "point", "[1]", "as: |point|"),
+            new DocSubNode("*1", "vector", "[1]", "as: |point|"),
+        };
+    }
+
 
      @Override
     public final void setChild(FactoryBuilderSupport builder, Object parent, Object child) {

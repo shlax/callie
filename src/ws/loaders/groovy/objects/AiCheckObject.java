@@ -1,6 +1,7 @@
 package ws.loaders.groovy.objects;
 
 import ws.loaders.groovy.FactoryElement;
+import ws.tools.controls.Location;
 
 import javax.vecmath.Point3f;
 import java.util.Map;
@@ -18,5 +19,14 @@ public final class AiCheckObject extends FactoryElement {
 
     public final Point3f getPoint() {
         return point;
+    }
+
+    private Location location = null;
+    public final Location isLocation(){
+        return location;
+    }
+    public final Location location(){
+        if(location == null) location = new Location();
+        return location;
     }
 }

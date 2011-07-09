@@ -2,7 +2,6 @@ package ws.camera;
 
 import ws.Gui;
 import ws.ai.Target;
-import ws.camera.areas.ActionArea;
 import ws.camera.areas.Colision;
 import ws.map.Y25Map;
 import ws.map.Y25Triangle;
@@ -25,10 +24,10 @@ public class CharacterCamera extends MovingCamera{
     private final float jumpSpeed;
 
     public CharacterCamera(float heightUp, float heightDown, Character c, float jumpSpeed, float jumpSpeedStart, float runSpeed, float walkSpeed, float actionDuration,
-                           float userColideRadius, float angleAceleration, float speedAceleration, ActionArea[] areas, Colision[] col, Y25Map mapa,
-                           BranchGroup colide, Vector3f startPosition, Y25Triangle startTriangle, float minDistance, float maxDistance, float height, float maxSide) {
-        super(userColideRadius, angleAceleration, speedAceleration, areas, col, mapa,
-              colide, startPosition, startTriangle, minDistance, maxDistance, height, maxSide);
+                           float userColideRadius, float angleAceleration, float speedAceleration, Colision[] col, Y25Map mapa,
+                           BranchGroup colide, Vector3f startPosition, Y25Triangle startTriangle, float minDistance, float maxDistance, float defMaxMinDistance, float height, float maxSide) {
+        super(userColideRadius, angleAceleration, speedAceleration, col, mapa,
+              colide, startPosition, startTriangle, minDistance, maxDistance, defMaxMinDistance, height, maxSide);
 
         this.c = c;
         this.actionDuration = actionDuration;

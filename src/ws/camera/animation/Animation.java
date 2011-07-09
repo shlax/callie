@@ -6,7 +6,7 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Tuple3f;
 import javax.vecmath.Vector3f;
 
-public final class Animation {
+public class Animation {
 
     private final Y25Triangle endTriangle;
     private final float sourceAnge;
@@ -15,7 +15,7 @@ public final class Animation {
     private final float sourceRadius;
 
     private final Point3f destination;
-    
+
     private final float keyFrameRatio;
     private final KeyFrame[] frames;
 
@@ -23,7 +23,7 @@ public final class Animation {
 
     private final float animationDuration;
 
-    public Animation(boolean removeAfterPlay, Point3f source, float sourceRadius, float sourceAnge, float sourceAngeTolerance, Point3f destination, Y25Triangle endTriangle, float keyFrameRatio, KeyFrame[] frames) {
+    public Animation(boolean autopay, boolean removeAfterPlay, Point3f source, float sourceRadius, float sourceAnge, float sourceAngeTolerance, Point3f destination, Y25Triangle endTriangle, float keyFrameRatio, KeyFrame[] frames) {
         this.source = source;
         this.sourceAnge = sourceAnge;
         this.sourceRadius = sourceRadius*sourceRadius;
@@ -37,6 +37,12 @@ public final class Animation {
 
         animationDuration = keyFrameRatio*((float)frames.length);
         this.removeAfterPlay = removeAfterPlay;
+        this.autopay = autopay;
+    }
+
+    private final boolean autopay;
+    public final boolean isAutopay() {
+        return autopay;
     }
 
     private final boolean removeAfterPlay;
@@ -48,13 +54,13 @@ public final class Animation {
         return endTriangle;
     }
 
-    public final float getSourceAnge() {
+    public float getSourceAnge() {
         return sourceAnge;
     }
 
     private final float PIf = (float)Math.PI;
 
-    public final boolean isActive(Tuple3f t, float objectY){
+    public boolean isActive(Tuple3f t, float objectY){
         float dx = source.x-t.x;
         float dy = source.y-t.y;
         float dz = source.z-t.z;
@@ -80,19 +86,19 @@ public final class Animation {
 
         return true;
     }
-    
+
     private int keyFrameIndex = -1;
     private float frameStartTime = 0f;
 
     private float startTime = 0f;
     private final Point3f realStartPosition = new Point3f();
 
-    public final float animation(float time, Vector3f objectPosition){
+    public float animation(float time, Vector3f objectPosition){
         if(keyFrameIndex == -1){
             this.startTime = time;
             this.frameStartTime = time;
             this.realStartPosition.set(objectPosition);
-            
+
             this.keyFrameIndex = 0;
             this.frames[0].updateBhoneSkyn();
             return 0f;
@@ -103,17 +109,17 @@ public final class Animation {
                 return -1f; // skoncil
             }else{
                 objectPosition.interpolate(this.realStartPosition, destination, actDur/this.animationDuration);
-                
+
                 actDur = time - this.frameStartTime;
                 if(actDur > this.keyFrameRatio){
                     if(this.keyFrameIndex < this.frames.length) this.keyFrameIndex ++;
                     this.frameStartTime += this.keyFrameRatio;
                     actDur -= this.keyFrameRatio;
 
-                    this.frames[this.keyFrameIndex].updateBhoneSkyn();                    
+                    this.frames[this.keyFrameIndex].updateBhoneSkyn();
                 }
                 return actDur / this.keyFrameRatio;
             }
-        }        
+        }
     }
 }

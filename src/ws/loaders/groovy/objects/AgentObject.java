@@ -8,6 +8,8 @@ import ws.loaders.tools.map.NodeMapBuilder;
 import ws.map.Y25Triangle;
 import ws.map.ai.NodeMap;
 import ws.tools.Shot;
+import ws.tools.controls.AgentControl;
+import ws.tools.controls.Location;
 
 import javax.media.j3d.*;
 import javax.vecmath.Point3f;
@@ -55,9 +57,19 @@ public final class AgentObject extends FactoryElement {
         this.lookDistance = lookDistance;
     }
 
-    private Float lookAngle = 1f; //0.785f;
-    public final void setLookAngle(Float lookAngle) {
-        this.lookAngle = lookAngle;
+    private Float shotDistance = 50f;//T O D O: 12.5f;
+    public final void setShotDistance(Float shotDistance) {
+        this.shotDistance = shotDistance;
+    }
+
+    private Float lookAngleHorizontal = 1f; //0.785f;
+    public final void setLookAngleHorizontal(Float lookAngle) {
+        this.lookAngleHorizontal = (float)((lookAngle*Math.PI)/180d);
+    }
+
+    private Float lookAngleVertical = 1f; //0.785f;
+    public final void setLookAngleVertical(Float lookAngle) {
+        this.lookAngleVertical = (float)((lookAngle*Math.PI)/180d);
     }
 
     /*private Float criticalLookDistance = 0.5f;
@@ -67,7 +79,7 @@ public final class AgentObject extends FactoryElement {
 
     private Float frameWindow = 250f;
     public final void setFrameWindow(Float frameWindow) {
-        this.frameWindow = frameWindow;
+        this.frameWindow = frameWindow * 1000f;
     }
 
     private Float colisionRadius = 0.5f;
@@ -87,22 +99,22 @@ public final class AgentObject extends FactoryElement {
 
     private Float speedAceleration = 0.001f;
     public final void setSpeedAceleration(Float speedAceleration) {
-        this.speedAceleration = speedAceleration;
+        this.speedAceleration = speedAceleration * 1000f;
     }
 
     private Float rotateAceleration = 0.01f;
     public final void setRotateAceleration(Float rotateAceleration) {
-        this.rotateAceleration = rotateAceleration;
+        this.rotateAceleration = rotateAceleration * 1000f;
     }
 
     private Float rotateDelay = 5000f;
     public final void setRotateDelay(Float rotateDelay) {
-        this.rotateDelay = rotateDelay;
+        this.rotateDelay = rotateDelay * 1000f;
     }
 
     private Float maxSpeed = 0.002f;
     public final void setMaxSpeed(Float maxSpeed) {
-        this.maxSpeed = maxSpeed;
+        this.maxSpeed = maxSpeed*1000f;
     }
 
     private Point3f lookAtSource = null;
@@ -115,9 +127,15 @@ public final class AgentObject extends FactoryElement {
         this.aiItemObjects.add(o);
     }
 
-    private ArrayList<AiCheckObject> aiChecks = new ArrayList<AiCheckObject>();
+    private ArrayList<AiCheckObject> aiChecks = null; // new ArrayList<AiCheckObject>();
     public final void addAiCheck(AiCheckObject c){
+        if(aiChecks == null) aiChecks = new ArrayList<AiCheckObject>();
         this.aiChecks.add(c);
+    }
+
+    private boolean enabled = true;
+    public final void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public final AiWolker getAiWolker(NodeMapBuilder mapBuilder, BranchGroup aiNode, BranchGroup activeNode, BranchGroup efectNode, /*LsObject lsObject, */Float activeDistance){
@@ -126,23 +144,27 @@ public final class AgentObject extends FactoryElement {
         
         Shot shot = shotObject.getLoadedShot().getShot(efectNode); //shotLoader.load(se).getShot(shotNode);
 
-        Vector3f sp = new Vector3f();
-        float dstSp = 0f;
+        //Vector3f sp = new Vector3f();
+        //float dstSp = 0f;
 
         ArrayList<NodeMap> check;
         // if(lsObject == null){
-            if(aiChecks.isEmpty()){
+            if(aiChecks == null || aiChecks.isEmpty()){
                 check = null;
             }else{
                 check = new ArrayList<NodeMap>();
                 for(AiCheckObject tmp : aiChecks){
                     Point3f pp = tmp.getPoint();
-                    float len2 = (pp.x * pp.x) + (pp.y * pp.y) + (pp.z * pp.z);
+                    if(startPosition == null) startPosition = new Vector3f(pp);
+          /*          float len2 = (pp.x * pp.x) + (pp.y * pp.y) + (pp.z * pp.z);
                     if(len2 > dstSp){
                         dstSp = len2;
                         sp.set(pp);
-                    }
-                    check.add(mapBuilder.getNodeMapAt(pp));
+                    } */
+                    NodeMap nm = mapBuilder.getNodeMapAt(pp);
+                    Location l = tmp.isLocation();
+                    if(l != null)l._setDestination(nm.getY25Triangle());
+                    check.add(nm);
                 }
             }
         /* }else{
@@ -166,7 +188,7 @@ public final class AgentObject extends FactoryElement {
             }
         } */
 
-        if(startPosition == null) this.startPosition = sp;
+       // if(startPosition == null) this.startPosition = sp;
 
         //System.out.println(startPosition);
 
@@ -191,7 +213,7 @@ public final class AgentObject extends FactoryElement {
             String name = tmp.getBhoneName();
             Transform3D trans = tmp.getTransform();
 
-            TransformGroup itemTransform = tmp.getTransformGroup();
+            TransformGroup itemTransform = tmp.getNode();
             itemTransform.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
             //if(bg == null){
             chracterTransform.addChild(itemTransform);
@@ -221,7 +243,7 @@ public final class AgentObject extends FactoryElement {
 
         AiWolker aiW = new AiWolker(movingMap, check == null ? null : check.toArray(new NodeMap[check.size()]),
                                     targetRadius, targetHeight, live, bs.getShape(),
-                                    shot, shotSource, lookAtSource, lookDistance, lookAngle ,/* criticalLookDistance, */
+                                    shot, shotSource, lookAtSource, lookDistance, lookAngleHorizontal, lookAngleVertical, shotDistance,
                                     bhoneSkin, frameWindow,
                                     colisionRadius,
                                     actualTriangle, startPosition, startAngle, speedAceleration, rotateAceleration, rotateDelay, maxSpeed,
@@ -232,9 +254,20 @@ public final class AgentObject extends FactoryElement {
         //bs.setUserData(aiW);
         setUserData(chracterTransform, aiW);
 
+        if(c != null){
+            c._setAiWolker(aiW);
+            if(!enabled)aiW.setAiContoled(false);
+        }
+
         aiChecks = null;
         aiItemObjects = null;
         return aiW;
+    }
+
+    private AgentControl c = null;
+    public final AgentControl control(){
+        if (c == null) c = new AgentControl();
+        return c;
     }
 
     private void setUserData(Group g, Object val){
@@ -244,5 +277,7 @@ public final class AgentObject extends FactoryElement {
             else if(nod instanceof Group) setUserData((Group)nod, val);
         }
     }
+
+
 
 }

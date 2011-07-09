@@ -1,4 +1,4 @@
-package ws;
+package ws.tools;
 
 public interface SceneAction {
 

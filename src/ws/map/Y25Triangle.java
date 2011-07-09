@@ -23,6 +23,11 @@ public class Y25Triangle{
         return typ;
     }
 
+    private final Point3f center;
+    public final Point3f getCenter(){
+        return center;
+    }
+
     public Y25Triangle(Point3f a, Point3f b, Point3f c, Type typ, Y25Triangle n[], Y25Triangle f[]){
 		this.typ = typ;
 
@@ -45,6 +50,7 @@ public class Y25Triangle{
 		tc = tmp.z;
 		td = -((ta*c.x)+(tb*c.y)+(tc*c.z));
 
+        center = new Point3f( (a.x + b.x + c.x)/3f, (a.y + b.y + c.y)/3f, (a.z + b.z + c.z)/3f );
 	}
 
     private final Vector2f ab;

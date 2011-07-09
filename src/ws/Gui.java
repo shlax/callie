@@ -30,6 +30,8 @@ public final class Gui {
 	public static float mouseX = 0;
 	public static float mouseY = 0;
 
+	public static float scroolPercent = 0;
+
 	private static Target picked = null;
     public static synchronized Target getPicked(){
         return picked;
@@ -80,6 +82,7 @@ public final class Gui {
         boolean fullSc = Boolean.valueOf(prop.getProperty("fullscreen"));
         
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+
 
         if(fullSc){
             width = gd.getDisplayMode().getWidth();
@@ -271,6 +274,13 @@ public final class Gui {
 			}
 		});
 
+        canvas.addMouseWheelListener(new MouseWheelListener() {
+            @Override
+            public final void mouseWheelMoved(MouseWheelEvent e) {
+                scroolPercent += e.getWheelRotation();
+            }
+        });
+
 		canvas.addMouseListener(new MouseListener(){
             
 			@Override
@@ -325,7 +335,7 @@ public final class Gui {
 
         f.addWindowListener(new WindowAdapter(){
                 @Override
-                public void windowClosing(WindowEvent e) {
+                public final void windowClosing(WindowEvent e) {
                     scene.destroy();
                     e.getWindow().setVisible(false);
                     univ.cleanup();

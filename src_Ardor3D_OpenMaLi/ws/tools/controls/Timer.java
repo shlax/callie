@@ -1,6 +1,5 @@
-package ws.tools;
-
-import javax.media.j3d.Alpha;
+//TODO: timer
+/* package ws.tools.controls;
 
 public final class Timer {
     public enum Mode{INC, DEC, INCDEC }
@@ -16,7 +15,7 @@ public final class Timer {
     }
 
     public final void pause(float time){
-        alpha.pause((long)(time*1000));
+        alpha.pause( System.currentTimeMillis() + ((long)(time*1000)) );
     }
 
     public final boolean paused(){
@@ -29,7 +28,7 @@ public final class Timer {
     }
 
     public final void start(float time){
-        alpha.resume((long)(time*1000));
+        alpha.resume( System.currentTimeMillis() +  ((long)(time*1000)));
     }
 
     public final void loop(int count){
@@ -90,6 +89,7 @@ public final class Timer {
     }
 
     public float value(float time){
-        return alpha.value((long)(time*1000));
+        return alpha.value( alpha.getStartTime() + ((long)(time*1000)));
     }
 }
+*/

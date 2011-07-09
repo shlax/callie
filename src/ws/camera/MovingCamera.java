@@ -2,7 +2,6 @@ package ws.camera;
 
 import ws.Gui;
 import ws.ai.Ai;
-import ws.camera.areas.ActionArea;
 import ws.camera.areas.Colision;
 import ws.map.Type;
 import ws.map.Y25Map;
@@ -23,16 +22,16 @@ public class MovingCamera extends Camera{
     private final float speedAceleration; // = 0.00001f;
 
     private final Colision[] col;
-    private final ActionArea[] areas;
+   // private final ActionArea[] areas;
     private final boolean notColide(Vector3f v){
-        for(ActionArea a : areas)a.check(v);
+    //    for(ActionArea a : areas)a.check(v);
         for(Colision c : col) if(c.colide(v))return false;
         return true;
     }
 
-    protected MovingCamera(float userColideRadius, float angleAceleration, float speedAceleration, ActionArea[] areas, Colision[] col, Y25Map mapa,
-                           BranchGroup colide, Vector3f startPosition, Y25Triangle startTriangle, float minDistance, float maxDistance, float height, float maxSide) {
-        super(colide, startPosition, minDistance, maxDistance, height, maxSide);
+    protected MovingCamera(float userColideRadius, float angleAceleration, float speedAceleration, Colision[] col, Y25Map mapa,
+                           BranchGroup colide, Vector3f startPosition, Y25Triangle startTriangle, float minDistance, float maxDistance, float defMaxMinDistance, float height, float maxSide) {
+        super(colide, startPosition, minDistance, maxDistance, defMaxMinDistance, height, maxSide);
 
         // this.c = c;
         this.mapa = mapa;
@@ -40,7 +39,6 @@ public class MovingCamera extends Camera{
         this.angleAceleration = angleAceleration;
         this.speedAceleration = speedAceleration;
         this.col = col;
-        this.areas = areas;
 
         this.motTrans.set(this.objectPosition);
         this.angTrans.rotY(objectY+PIf); // look back

@@ -23,13 +23,13 @@ public class TargetWolker extends AtakWolker implements Target{
     private volatile float live;
 
     public TargetWolker(float targetRadius, float targetHeight, float live, Shape3D s,
-                        Shot shot, Point3f shotSource, Point3f lookAtSource, float lookDistance, float lookAngle, /* float criticalLookDistance, */
+                        Shot shot, Point3f shotSource, Point3f lookAtSource, float lookDistance, float lookAngle, float lookAngleVertical,  float shotDistance,
                         BhoneSkin bs, float frameWindow,
                         float colisionRadius,
                         Y25Triangle actualTriangle, Vector3f startPosition, float startAngle, float speedA, float rotateA, float rotateCicleA, float maxV,
                         BranchGroup pickNode, float distanceForce, Switch sw) {
 
-        super(shot, shotSource, lookAtSource, lookDistance, lookAngle,/* criticalLookDistance, */
+        super(shot, shotSource, lookAtSource, lookDistance, lookAngle, lookAngleVertical, shotDistance,
               bs, frameWindow,
               colisionRadius,
               actualTriangle, startPosition, startAngle, speedA, rotateA, rotateCicleA, maxV,

@@ -1,12 +1,13 @@
 package ws.loaders.groovy.objects;
 
-import ws.tools.OnOff;
+import ws.tools.controls.OnOff;
 
+import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Group;
 import javax.media.j3d.Switch;
 import java.util.Map;
 
-public class ObjSwitch extends GroupObject{
+public final class ObjSwitch extends GroupObject{
 
     public ObjSwitch(Object value, Map attributes) {
         super(value, attributes);
@@ -20,6 +21,14 @@ public class ObjSwitch extends GroupObject{
 
     @Override
     protected Group getGroup() {
+        return new BranchGroup();
+    }
+
+    @Override
+    public Group getNode() {
+        Group g = super.getNode();
+
+        sw.addChild(g);
         sw.setCapability(Switch.ALLOW_SWITCH_WRITE);
         if(enabled)cnt.on();
         return sw;

@@ -1,7 +1,7 @@
 package ws.loaders.groovy.objects;
 
 import ws.loaders.groovy.FactoryElement;
-import ws.tools.Timer;
+import ws.tools.controls.Timer;
 
 import javax.media.j3d.Alpha;
 import java.util.Map;

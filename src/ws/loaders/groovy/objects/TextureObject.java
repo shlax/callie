@@ -88,13 +88,13 @@ public class TextureObject extends FactoryElement {
 
     private TextureAttributes ta = null;
 
-    public final void setTextureAttributes(TextureAttributes ta) {
+/*    public final void setTextureAttributes(TextureAttributes ta) {
         this.ta = ta;
-    }
+    } */
 
     public final TextureAttributes getTextureAttributes(){
         if(ta != null) return ta;
-        if(textureMode == null && combineRgbMode == null && combineAlphaMode == null && combineRgbScale == null && combineAlphaScale == null && textureSourceObjects == null && blendColor == null && textureTransform == null) return defaultTextureAttributes;
+        if(textureMode == null && combineRgbMode == null && combineAlphaMode == null && combineRgbScale == null && combineAlphaScale == null && blendColor == null && textureTransform == null) return defaultTextureAttributes;
 
         ta = new TextureAttributes();
 
@@ -129,7 +129,7 @@ public class TextureObject extends FactoryElement {
         if(blendColor != null) ta.setTextureBlendColor(blendColor);
         if(textureTransform != null) ta.setTextureTransform(textureTransform);
 
-        textureSourceObjects = null;
+      //  textureSourceObjects = null;
 
         return ta;
     }

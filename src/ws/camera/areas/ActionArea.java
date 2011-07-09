@@ -1,10 +1,10 @@
 package ws.camera.areas;
 
-import ws.SceneAction;
+import ws.tools.SceneAction;
 
 import javax.vecmath.Tuple3f;
 
-public final class ActionArea {
+public final class ActionArea implements Colision{
 
     private final SceneAction sceneAction;
     private final Colision col;
@@ -16,13 +16,16 @@ public final class ActionArea {
 
     private boolean oldVal = false;
 
-    public final void check(Tuple3f t){
-        boolean newVal = col.colide(t);
+    @Override
+    public boolean colide(Tuple3f pos) {
+        boolean newVal = col.colide(pos);
         if(oldVal != newVal){
             if(newVal) sceneAction.onEnter();
             else sceneAction.onExit();
 
             oldVal = newVal;
         }
+
+        return false;
     }
 }

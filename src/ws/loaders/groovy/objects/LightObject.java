@@ -24,6 +24,21 @@ public abstract class LightObject extends NodeObject {
         this.color = color;
     }
 
+    public final void setR(float r){
+        if(color == null)color = new Color3f(white);
+        color.setX(r);
+    }
+
+    public final void setG(float r){
+        if(color == null)color = new Color3f(white);
+        color.setY(r);
+    }
+
+    public final void setB(float r){
+        if(color == null)color = new Color3f(white);
+        color.setZ(r);
+    }
+
     @Override
     public Light getNode() {
         Light l = getLight(color == null ? white :color);

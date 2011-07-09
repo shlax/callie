@@ -8,7 +8,7 @@ import javax.vecmath.Point3d;
 import java.util.Map;
 
 public abstract class Interpolator extends TransformGroupObject{
-    public static final BoundingSphere bound = new BoundingSphere(new Point3d(0,0,0), Double.MAX_VALUE);
+    protected static final BoundingSphere bound = new BoundingSphere(new Point3d(0,0,0), Double.MAX_VALUE);
 
     protected Interpolator(Object value, Map attributes) {
         super(value, attributes);

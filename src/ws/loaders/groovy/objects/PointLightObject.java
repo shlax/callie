@@ -23,6 +23,6 @@ public final class PointLightObject extends LightObject {
 
     @Override
     protected PointLight getLight(Color3f c) {
-        return new PointLight(c, position, attenuation);
+        return new PointLight(c, position == null ? new Point3f() : position, attenuation == null ? new Point3f(1f, 1f, 1f) : attenuation );
     }
 }

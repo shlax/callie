@@ -1,5 +1,6 @@
 package ws.loaders.groovy.objects;
 
+import groovy.lang.Closure;
 import ws.loaders.groovy.FactoryElement;
 
 import javax.vecmath.Point3f;
@@ -13,12 +14,12 @@ public final class AnimationObject extends FactoryElement {
         
     }
 
-    private final ArrayList<AnimationFrameObject> animationFrameObjects = new ArrayList<AnimationFrameObject>();
-    public final void addAnimationFrameObject(AnimationFrameObject o){
+    private final ArrayList<BhoneSkinFrameObject> animationFrameObjects = new ArrayList<BhoneSkinFrameObject>();
+    public final void addAnimationFrameObject(BhoneSkinFrameObject o){
         this.animationFrameObjects.add(o);
     }
 
-    public final ArrayList<AnimationFrameObject> getAnimationFrameObjects() {
+    public final ArrayList<BhoneSkinFrameObject> getAnimationFrameObjects() {
         return animationFrameObjects;
     }
 
@@ -27,15 +28,6 @@ public final class AnimationObject extends FactoryElement {
 
     private Float sourceAngleTolerantion = 90f;
 
-    private Boolean removeAfterPlay = false;
-
-    public final Boolean isRemoveAfterPlay() {
-        return removeAfterPlay;
-    }
-
-    public final void setRemoveAfterPlay(Boolean removeAfterPlay) {
-        this.removeAfterPlay = removeAfterPlay;
-    }
 
     public final Float getSourceAngleTolerantion() {
         return sourceAngleTolerantion * (float)(Math.PI/180d);
@@ -58,17 +50,35 @@ public final class AnimationObject extends FactoryElement {
     }
 
     public final void setKeyFrameRatio(Float keyFrameRatio) {
-        this.keyFrameRatio = keyFrameRatio;
+        this.keyFrameRatio = keyFrameRatio * 1000f;
     }
     
     private Point3f destination;
 
     public final Point3f getDestination() {
-        return destination;
+        return destination == null ? new Point3f() : destination;
     }
 
     public final void setDestination(Point3f destination) {
         this.destination = destination;
     }
 
+    private Closure onEnter = null;
+    private Closure onExit = null;
+
+    public final void setOnEnter(Closure onEnter) {
+        this.onEnter = onEnter;
+    }
+
+    public final void setOnExit(Closure onExit) {
+        this.onExit = onExit;
+    }
+
+    public final Closure getOnEnter() {
+        return onEnter;
+    }
+
+    public final Closure getOnExit() {
+        return onExit;
+    }
 }

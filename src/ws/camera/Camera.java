@@ -15,7 +15,7 @@ public abstract class Camera{
 
     private final float maxSide;
 
-    protected Camera(BranchGroup pickNode, Vector3f startPosition, float minDistance, float maxDistance, float height, float maxSide){
+    protected Camera(BranchGroup pickNode, Vector3f startPosition, float minDistance, float maxDistance, float defMaxMinDistance, float height, float maxSide){
 
 
      //   this.cm = cm;
@@ -25,7 +25,9 @@ public abstract class Camera{
         this.maxSide = maxSide;
         this.height = height;
         this.minDistance = minDistance + 0.1f;
-        this.maxDistance = maxDistance + 0.1f;
+        this.defMaxDistance = maxDistance + 0.1f;
+        this.defMaxMinDistance = defMaxMinDistance; // (this.defMaxDistance+this.minDistance) / 2f;
+        this.actMaxDistance = this.defMaxDistance;
 
         this.prevDistance = maxDistance;
         
@@ -72,38 +74,51 @@ public abstract class Camera{
         float duration = actTime - time;
 
         boolean update = forceUpdate;
-        if(forceUpdate){
+        forceUpdate = false;
+        /*if(forceUpdate){
             this.angleY = (150f*PIf)/180f;
             this.angleX = (2f*PIf)-( (18f*PIf)/180f );
-        }else{
-            if(Gui.mouseX != 0){
-                float tmp = Gui.mouseX;
-                Gui.mouseX -= tmp;
+        }else{ */
+        if(Gui.mouseX != 0){
+            float tmp = Gui.mouseX;
+            Gui.mouseX -= tmp;
 
-             //   System.out.println(tmp);
+         //   System.out.println(tmp);
 
-                this.angleY = normalizeAngle(this.angleY,(duration*tmp)/150f);
-                update = true;
-            }
-            if(Gui.mouseY != 0){
-                float tmp = Gui.mouseY;
-                Gui.mouseY -= tmp;
-
-                //System.out.println(tmp);
-
-                this.angleX = normalizeAngle(this.angleX,(duration* tmp)/500f);
-
-                if(this.angleX <= PIf && this.angleX > PIf/4f) this.angleX = PIf/4f;
-                else if( this.angleX > PIf && this.angleX < 1.6f*PIf ) this.angleX = 1.6f*PIf;
-
-                update = true;
-            }
+            //float angleLimit = (duration*tmp)/150f;
+            this.angleY = normalizeAngle(this.angleY,/*duration*/tmp*0.1f);
+            update = true;
         }
+        if(Gui.mouseY != 0){
+            float tmp = Gui.mouseY;
+            Gui.mouseY -= tmp;
+
+            //System.out.println(tmp);
+
+            this.angleX = normalizeAngle(this.angleX,/*duration*/ tmp*0.1f);
+
+            if(this.angleX <= PIf && this.angleX > PIf/4f) this.angleX = PIf/4f;
+            else if( this.angleX > PIf && this.angleX < 1.6f*PIf ) this.angleX = 1.6f*PIf;
+
+            update = true;
+        }
+        if(Gui.scroolPercent != 0){
+            float tmp = Gui.scroolPercent;
+            Gui.scroolPercent -= tmp;
+
+            actMaxDistance += tmp * 0.1;
+            if(actMaxDistance < defMaxMinDistance) actMaxDistance = defMaxMinDistance;
+            else if(actMaxDistance > defMaxDistance) actMaxDistance = defMaxDistance;
+            //System.out.println(tmp);
+
+            update = true;
+        }
+        // }
 
         //System.out.println(angleX+" "+angleX);
 
         // process object
-        if( this.process(actTime, duration) ) update = true;         
+        if( this.process(actTime, duration) ) update = true;
 
         /*if(targetDistance){
             if(this.prevDistance != this.maxDistance) update = true;
@@ -119,7 +134,7 @@ public abstract class Camera{
         }
 
         if(update){
-
+            forceUpdate = false;
 
             position.x = objectPosition.x;
             position.y = objectPosition.y+height;
@@ -167,9 +182,43 @@ public abstract class Camera{
                     if(pi.getNode().getUserData() == UserCamera.CHARACTER) continue;
                     float distance = (float)pi.getClosestDistance();
 
-                    if(distance < this.minDistance) prevDistance = this.minDistance;
-                    else if(distance > this.maxDistance) prevDistance = this.maxDistance;
-                    else prevDistance = distance;
+
+                    if(prevDistance < distance){
+
+                        //forceUpdate = distance - prevDistance > 0.15f;
+                        float diff = distance - prevDistance;
+                        if(diff < 0.1f){
+                            prevDistance = distance;
+                        }else {
+                            forceUpdate = true;
+                            prevDistance += 0.1f;
+                        }
+
+                    }else if(prevDistance > distance){
+                        forceUpdate = true;
+                        //forceUpdate = prevDistance - distance > 0.15f;
+                        float diff = prevDistance - distance;
+                        if(diff < 0.1f){
+                            prevDistance = distance;
+                        }else{
+                            forceUpdate = true;
+                            prevDistance -= 0.1f;
+                        }
+
+                        //prevDistance -= Math.min(0.1f, prevDistance - distance);
+                    }
+
+                    if(prevDistance < this.minDistance){
+                        forceUpdate = false;
+                        prevDistance = this.minDistance;
+                    }else if(prevDistance > this.actMaxDistance){
+                        forceUpdate = false;
+                        prevDistance = this.actMaxDistance;
+                    }
+
+                        //System.out.println(forceUpdate);
+
+                    //else prevDistance = distance;
 
                     break;
                 }
@@ -214,8 +263,10 @@ public abstract class Camera{
             //System.out.println(this.camPos);
 
             targetTG.setTransform(this.trans);
-            forceUpdate = false;
+            //forceUpdate = disableForce;
+            //System.out.println(forceUpdate);
         }
+
 
         this.time = actTime;
 
@@ -294,9 +345,12 @@ public abstract class Camera{
     private final float height;
 
     private float prevDistance;
+    //private boolean updateDistanceAnim = false;
     //private boolean process = true;
     
     private final float minDistance;
-    private final float maxDistance;
+    private final float defMaxDistance;
+    private final float defMaxMinDistance;
+    private float actMaxDistance;
 
 }

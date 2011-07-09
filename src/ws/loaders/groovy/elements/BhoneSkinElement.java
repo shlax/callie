@@ -2,6 +2,7 @@ package ws.loaders.groovy.elements;
 
 import groovy.util.AbstractFactory;
 import groovy.util.FactoryBuilderSupport;
+import ts.doc.*;
 import ws.loaders.groovy.FactoryElement;
 import ws.loaders.groovy.SceneBuilder;
 import ws.loaders.groovy.objects.AppearanceObject;
@@ -14,13 +15,61 @@ import javax.media.j3d.Appearance;
 import java.util.Map;
 import java.util.Set;
 
-public final class BhoneSkinElement extends AbstractFactory {
+public final class BhoneSkinElement extends AbstractFactory implements Doc{
     private final BhoneLoader bhoneLoader = new BhoneLoader();
     private final SkinLoader skinLoader = new SkinLoader();
-        
+
+    @Override
+    public String docDescription() {
+        return "character object";
+    }
+
+    @Override
+    public String[] docExamples() {
+        return new String[]{
+            "bhoneSkin(appearance:soldierMat,\n" +
+                    "          bhoneFile:\"data/soldier/soldier.bon\",\n" +
+                    "          skinFile:\"data/soldier/soldier.skn\"){\n" +
+                    "    frame(\"data/soldier/keys/stand.ang\", name:\"STAND\");\n" +
+                    "    // ...\n" +
+                    "};"
+        };
+    }
+
+    @Override
+    public String docValue() {
+        return "as: |appearance|";
+    }
+
+    @Override
+    public DocAttr[] docAtributes() {
+        return new DocAttr[]{
+            new DocAttr("*", "bhoneFile", "String", "path to (*.bon) file //skeleton"),
+            new DocAttr("*", "skinFile", "String", "path to (*.skn) file //geometry"),
+            new DocAttr(null, "appearance", "appearance", "material/texture"),
+            new DocAttr(null, "scale", "Float", "1f", null),
+            new DocAttr(null, "?", "frame"),
+        };
+    }
+
+    @Override
+    public DocAction[] docActions() {
+        return null;
+    }
+
+    @Override
+    public DocControl[] docControl() {
+        return null;
+    }
+
     @Override
     public final Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes) throws InstantiationException, IllegalAccessException {
         BhoneSkinObject bso = new BhoneSkinObject(bhoneLoader, skinLoader);
+
+        if(value != null){
+            if(value instanceof AppearanceObject ) bso.setAppearance( ((AppearanceObject)value).getAppearance() );
+            else if(value instanceof Appearance) bso.setAppearance( (Appearance)value );
+        }
 
         if(attributes != null){
             Object tmp = attributes.get(SceneBuilder.appearance);
@@ -37,7 +86,7 @@ public final class BhoneSkinElement extends AbstractFactory {
 
             tmp = attributes.get(SceneBuilder.skinFile);
             if(tmp != null) bso.setSkinFile( tmp.toString() );
-             
+
             for(Map.Entry<?, ?> e : (Set<Map.Entry<?, ?>>)attributes.entrySet()){
                 Object val = e.getValue();
                 if(val instanceof BhoneSkinFrameObject){
@@ -49,6 +98,14 @@ public final class BhoneSkinElement extends AbstractFactory {
         }
 
         return bso;
+    }
+
+    @Override
+    public DocSubNode[] docSubNodes() {
+        return new DocSubNode[]{
+            new DocSubNode(null, "frame", "[0..N]"),
+            new DocSubNode(null, "appearance", "[0..1]")
+        };
     }
 
     @Override

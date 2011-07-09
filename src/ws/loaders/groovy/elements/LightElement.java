@@ -22,6 +22,15 @@ public abstract class LightElement extends NodeElement {
                 else if (attr instanceof Color) lo.setColor( ((Color)attr).getColor3f() );
             }
 
+            attr = attributes.get(SceneBuilder.r);
+            if(attr != null) lo.setR( attr instanceof Float ? (Float)attr : Float.parseFloat(attr.toString()) );
+
+            attr = attributes.get(SceneBuilder.g);
+            if(attr != null) lo.setG( attr instanceof Float ? (Float)attr : Float.parseFloat(attr.toString()) );
+
+            attr = attributes.get(SceneBuilder.b);
+            if(attr != null) lo.setB( attr instanceof Float ? (Float)attr : Float.parseFloat(attr.toString()) );
+
             /*attr = attributes.get(SceneBuilder.region);
             if(attr != null && attr instanceof BoundingSphere) lo.setRegion( (BoundingSphere)attr ); */
         }

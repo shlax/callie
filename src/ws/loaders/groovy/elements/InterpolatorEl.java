@@ -13,13 +13,14 @@ import java.util.Map;
 
 public abstract class InterpolatorEl extends TransformGroupElement {
 
-    protected final void processInt(Interpolator o, Object value, Map<?, ?> attributes){
+    protected void processInt(Interpolator o, Object value, Map<?, ?> attributes){
         setSceneObjectType(o, value, attributes);
 
         if(value instanceof TransformObject)o.setTransformObject( (TransformObject)value );
         else if(value instanceof Transform3D)o.setTransform3D((Transform3D) value);
         else if(value instanceof TimerObj) o.setAlpha( ((TimerObj)value).getAlpha() );
         else if(value instanceof Alpha) o.setAlpha( (Alpha)value );
+
 
         if(attributes != null){
             /* Object tmp = attributes.get(SceneBuilder.lsSystem);

@@ -27,9 +27,8 @@ public final class TextureLoader {
 		Texture tmp = mapFormat.get(key);
 		if(tmp != null) return tmp;
 
-        com.sun.j3d.utils.image.TextureLoader loader = null;
         try {
-            loader = new com.sun.j3d.utils.image.TextureLoader(ResourceHandle.getURL(name), format, flags, null);
+            com.sun.j3d.utils.image.TextureLoader loader = new com.sun.j3d.utils.image.TextureLoader(ResourceHandle.getURL(name), format, flags, null);
             tmp = loader.getTexture();
 
             mapFormat.put(key, tmp);

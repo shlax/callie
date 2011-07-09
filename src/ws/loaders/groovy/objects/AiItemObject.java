@@ -1,12 +1,10 @@
 package ws.loaders.groovy.objects;
 
-import ws.loaders.groovy.FactoryElement;
 
 import javax.media.j3d.Transform3D;
-import javax.media.j3d.TransformGroup;
 import java.util.Map;
 
-public final class AiItemObject extends FactoryElement {
+public final class AiItemObject extends TransformGroupObject {
 
     public AiItemObject(Object value, Map attributes) {
         super(value, attributes);        
@@ -22,22 +20,13 @@ public final class AiItemObject extends FactoryElement {
         this.transform = transform;
     }
 
-    private TransformGroupObject transformGroupObj = null;
-    public final void setTransformGroup(TransformGroupObject transformGroup) {
-        this.transformGroupObj = transformGroup;
-    }
-
     // ------------------------------------------------------------------------------------------------------
-
-    public final TransformGroup getTransformGroup(){
-        return this.transformGroupObj.getNode();
-    }
 
     public final String getBhoneName() {
         return bhoneName;
     }
 
     public final Transform3D getTransform() {
-        return transform;
+        return transform == null ? new Transform3D(): transform;
     }
 }
