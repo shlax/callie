@@ -1,0 +1,46 @@
+package ws.joint;
+
+import com.ardor3d.scenegraph.Node;
+import wa.Utils;
+import ws.joint.acelerator.AcceleratedValue;
+
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Point3f;
+import javax.vecmath.Tuple3f;
+import javax.vecmath.Vector3f;
+
+public final class ActiveTransformBhone extends AceleratedBhone{
+
+    public ActiveTransformBhone(Node tg, Matrix4f tgTrans,
+                                Vector3f mov, Bhone sub[], Point3f points[], Point3f pointsSrc[], Vector3f normals[], Vector3f normalsSrc[], Tuple3f angles[], AcceleratedValue Rx, AcceleratedValue Ry, AcceleratedValue Rz) {
+        super(mov, sub, points, pointsSrc, normals, normalsSrc, angles, Rx, Ry, Rz);
+
+        this.tg = tg;
+        this.tgTrans = tgTrans;
+    }
+
+    private final Node tg;
+	private final Matrix4f tgTrans;
+
+	private boolean active = true;
+
+	public final void setActive(boolean a){
+    //    System.out.println("active "+a);
+        this.active = a;
+	}
+    
+	@Override
+	public final boolean update(Matrix4f tmp, Matrix4f tmpRot, float time, boolean pred) {
+		boolean  ret = super.update(tmp, tmpRot, time, pred);
+        if(active){
+            dstTrans.mul(tgTrans);
+			//tg.setTransform(this.dstTrans); // hack
+            Utils.setMatrix3(this.dstTrans, tg);
+		}
+        return ret;
+	}
+
+	/* public final Transform3D transform(){
+		return dstTrans;
+	} */
+}

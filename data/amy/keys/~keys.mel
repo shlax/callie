@@ -99,71 +99,71 @@ proc exportJointsAngelsFile(string $name,string $filename){
 
 
 currentTime 10 ;
-exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\stand.ang");
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callieArdor\\data\\amy\\keys\\stand.ang");
 
 
 currentTime 20 ;
-exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\run1.ang");
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callieArdor\\data\\amy\\keys\\run1.ang");
 
 currentTime 30 ;
-exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\run2.ang");
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callieArdor\\data\\amy\\keys\\run2.ang");
 
 currentTime 40 ;
-exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\run3.ang");
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callieArdor\\data\\amy\\keys\\run3.ang");
 
 currentTime 50 ;
-exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\run4.ang");
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callieArdor\\data\\amy\\keys\\run4.ang");
 
 
 currentTime 60 ;
-exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\jumpl1.ang");
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callieArdor\\data\\amy\\keys\\jumpl1.ang");
 
 currentTime 70 ;
-exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\jumpl2.ang");
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callieArdor\\data\\amy\\keys\\jumpl2.ang");
 
 currentTime 80 ;
-exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\jumpl3.ang");
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callieArdor\\data\\amy\\keys\\jumpl3.ang");
 
 
 currentTime 90 ;
-exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\jumpr1.ang");
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callieArdor\\data\\amy\\keys\\jumpr1.ang");
 
 currentTime 100 ;
-exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\jumpr2.ang");
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callieArdor\\data\\amy\\keys\\jumpr2.ang");
 
 currentTime 110 ;
-exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\jumpr3.ang");
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callieArdor\\data\\amy\\keys\\jumpr3.ang");
 
 
 currentTime 120 ;
-exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\down.ang");
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callieArdor\\data\\amy\\keys\\down.ang");
 
 currentTime 130 ;
-exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\deadJump.ang");
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callieArdor\\data\\amy\\keys\\deadJump.ang");
 
 currentTime 140 ;
-exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\deadShot.ang");
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callieArdor\\data\\amy\\keys\\deadShot.ang");
 
 
 currentTime 150 ;
-exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\riflePick.ang");
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callieArdor\\data\\amy\\keys\\riflePick.ang");
 
 currentTime 160 ;
-exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\rifleFire.ang");
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callieArdor\\data\\amy\\keys\\rifleFire.ang");
 
 
 currentTime 170 ;
-exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\rifleStand.ang");
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callieArdor\\data\\amy\\keys\\rifleStand.ang");
 
 
 currentTime 180 ;
-exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\rifleRun1.ang");
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callieArdor\\data\\amy\\keys\\rifleRun1.ang");
 
 currentTime 190 ;
-exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\rifleRun2.ang");
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callieArdor\\data\\amy\\keys\\rifleRun2.ang");
 
 currentTime 200 ;
-exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\rifleRun3.ang");
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callieArdor\\data\\amy\\keys\\rifleRun3.ang");
 
 currentTime 210 ;
-exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callie\\data\\amy\\keys\\rifleRun4.ang");
+exportJointsAngelsFile("joint1", "c:\\Users\\root\\IdeaProjects\\callieArdor\\data\\amy\\keys\\rifleRun4.ang");

@@ -1,0 +1,107 @@
+proc int isLinear(string $name){
+	string $arg[];
+	$arg = `listAttr -st "LinX" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "LinY" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "LinZ" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "LinXY" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "LinXZ" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "LinYX" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "LinYZ" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "LinZX" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "LinZY" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	return 0;
+}
+
+proc exportJointsAngels(string $name,int $filename, int $height){
+	
+	$is = 0;
+	$sep = 0;
+
+	$src_connections = `listConnections -d true -s false -t jointCluster $name`;
+	for( $cluster in $src_connections ){
+		
+		
+		$A = `listSets -o $cluster`;
+		for( $b in $A ){
+			select $b;
+			$c = `ls -selection`;
+			for($q in $c){
+				if($is == 0){
+					$is = 1;
+					fprint($filename, $name+" ");
+						
+					string $arg;					
+
+					if($height == 1){
+						$arg = `getAttr ($name+".translateX")`;
+						fprint($filename, $arg+" ");
+
+						$arg = `getAttr ($name+".translateY")`;
+						fprint($filename, $arg+" ");
+
+						$arg = `getAttr ($name+".translateZ")`;
+						fprint($filename, $arg+" ");
+
+					}
+
+					$arg = `getAttr ($name+".rotateX")`;
+					fprint($filename, $arg+" ");
+
+					$arg = `getAttr ($name+".rotateY")`;
+					fprint($filename, $arg+" ");
+
+					$arg = `getAttr ($name+".rotateZ")`;
+					fprint($filename, $arg+"\n");
+
+				}				
+			}
+			
+		}
+	}
+	
+
+	$src_connections = `listConnections -d true -s false -t joint $name`;
+	for($joint in $src_connections){
+		int $lin = isLinear($joint);
+		if($lin == 0) exportJointsAngels($joint, $filename, false);
+	}
+		
+
+}
+
+proc exportJointsAngelsFile(string $name,string $filename){
+
+	int $file = `fopen $filename "w"`;
+
+	exportJointsAngels($name, $file, 1);
+
+	fclose $file;
+
+}
+
+currentTime 20 ;
+exportJointsAngelsFile("joint1", "c:/Users/root/IdeaProjects/callieArdor/data/amy/covers/right/0.ang");
+
+currentTime 40 ;
+exportJointsAngelsFile("joint1", "c:/Users/root/IdeaProjects/callieArdor/data/amy/covers/right/1.ang");
+
+currentTime 60 ;
+exportJointsAngelsFile("joint1", "c:/Users/root/IdeaProjects/callieArdor/data/amy/covers/right/2.ang");
