@@ -5,7 +5,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public final class ResourceHandle {
-    private ResourceHandle(){}
+    private ResourceHandle(){} 
 
     public static boolean local = true;
     public static boolean bin = true;
