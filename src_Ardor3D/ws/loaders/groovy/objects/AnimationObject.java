@@ -9,9 +9,8 @@ import java.util.Map;
 
 public final class AnimationObject extends FactoryElement {
 
-    public AnimationObject(Object value, Map attributes) {
-        super(value, attributes);
-        
+    public AnimationObject(Object value, Map<?,?> attributes) {
+        super(value, attributes);        
     }
 
     private float shotAngle = 0f;
@@ -87,28 +86,28 @@ public final class AnimationObject extends FactoryElement {
 
     private Point3f targetPosition;
     public final Point3f getTargetPosition() {
-        return destination == null ? new Point3f() : destination;
+        return targetPosition == null ? new Point3f() : targetPosition;
     }
     public final void setTargetPosition(Point3f destination) {
         this.targetPosition = destination;
     }
 
-    private Closure onEnter = null;
-    private Closure onExit = null;
+    private Closure<?> onEnter = null;
+    private Closure<?> onExit = null;
 
-    public final void setOnEnter(Closure onEnter) {
+    public final void setOnEnter(Closure<?> onEnter) {
         this.onEnter = onEnter;
     }
 
-    public final void setOnExit(Closure onExit) {
+    public final void setOnExit(Closure<?> onExit) {
         this.onExit = onExit;
     }
 
-    public final Closure getOnEnter() {
+    public final Closure<?> getOnEnter() {
         return onEnter;
     }
 
-    public final Closure getOnExit() {
+    public final Closure<?> getOnExit() {
         return onExit;
     }
 }

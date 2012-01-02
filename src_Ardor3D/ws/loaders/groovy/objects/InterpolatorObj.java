@@ -19,7 +19,7 @@ import java.util.Map;
 
 public final class InterpolatorObj extends FactoryElement {
 
-    public InterpolatorObj(Object value, Map attributes) {
+    public InterpolatorObj(Object value, Map<?, ?> attributes) {
         super(value, attributes);
     }
 
@@ -55,14 +55,16 @@ public final class InterpolatorObj extends FactoryElement {
         inQuats.add(v);
     }
 
-    public final SpatialController[] getControler(){
-        ArrayList<SpatialController> cont = new ArrayList<SpatialController>();
+    public final SpatialController<?>[] getControler(){
+        ArrayList<SpatialController<?>> cont = new ArrayList<SpatialController<?>>();
 
         if(points != null){
 
             if(curve){
                 final CurveInterpolationController sp = new CurveInterpolationController(){
-                    @Override
+					private static final long serialVersionUID = 1L;
+
+					@Override
                     protected void clampIndex() {
                         if(getRepeatType() == RepeatType.CYCLE){
                             if( getIndex() > getMaximumIndex())setIndex( getMinimumIndex() );
@@ -89,7 +91,9 @@ public final class InterpolatorObj extends FactoryElement {
 
             }else{
                 final LinearVector3InterpolationController sp = new LinearVector3InterpolationController(){
-                        @Override
+					private static final long serialVersionUID = 1L;
+
+						@Override
                         protected void clampIndex() {
                             if(getRepeatType() == RepeatType.CYCLE){
                                 if( getIndex() > getMaximumIndex())setIndex( getMinimumIndex() );
@@ -119,7 +123,9 @@ public final class InterpolatorObj extends FactoryElement {
         if(inQuats != null){
 
             final QuaternionInterpolationController controller = new QuaternionInterpolationController(){
-                @Override
+				private static final long serialVersionUID = 1L;
+
+				@Override
                 protected void clampIndex() {
                     if(getRepeatType() == RepeatType.CYCLE){
                         if( getIndex() > getMaximumIndex())setIndex( getMinimumIndex() );

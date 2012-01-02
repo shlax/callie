@@ -10,7 +10,7 @@ import java.util.Map;
 
 public abstract class NodeElement extends AbstractFactory {
 
-    protected final void setSceneObjectType(NodeObject sceneObject, Object value, Map<?, ?> attributes){
+    protected final void setSceneObjectType(NodeObject sceneObject, Object value, Map attributes){
         if(value != null && value instanceof SceneBuilder.SceneObjectType){
             sceneObject.setSceneObjectType( (SceneBuilder.SceneObjectType)value );
         }else if(attributes != null){

@@ -28,7 +28,7 @@ public final class AppearanceElement extends AbstractFactory {
 
         Object tmp = attributes.get(SceneBuilder.texture);
         if(tmp != null){
-            if(tmp instanceof Collection) for(Object q : (Collection)tmp)a.addTexture(q.toString());
+            if(tmp instanceof Collection) for(Object q : (Collection<?>)tmp)a.addTexture(q.toString());
             else a.addTexture(tmp.toString());
         }
 

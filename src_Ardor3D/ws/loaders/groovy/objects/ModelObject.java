@@ -66,7 +66,7 @@ public final class ModelObject extends NodeObject {
             Mesh s = appearance.getRenderState(ta);
             if(userData != null) s.setUserData(userData);
 
-            if(interpolators != null) for(InterpolatorObj i : interpolators) for(SpatialController c : i.getControler()){
+            if(interpolators != null) for(InterpolatorObj i : interpolators) for(SpatialController<?> c : i.getControler()){
                 //System.out.println(c);
                 // Create our controller
 

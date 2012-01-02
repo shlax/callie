@@ -43,7 +43,8 @@ public final class BhoneSkinElement extends AbstractFactory{
             tmp = attributes.get(SceneBuilder.skinFile);
             if(tmp != null) bso.setSkinFile( tmp.toString() );
 
-            for(Map.Entry<?, ?> e : (Set<Map.Entry<?, ?>>)attributes.entrySet()){
+            Set<Map.Entry<?,?>> set = attributes.entrySet();
+            for(Map.Entry<?, ?> e : set){
                 Object val = e.getValue();
                 if(val instanceof BhoneSkinFrameObject){
                     bso.addBhoneSkinFrame(e.getKey().toString(), (BhoneSkinFrameObject)val );

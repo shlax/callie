@@ -24,7 +24,7 @@ public final class AiElement extends AbstractFactory {
             if(value instanceof MapObject){
                 ai.addMapObject((MapObject)value);
             }else if(value instanceof Collection){
-                for(Object o : (Collection)value)ai.addMapObject( (MapObject)o );
+                for(Object o : (Collection<?>)value)ai.addMapObject( (MapObject)o );
             }else if(value instanceof Float){
                 ai.setActiveDistance( (Float)value );
             }
@@ -36,7 +36,7 @@ public final class AiElement extends AbstractFactory {
                 if(tmp instanceof MapObject){
                     ai.addMapObject((MapObject)tmp);
                 }else if(tmp instanceof Collection){
-                    for(Object o : (Collection)tmp)ai.addMapObject( (MapObject)o );
+                    for(Object o : (Collection<?>)tmp)ai.addMapObject( (MapObject)o );
                 }
             }
 
@@ -47,7 +47,7 @@ public final class AiElement extends AbstractFactory {
          //   if(tmp != null) ai.setLsType((Type)tmp);
 
             tmp = attributes.get(SceneBuilder.onDettect);
-            if(tmp != null) ai.setOnDettect((Closure) tmp);
+            if(tmp != null) ai.setOnDettect((Closure<?>) tmp);
 
             tmp = attributes.get(SceneBuilder.activeDistance);
             if(tmp != null) ai.setActiveDistance(tmp instanceof Float ? (Float)tmp : Float.parseFloat(tmp.toString()));

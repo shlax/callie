@@ -65,7 +65,7 @@ public class MovingCamera extends Camera{
     protected float reqAngele = 0;
     protected int jump = 0;
 
-    private final EnumSet movType = EnumSet.of(Type.TERAIN, Type.JUMP);
+    private final EnumSet<Type> movType = EnumSet.of(Type.TERAIN, Type.JUMP);
     private Type predTyp = null; 
 
     @Override

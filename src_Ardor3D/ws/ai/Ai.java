@@ -201,25 +201,9 @@ public final class Ai implements Runnable{
             AI.notifyAll();
         }
     }
-
-
-
-    /*
-    public static final void removeTargetWolker(Object tv){
-        synchronized (agents){
-            agents.remove(tv);
-        }
-        synchronized (AI){
-            AI.notifyAll();
-        }
-        synchronized (colision){
-            colision.remove(tv);
-        }
-    }
-    */
-
-    private static Closure onDettect = null;
-    public static final void setOnDettect(Closure onDettect) {
+    
+    private static Closure<?> onDettect = null;
+    public static final void setOnDettect(Closure<?> onDettect) {
         Ai.onDettect = onDettect;
     }
 

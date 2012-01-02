@@ -13,6 +13,7 @@ import javax.vecmath.Tuple3f;
 import java.util.Map;
 
 public final class AiCheckElement extends AbstractFactory {
+	
     @Override
     public final AiCheckObject newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes) throws InstantiationException, IllegalAccessException {
         AiCheckObject o = new AiCheckObject(value, attributes);
@@ -46,9 +47,8 @@ public final class AiCheckElement extends AbstractFactory {
         if(attributes != null) attributes.clear();
         return o;
     }
-
-
-     @Override
+    
+    @Override
     public final void setChild(FactoryBuilderSupport builder, Object parent, Object child) {
         if(child instanceof FactoryElement) if(((FactoryElement)child).isUsed())return;
 

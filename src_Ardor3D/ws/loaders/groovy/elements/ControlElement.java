@@ -38,7 +38,7 @@ public final class ControlElement extends AbstractFactory{
             if(tmp instanceof MapObject){
                 c.addMapObject((MapObject)tmp);
             }else if(tmp instanceof Collection){
-                for(Object o : (Collection)tmp)c.addMapObject( (MapObject)o );
+                for(Object o : (Collection<?>)tmp)c.addMapObject( (MapObject)o );
             }
         }
 
@@ -116,7 +116,7 @@ public final class ControlElement extends AbstractFactory{
         tmp = attributes.get(SceneBuilder.colision);
         if(tmp != null){
             if(tmp instanceof ColisionObject)c.addColisionObject( (ColisionObject)tmp );
-            else if(tmp instanceof Collection) for(Object q : (Collection)tmp) c.addColisionObject((ColisionObject)q);
+            else if(tmp instanceof Collection) for(Object q : (Collection<?>)tmp) c.addColisionObject((ColisionObject)q);
         }
 
         tmp = attributes.get(SceneBuilder.bhoneSkin);
@@ -137,19 +137,19 @@ public final class ControlElement extends AbstractFactory{
         tmp = attributes.get(SceneBuilder.map);
         if(tmp != null){
             if(tmp instanceof MapObject)c.addMapObject( (MapObject)tmp );
-            else if(tmp instanceof Collection) for(Object q : (Collection)tmp) c.addMapObject((MapObject)q);
+            else if(tmp instanceof Collection) for(Object q : (Collection<?>)tmp) c.addMapObject((MapObject)q);
         }
 
         tmp = attributes.get(SceneBuilder.item);
         if(tmp != null){
             if(tmp instanceof AiItemObject)c.addAiItemObject( (AiItemObject)tmp );
-            else if(tmp instanceof Collection) for(Object q : (Collection)tmp) c.addAiItemObject((AiItemObject)q);
+            else if(tmp instanceof Collection) for(Object q : (Collection<?>)tmp) c.addAiItemObject((AiItemObject)q);
         }
 
         tmp = attributes.get(SceneBuilder.animation);
         if(tmp != null){
             if(tmp instanceof AnimationTransformObject)c.addAnimationObject( (AnimationTransformObject)tmp );
-            else if(tmp instanceof Collection) for(Object q : (Collection)tmp) c.addAnimationObject((AnimationTransformObject)q);
+            else if(tmp instanceof Collection) for(Object q : (Collection<?>)tmp) c.addAnimationObject((AnimationTransformObject)q);
         }
 
 

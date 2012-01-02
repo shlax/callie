@@ -46,10 +46,10 @@ public final class AnimationElement extends AbstractFactory{
             }
 
             tmp = attributes.get(SceneBuilder.onEnter);
-            if(tmp != null)o.setOnEnter((Closure)tmp );
+            if(tmp != null)o.setOnEnter((Closure<?>)tmp );
 
             tmp = attributes.get(SceneBuilder.onExit);
-            if(tmp != null)o.setOnExit((Closure)tmp );
+            if(tmp != null)o.setOnExit((Closure<?>)tmp );
 
             tmp = attributes.get(SceneBuilder.frameWindow);
             if(tmp != null)o.setKeyFrameRatio( tmp instanceof Float ? (Float)tmp : Float.parseFloat(tmp.toString()) );
@@ -69,7 +69,7 @@ public final class AnimationElement extends AbstractFactory{
             tmp = attributes.get(SceneBuilder.frame);
             if(tmp != null){
                 if(tmp instanceof BhoneSkinFrameObject) o.addAnimationFrameObject( (BhoneSkinFrameObject)tmp );
-                else if(tmp instanceof Collection) for(Object q : (Collection)tmp ) o.addAnimationFrameObject( (BhoneSkinFrameObject)q );
+                else if(tmp instanceof Collection) for(Object q : (Collection<?>)tmp ) o.addAnimationFrameObject( (BhoneSkinFrameObject)q );
                 //o.setSourceAngleTolerantion( tmp instanceof Float ? (Float)tmp : Float.parseFloat(tmp.toString()) );
             }
 

@@ -36,10 +36,10 @@ public final class AnimationTransformElement extends AbstractFactory{
             if(tmp != null)o.setAnimationObject((AnimationObject) tmp);
 
             tmp = attributes.get(SceneBuilder.onEnter);
-            if(tmp != null)o.setOnEnter((Closure) tmp);
+            if(tmp != null)o.setOnEnter((Closure<?>) tmp);
 
             tmp = attributes.get(SceneBuilder.onExit);
-            if(tmp != null)o.setOnExit((Closure)tmp );
+            if(tmp != null)o.setOnExit((Closure<?>)tmp );
 
             tmp = attributes.get(SceneBuilder.removeAfterPlay);
             if(tmp != null)o.setRemoveAfterPlay( tmp instanceof Boolean ? (Boolean)tmp : Boolean.parseBoolean(tmp.toString()) );

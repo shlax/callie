@@ -120,8 +120,9 @@ public class Gui{
             canvas.setTitle("[Esc] release mouse");
         }
         final Canvas l = new Canvas(){
+			private static final long serialVersionUID = 1L;
 
-            private final float detectDistance = 25f;
+			private final float detectDistance = 25f;
 
             private final BufferedImage bi = new BufferedImage(800, 14, BufferedImage.TYPE_INT_RGB);
             private final Graphics2D g = bi.createGraphics();

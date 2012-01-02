@@ -37,8 +37,8 @@ public final class AiObject extends FactoryElement {
         this.lsType = asType;
     } */
 
-    private Closure onDettect = null;
-    public final void setOnDettect(Closure onDettect) {
+    private Closure<?> onDettect = null;
+    public final void setOnDettect(Closure<?> onDettect) {
         this.onDettect = onDettect;
     }
     /*    private LsObject lsObject = null;

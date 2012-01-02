@@ -86,7 +86,7 @@ public class CharacterCamera extends MovingCamera{
                     weaponUpDown = 2;
                     c.setWeaponEnabled(true);
                 }
-                nextStatus = this.RIFLE_PICK;
+                nextStatus = CharacterCamera.RIFLE_PICK;
             }else if(weaponUpDown == 2){
                 if(newStatus == -1) weaponUpDown = 0;
                 nextStatus = RIFLE_STAND;

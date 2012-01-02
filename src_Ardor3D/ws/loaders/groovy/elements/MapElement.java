@@ -35,10 +35,10 @@ public final class MapElement extends AbstractFactory {
         if(typ != null) o.setFile( typ.toString() );
 
         typ = attributes.get(SceneBuilder.onEnter);
-        if(typ instanceof Closure)o.setOnEnter((Closure)typ);
+        if(typ instanceof Closure)o.setOnEnter((Closure<?>)typ);
 
         typ = attributes.get(SceneBuilder.onExit);
-        if(typ instanceof Closure)o.setOnExit((Closure)typ);
+        if(typ instanceof Closure)o.setOnExit((Closure<?>)typ);
 
         attributes.clear();
         return o;

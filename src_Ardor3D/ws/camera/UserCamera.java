@@ -2,7 +2,6 @@ package ws.camera;
 
 import com.ardor3d.scenegraph.Mesh;
 import com.ardor3d.scenegraph.Node;
-import groovy.lang.Tuple;
 import ws.ai.Target;
 import ws.camera.animation.Animation;
 import ws.camera.animation.cover.CoverAnimation;

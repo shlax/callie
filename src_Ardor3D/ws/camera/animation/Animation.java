@@ -95,7 +95,7 @@ public class Animation {
         if(keyFrameIndex == -1){
             this.startTime = time;
             this.frameStartTime = time;
-            this.realStartPosition.set(objectPosition);
+            Animation.realStartPosition.set(objectPosition);
 
             this.keyFrameIndex = 0;
             this.frames[0].updateBhoneSkyn();
@@ -108,7 +108,7 @@ public class Animation {
 
                 return -1f; // skoncil
             }else{
-                objectPosition.interpolate(this.realStartPosition, destination, actDur/this.animationDuration);
+                objectPosition.interpolate(Animation.realStartPosition, destination, actDur/this.animationDuration);
 
                 actDur = time - this.frameStartTime;
                 if(actDur > this.keyFrameRatio){

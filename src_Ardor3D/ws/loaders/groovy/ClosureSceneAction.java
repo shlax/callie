@@ -5,10 +5,10 @@ import ws.tools.SceneAction;
 
 public final class ClosureSceneAction implements SceneAction {
 
-    private final Closure onEnter;
-    private final Closure onExit;
+    private final Closure<?> onEnter;
+    private final Closure<?> onExit;
 
-    public ClosureSceneAction(Closure onEnter, Closure onExit) {
+    public ClosureSceneAction(Closure<?> onEnter, Closure<?> onExit) {
         this.onEnter = onEnter;
         this.onExit = onExit;
     }

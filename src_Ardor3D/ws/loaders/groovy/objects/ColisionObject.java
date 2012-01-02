@@ -57,14 +57,14 @@ public final class ColisionObject extends FactoryElement {
         this.maxZ = maxZ;
     }
 
-    private Closure onEnter = null;
-    private Closure onExit = null;
+    private Closure<?> onEnter = null;
+    private Closure<?> onExit = null;
 
-    public void setOnEnter(Closure onEnter) {
+    public void setOnEnter(Closure<?> onEnter) {
         this.onEnter = onEnter;
     }
 
-    public void setOnExit(Closure onExit) {
+    public void setOnExit(Closure<?> onExit) {
         this.onExit = onExit;
     }
 

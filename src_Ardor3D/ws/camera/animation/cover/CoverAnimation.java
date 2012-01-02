@@ -136,7 +136,7 @@ public final class CoverAnimation {
                 return 1f;
             }else{
                 float intr = actDur / this.keyFrameRatio;
-                if(init) objectPosition.interpolate(this.realStartPosition, source, intr);
+                if(init) objectPosition.interpolate(CoverAnimation.realStartPosition, source, intr);
                 return intr;
             }
         }else{

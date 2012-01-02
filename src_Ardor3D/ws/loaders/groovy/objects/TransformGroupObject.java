@@ -42,7 +42,7 @@ public class TransformGroupObject extends GroupObject {
         if(this.transform3D != null) Utils.setMatrix3(this.transform3D, tg); //tg.setWorldTransform(Utils.getMatrix3(this.transform3D)); //tg.setTransform(this.transform3D);
         if(appearanceObject != null)appearanceObject.getAppearance().getRenderState(tg);
 
-        if(interpolators != null) for(InterpolatorObj i : interpolators) for(SpatialController c : i.getControler())tg.addController(c);
+        if(interpolators != null) for(InterpolatorObj i : interpolators) for(SpatialController<?> c : i.getControler())tg.addController(c);
 
         return tg;
     }

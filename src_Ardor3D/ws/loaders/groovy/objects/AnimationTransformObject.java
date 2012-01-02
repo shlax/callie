@@ -7,13 +7,12 @@ import ws.loaders.groovy.FactoryElement;
 import ws.tools.SceneAction;
 import ws.tools.controls.OnOffObject;
 
-import javax.vecmath.Matrix4f;
 import javax.vecmath.Point3f;
 import java.util.Map;
 
 public final class AnimationTransformObject extends FactoryElement {
 
-    public AnimationTransformObject(Object value, Map attributes) {
+    public AnimationTransformObject(Object value, Map<?,?> attributes) {
         super(value, attributes);        
     }
 
@@ -84,27 +83,27 @@ public final class AnimationTransformObject extends FactoryElement {
         this.source = source;
     }
 
-    private Closure onEnter = null;
-    private Closure onExit = null;
+    private Closure<?> onEnter = null;
+    private Closure<?> onExit = null;
 
-    public final void setOnEnter(Closure onEnter) {
+    public final void setOnEnter(Closure<?> onEnter) {
         this.onEnter = onEnter;
     }
 
-    public final void setOnExit(Closure onExit) {
+    public final void setOnExit(Closure<?> onExit) {
         this.onExit = onExit;
     }
 
-    private final Closure[] getOnEnter() {
-        Closure pred = animationObject.getOnEnter();
+    private final Closure<?>[] getOnEnter() {
+        Closure<?> pred = animationObject.getOnEnter();
         if(pred != null && onEnter != null) return new Closure[]{pred, onEnter};
         else if(pred != null) return new Closure[]{pred};
         else if(onEnter != null) return new Closure[]{onEnter};
         return null;
     }
 
-    private final Closure[] getOnExit() {
-        Closure pred = animationObject.getOnExit();
+    private final Closure<?>[] getOnExit() {
+        Closure<?> pred = animationObject.getOnExit();
         if(pred != null && onExit != null) return new Closure[]{pred, onExit};
         else if(pred != null) return new Closure[]{pred};
         else if(onExit != null) return new Closure[]{onExit};
@@ -112,8 +111,8 @@ public final class AnimationTransformObject extends FactoryElement {
     }
 
     public SceneAction getSceneAction(){
-        Closure ent[] = getOnEnter();
-        Closure exi[] = getOnExit();
+        Closure<?> ent[] = getOnEnter();
+        Closure<?> exi[] = getOnExit();
         if(ent == null && exi == null) return null;
         boolean sim = true;
         if(ent != null && ent.length > 1) sim = false;

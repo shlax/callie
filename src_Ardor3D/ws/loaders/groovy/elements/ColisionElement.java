@@ -56,10 +56,10 @@ public final class ColisionElement extends AbstractFactory {
             o.setEnabled(tmp instanceof Boolean ? (Boolean)tmp : Boolean.parseBoolean(tmp.toString()) );
 
             tmp = attributes.get(SceneBuilder.onEnter);
-            if(tmp instanceof Closure)o.setOnEnter((Closure)tmp);
+            if(tmp instanceof Closure)o.setOnEnter((Closure<?>)tmp);
 
             tmp = attributes.get(SceneBuilder.onExit);
-            if(tmp instanceof Closure)o.setOnExit((Closure)tmp);
+            if(tmp instanceof Closure)o.setOnExit((Closure<?>)tmp);
 
             attributes.clear();
         }
