@@ -6,6 +6,6 @@ object Main extends App {
 
   val a = new Accl()
   
-  a.set(5);
+  a := 5;
   
 }

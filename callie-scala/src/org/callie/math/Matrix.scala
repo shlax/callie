@@ -50,7 +50,7 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
     this
   }
   
-  def set(v: Vector) = {
+  def update(v: Vector) = {
     m00 = 1; m01 = 0; m02 = 0; m03 = v.x;
     m10 = 0; m11 = 1; m12 = 0; m13 = v.y;
     m20 = 0; m21 = 0; m22 = 1; m23 = v.z;
