@@ -4,11 +4,11 @@ import org.callie.math.Vector3
 
 case class Vector2(val x : Float, val y : Float)
 
-class Triangle(val a : Vector3, val b : Vector3, val c : Vector3) {
+class Triangle25(val a : Vector3, val b : Vector3, val c : Vector3) {
 
   val ab = Vector2(b.x-a.x, b.z-a.z)
   val bc = Vector2(c.x-b.x, c.z-b.z)
-  val ca = Vector2(a.x-c.x, a.z-c.z) 
+  val ca = Vector2(a.x-c.x, a.z-c.z)
   
   val (ta, tb, tc, td) = {
     val tmp = Vector3.cross( Vector3(c.x-a.x, c.y-a.y, c.z-a.z ), Vector3(b.x-a.x, b.y-a.y, b.z-a.z) )
