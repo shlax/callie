@@ -17,7 +17,7 @@ class Accl extends Intr{
 
   var active = false
   
-  override def := (value: Float) {
+  override def update(value: Float) {
     if (lastTime < t1) v0 += a * lastTime;
     else v0 = v;
 

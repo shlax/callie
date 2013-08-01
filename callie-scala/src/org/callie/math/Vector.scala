@@ -24,8 +24,8 @@ object Vector3{
   def apply(v : Array[Float], ix : Int, iy : Int, iz : Int) = new VectorArray(v, ix, iy, iz)
   
   def cross(v1:Vector3, v2:Vector3) = new VectorVar(v1.y * v2.z - v1.z * v2.y, 
-		  										  v1.z * v2.x - v1.x * v2.z, 
-		  										  v1.x * v2.y - v1.y * v2.x)
+		  										    v1.z * v2.x - v1.x * v2.z, 
+		  										    v1.x * v2.y - v1.y * v2.x)
 }
 
 class VectorVar(var x : Float, var y : Float, var z : Float) extends Vector3 {
