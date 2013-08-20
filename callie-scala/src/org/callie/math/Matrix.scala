@@ -61,46 +61,46 @@ class Matrix4(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  /
   }
   
   def update(v: Vector3) = {
-    m00 = 1; m01 = 0; m02 = 0; m03 = v.x;
-    m10 = 0; m11 = 1; m12 = 0; m13 = v.y;
-    m20 = 0; m21 = 0; m22 = 1; m23 = v.z;
-    m30 = 0; m31 = 0; m32 = 0; m33 = 1;
+    m00 = 1; m01 = 0; m02 = 0; m03 = v.x
+    m10 = 0; m11 = 1; m12 = 0; m13 = v.y
+    m20 = 0; m21 = 0; m22 = 1; m23 = v.z
+    m30 = 0; m31 = 0; m32 = 0; m33 = 1
     
     this
   }
 
   def rotX(angle: Float) = {
-    val s = Math.sin(angle).asInstanceOf[Float];
-    val c = Math.cos(angle).asInstanceOf[Float];
+    val s = Math.sin(angle).asInstanceOf[Float]
+    val c = Math.cos(angle).asInstanceOf[Float]
 
-    m00 = 1; m01 = 0; m02 = 0 ; m03 = 0;
-    m10 = 0; m11 = c; m12 = -s; m13 = 0;
-    m20 = 0; m21 = s; m22 = c ; m23 = 0;
-    m30 = 0; m31 = 0; m32 = 0 ; m33 = 1;
+    m00 = 1; m01 = 0; m02 = 0 ; m03 = 0
+    m10 = 0; m11 = c; m12 = -s; m13 = 0
+    m20 = 0; m21 = s; m22 = c ; m23 = 0
+    m30 = 0; m31 = 0; m32 = 0 ; m33 = 1
     
     this
   }
 
   def rotY(angle: Float) = {
-    val s = Math.sin(angle).asInstanceOf[Float];
-    val c = Math.cos(angle).asInstanceOf[Float];
+    val s = Math.sin(angle).asInstanceOf[Float]
+    val c = Math.cos(angle).asInstanceOf[Float]
 
-    m00 = c ; m01 = 0; m02 = s; m03 = 0;
-    m10 = 0 ; m11 = 1; m12 = 0; m13 = 0;
-    m20 = -s; m21 = 0; m22 = c; m23 = 0;
-    m30 = 0 ; m31 = 0; m32 = 0; m33 = 1;
+    m00 = c ; m01 = 0; m02 = s; m03 = 0
+    m10 = 0 ; m11 = 1; m12 = 0; m13 = 0
+    m20 = -s; m21 = 0; m22 = c; m23 = 0
+    m30 = 0 ; m31 = 0; m32 = 0; m33 = 1
     
     this
   }
   
   def rotZ(angle: Float) = {
-    val s = Math.sin(angle).asInstanceOf[Float];
-    val c = Math.cos(angle).asInstanceOf[Float];
+    val s = Math.sin(angle).asInstanceOf[Float]
+    val c = Math.cos(angle).asInstanceOf[Float]
 
-    m00 = c; m01 = -s; m02 = 0; m03 = 0;
-    m10 = s; m11 = c ; m12 = 0; m13 = 0;
-    m20 = 0; m21 = 0 ; m22 = 1; m23 = 0;
-    m30 = 0; m31 = 0 ; m32 = 0; m33 = 1;
+    m00 = c; m01 = -s; m02 = 0; m03 = 0
+    m10 = s; m11 = c ; m12 = 0; m13 = 0
+    m20 = 0; m21 = 0 ; m22 = 1; m23 = 0
+    m30 = 0; m31 = 0 ; m32 = 0; m33 = 1
     
     this
   }

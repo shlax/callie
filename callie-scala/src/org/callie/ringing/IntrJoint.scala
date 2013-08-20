@@ -14,7 +14,7 @@ class IntrJoint(val offset:Matrix4, val ax: Intr, val ay:Intr, val az : Intr,
   override def apply(trans : Matrix4, normalTrans : Matrix4, time:Float) = {
     val n = Matrix4()
     rotX = ax(time); rotY = ay(time); rotZ = az(time)
-    val m = new Matrix4().rotZ(rotX) * (n.rotY(rotY)) * n.rotX(rotZ)
+    val m = new Matrix4().rotZ(rotX) * n.rotY(rotY) * n.rotX(rotZ)
     
     n ** (trans, offset) * m // next trans
     m ** (normalTrans, m) // next normalTrans

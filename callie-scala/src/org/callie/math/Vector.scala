@@ -37,11 +37,11 @@ class VectorVar(var x : Float, var y : Float, var z : Float) extends Vector3 {
 
 class VectorArray(val v : Array[Float], val ix : Int, val iy : Int, val iz : Int) extends Vector3 {
 
-  override def x = v(ix); 
+  override def x = v(ix)
   override def x_=(nv:Float) = v(ix) = nv 
-  override def y = v(iy); 
+  override def y = v(iy)
   override def y_=(nv:Float) = v(iy) = nv
-  override def z = v(iz); 
+  override def z = v(iz)
   override def z_=(nv:Float) = v(iz) = nv
   
 }

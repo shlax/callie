@@ -10,21 +10,21 @@ object Main extends App {
 
   val a = new Accl()
   
-  a() = 5;
+  a() = 5
 
   // -----------------------------
   
   val profile = GLProfile.get(GLProfile.GL2)
 
   val capabilities = new GLCapabilities(profile)
-  val glcanvas = new GLCanvas(capabilities)
+  val glCanvas = new GLCanvas(capabilities)
 
   val f = new Frame()
   f.setResizable(false)
   f.setSize(250, 250)
   f.setLocation(100, 100)
   f.setLayout(new BorderLayout())
-  f.add(glcanvas, BorderLayout.CENTER)
+  f.add(glCanvas, BorderLayout.CENTER)
 
   f.setVisible(true)
   
