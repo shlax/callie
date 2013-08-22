@@ -1,5 +1,7 @@
 package org.callie.math
 
+case class Vector2(x : Float, y : Float)
+
 trait Vector3{
 
   def x:Float; def x_=(v:Float)

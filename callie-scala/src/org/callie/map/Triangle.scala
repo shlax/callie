@@ -1,8 +1,6 @@
 package org.callie.map
 
-import org.callie.math.Vector3
-
-case class Vector2(x : Float, y : Float)
+import org.callie.math.{Vector3, Vector2}
 
 class Triangle25(val a : Vector3, val b : Vector3, val c : Vector3, val near: Array[Triangle25], val far: Array[Triangle25], val data:Any) {
 
