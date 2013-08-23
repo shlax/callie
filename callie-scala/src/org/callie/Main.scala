@@ -8,15 +8,43 @@ import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import javax.media.opengl.GLEventListener
 import javax.media.opengl.GLAutoDrawable
-
 import javax.media.opengl.{GL4, GL3, GL2GL3, GL2ES2, GL, GLBase}
 import java.nio.FloatBuffer
+import com.jogamp.opengl.util.FPSAnimator
+import com.jogamp.opengl.util.GLBuffers
+import com.jogamp.common.nio.Buffers
 
 // http://www.arcsynthesis.org/gltut/index.html
 // http://antongerdelan.net/opengl/
 // http://www.opengl.org/sdk/docs/man/xhtml/
+
+// http://gamedev.stackexchange.com/questions/20584/error-when-trying-to-use-vbo-array-vertex-buffer-object-must-be-disabled-to-cal
 object Main extends App {
 
+  val vertex =
+        """
+          |#version 400
+          |
+          |layout(location = 0) in vec4 position;
+          |void main()
+          |{
+          |    gl_Position = position;
+          |}
+        """.stripMargin
+
+   //   println(vertex)
+      
+  val fragment =
+    """
+      |#version 400
+      |
+      |out vec4 outputColor;
+      |void main()
+      |{
+      |   outputColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+      |}
+    """.stripMargin
+  
 //  val VERTEX_SHADER = """
 //    in vec4 position;
 //    in vec4 color;
@@ -47,13 +75,15 @@ object Main extends App {
 
   val capabilities = new GLCapabilities(profile)
   val glCanvas = new GLCanvas(capabilities)
-
+  val animator = new FPSAnimator(glCanvas, 60, true)
+  
   glCanvas.addGLEventListener(new GLEventListener(){
     //val glu2 = new GLUgl2()
     
     override def reshape(drawable:GLAutoDrawable, x:Int, y:Int, width:Int, height:Int){
       val gl = drawable.getGL.getGL4
       gl.glViewport(0, 0, width, height)
+      println("-")
     }
 
 //    var program : Int = _
@@ -95,57 +125,54 @@ object Main extends App {
 //      gl.glVertexAttribPointer(locPosition, 2, GL.GL_FLOAT, false, 0, 0)
 //      gl.glEnableVertexAttribArray(locPosition)
 
-      val vertex =
-        """
-          |#version 330
-          |
-          |layout(location = 0) in vec4 position;
-          |void main()
-          |{
-          |    gl_Position = position;
-          |}
-        """.stripMargin
+      
 
-      val fragment =
-        """
-          |#version 330
-          |
-          |out vec4 outputColor;
-          |void main()
-          |{
-          |   outputColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-          |}
-        """.stripMargin
-
+//      println(fragment)
+      
+      val tmp = Array(0)
+        
       val vertexShader = gl.glCreateShader(GL2ES2.GL_VERTEX_SHADER)
       gl.glShaderSource(vertexShader, 1, Array(vertex), null)
       gl.glCompileShader(vertexShader)
 
+      gl.glGetShaderiv(vertexShader, GL2ES2.GL_COMPILE_STATUS, tmp, 0);
+      
+      println("vertexShader "+vertexShader+" "+tmp(0))
+      
       val fragmentShader = gl.glCreateShader(GL2ES2.GL_FRAGMENT_SHADER)
       gl.glShaderSource(fragmentShader, 1, Array(fragment), null)
       gl.glCompileShader(fragmentShader)
 
+      gl.glGetShaderiv(vertexShader, GL2ES2.GL_COMPILE_STATUS, tmp, 0);
+      
+      println("fragmentShader "+fragmentShader+" "+tmp(0))
+      
       theProgram = gl.glCreateProgram()
       gl.glAttachShader(theProgram, vertexShader)
       gl.glAttachShader(theProgram, fragmentShader)
       gl.glLinkProgram(theProgram)
 
+      gl.glGetProgramiv(theProgram, GL2ES2.GL_LINK_STATUS, tmp, 0);
+      
+      println("theProgram "+theProgram+" "+tmp(0))
+      
       val vertexPositions = Array(
-          0.75f, 0.75f, 0.0f, 1.0f,
           0.75f, -0.75f, 0.0f, 1.0f,
+          0.75f, 0.75f, 0.0f, 1.0f,
           -0.75f, -0.75f, 0.0f, 1.0f
         )
-
-      val tmp = Array(0)
+      
       gl.glGenBuffers(1, tmp, 0)
       positionBufferObject = tmp(0)
 
-      val buff = FloatBuffer.allocate(vertexPositions.length)
+      println("positionBufferObject "+positionBufferObject)
+      
+      val buff = com.jogamp.common.nio.Buffers.newDirectFloatBuffer(vertexPositions.length)
       buff.put(vertexPositions)
       buff.rewind()
 
       gl.glBindBuffer(GL.GL_ARRAY_BUFFER, positionBufferObject)
-      gl.glBufferData(GL.GL_ARRAY_BUFFER, vertexPositions.length, buff, GL.GL_STATIC_DRAW)
+      gl.glBufferData(GL.GL_ARRAY_BUFFER, vertexPositions.length * Buffers.SIZEOF_FLOAT , buff, GL.GL_STATIC_DRAW)
       gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0)
 
     }
@@ -171,6 +198,9 @@ object Main extends App {
       gl.glDisableVertexAttribArray(0)
       gl.glUseProgram(0)
 
+      gl.glFlush()
+      println("+")
+      
 //      gl.glClearColor(0f, 0f, 0f, 0f)
 //      gl.glClear(GL.GL_COLOR_BUFFER_BIT)
 //
@@ -203,7 +233,7 @@ object Main extends App {
       f.dispose()
     }
   })
-  f.setResizable(false)
+//f.setResizable(false)
   f.setSize(250, 250)
   f.setLocation(100, 100)
   f.setLayout(new BorderLayout())
