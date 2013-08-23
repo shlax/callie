@@ -67,19 +67,10 @@
       <file leaf-file-name="Main.scala" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/org/callie/Main.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="53" column="5" selection-start="1354" selection-end="1354" vertical-scroll-proportion="0.49225664" vertical-offset="456" max-vertical-offset="2431">
+            <state line="19" column="0" selection-start="591" selection-end="1170" vertical-scroll-proportion="-1.4446902" vertical-offset="1629" max-vertical-offset="3723">
               <folding>
                 <element signature="e#20#52#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="hello.cpp" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/hello.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="9" column="4" selection-start="250" selection-end="254" vertical-scroll-proportion="-5.8846154" vertical-offset="0" max-vertical-offset="1513">
-              <folding />
             </state>
           </provider>
         </entry>
@@ -141,10 +132,8 @@
       <file leaf-file-name="GlObject.scala" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/org/callie/model/GlObject.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="2" column="0" selection-start="26" selection-end="90" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1190">
-              <folding>
-                <element signature="e#26#90#0" expanded="true" />
-              </folding>
+            <state line="2" column="0" selection-start="26" selection-end="90" vertical-scroll-proportion="0.0" vertical-offset="17" max-vertical-offset="1190">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -206,6 +195,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
@@ -231,7 +221,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -247,12 +236,12 @@
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="restartRequiresConfirmation" value="true" />
-    <property name="MemberChooser.showClasses" value="true" />
     <property name="FullScreen" value="false" />
+    <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="options.searchVisible" value="true" />
-    <property name="options.splitter.details.proportions" value="0.2" />
     <property name="dynamic.classpath" value="false" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RunManager" selected="Application.Main">
     <configuration default="false" name="Scala Console" type="ScalaScriptConsoleRunConfiguration" factoryName="Scala Console" temporary="true">
@@ -287,14 +276,6 @@
       <setting name="workingDirectory" value="$PROJECT_DIR$" />
       <method />
     </configuration>
-    <configuration default="true" type="Remote" factoryName="Remote">
-      <option name="USE_SOCKET_TRANSPORT" value="true" />
-      <option name="SERVER_MODE" value="false" />
-      <option name="SHMEM_ADDRESS" value="javadebug" />
-      <option name="HOST" value="localhost" />
-      <option name="PORT" value="5005" />
-      <method />
-    </configuration>
     <configuration default="true" type="Specs2RunConfiguration" factoryName="Specs2">
       <module name="" />
       <setting name="path" value="" />
@@ -306,6 +287,14 @@
       <setting name="testName" value="" />
       <setting name="testKind" value="Class" />
       <setting name="showProgressMessages" value="true" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
       <method />
     </configuration>
     <configuration default="true" type="Applet" factoryName="Applet">
@@ -406,7 +395,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-9" y="-9" width="1938" height="1098" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -497,9 +486,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/callie/ringing/IntrJoint.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="51" selection-start="591" selection-end="591" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="544">
-          <folding />
-        </state>
+        <state line="16" column="51" selection-start="591" selection-end="591" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="544" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/callie/ringing/JointCluster.scala">
@@ -509,16 +496,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/callie/ringing/IntrTravJoint.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="0" selection-start="601" selection-end="601" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="357">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hello.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="4" selection-start="250" selection-end="254" vertical-scroll-proportion="-5.8846154" vertical-offset="0" max-vertical-offset="1513">
-          <folding />
-        </state>
+        <state line="17" column="0" selection-start="601" selection-end="601" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="357" />
       </provider>
     </entry>
     <entry file="jar://$PROJECT_DIR$/lib/jogl-java-src.zip!/javax/media/opengl/GL2GL3.java">
@@ -531,9 +509,7 @@
     <entry file="file://$PROJECT_DIR$/src/org/callie/model/GlObject.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state line="2" column="0" selection-start="26" selection-end="90" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1190">
-          <folding>
-            <element signature="e#26#90#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -546,7 +522,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/callie/Main.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="53" column="5" selection-start="1354" selection-end="1354" vertical-scroll-proportion="0.49225664" vertical-offset="456" max-vertical-offset="2431">
+        <state line="19" column="0" selection-start="591" selection-end="1170" vertical-scroll-proportion="-1.4446902" vertical-offset="1629" max-vertical-offset="3723">
           <folding>
             <element signature="e#20#52#0" expanded="true" />
           </folding>
