@@ -173,32 +173,40 @@ object Main extends App {
 
       gl.glBindBuffer(GL.GL_ARRAY_BUFFER, positionBufferObject)
       gl.glBufferData(GL.GL_ARRAY_BUFFER, vertexPositions.length * Buffers.SIZEOF_FLOAT , buff, GL.GL_STATIC_DRAW)
+//
+
+
+
+//      gl.glBindBuffer(GL.GL_ARRAY_BUFFER, positionBufferObject)
+      gl.glEnableVertexAttribArray(0)
+      gl.glVertexAttribPointer(0, 4, GL.GL_FLOAT, false, 0, 0)
+
       gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0)
 
+      gl.glUseProgram(theProgram)
+
+      gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
     }
 
     var theProgram : Int = _
     var positionBufferObject : Int = _
 
     override def display(drawable:GLAutoDrawable){
-      drawable.setAutoSwapBufferMode(true)
+      //drawable.setAutoSwapBufferMode(true)
       val gl = drawable.getGL.getGL4
 
-      gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
+
       gl.glClear(GL.GL_COLOR_BUFFER_BIT)
 
-      gl.glUseProgram(theProgram)
 
-      gl.glBindBuffer(GL.GL_ARRAY_BUFFER, positionBufferObject)
-      gl.glEnableVertexAttribArray(0)
-      gl.glVertexAttribPointer(0, 4, GL.GL_FLOAT, false, 0, 0)
 
+      gl.glBindVertexArray(positionBufferObject)
       gl.glDrawArrays(GL.GL_TRIANGLES, 0, 3)
 
-      gl.glDisableVertexAttribArray(0)
-      gl.glUseProgram(0)
+//      gl.glDisableVertexAttribArray(0)
+//      gl.glUseProgram(0)
 
-      gl.glFlush()
+      //gl.glFlush()
       println("+")
       
 //      gl.glClearColor(0f, 0f, 0f, 0f)
@@ -233,11 +241,13 @@ object Main extends App {
       f.dispose()
     }
   })
+
+  glCanvas.setSize(300, 300)
 //f.setResizable(false)
-  f.setSize(250, 250)
   f.setLocation(100, 100)
   f.setLayout(new BorderLayout())
   f.add(glCanvas, BorderLayout.CENTER)
+  f.pack()
 
   f.setVisible(true)
   
