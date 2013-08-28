@@ -23,15 +23,15 @@ import com.jogamp.common.nio.Buffers
 object Main extends App {
 
   val vertex =
-        """
-          |#version 400
-          |
-          |layout(location = 0) in vec4 position;
-          |void main()
-          |{
-          |    gl_Position = position;
-          |}
-        """.stripMargin
+    """
+      |#version 400
+      |
+      |layout(location = 0) in vec4 position;
+      |void main()
+      |{
+      |    gl_Position = position;
+      |}
+    """.stripMargin
 
    //   println(vertex)
       
@@ -83,6 +83,9 @@ object Main extends App {
     
     override def reshape(drawable:GLAutoDrawable, x:Int, y:Int, width:Int, height:Int){
       val gl = drawable.getGL.getGL4
+      // http://www.songho.ca/opengl/gl_projectionmatrix.html
+      //                   (fovy , aspect      , zNear, zFar) > http://pyopengl.sourceforge.net/documentation/manual-3.0/gluPerspective.xhtml
+      //glu2.gluPerspective(45.0f, width/height, 0.5  , 1000);
       gl.glViewport(0, 0, width, height)
       println("-")
     }
@@ -198,9 +201,7 @@ object Main extends App {
 
 
       gl.glClear(GL4.GL_COLOR_BUFFER_BIT)
-
-
-
+      
       gl.glBindVertexArray(positionBufferObject)
       gl.glDrawArrays(GL4.GL_TRIANGLES, 0, 3)
 
