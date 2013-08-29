@@ -28,7 +28,7 @@ object JoglFrame {
   frame.setLayout(new BorderLayout())
   frame.add(glCanvas, BorderLayout.CENTER)
   frame.pack()
-  
+
   def apply(el:GLEventListener){
     glCanvas.addGLEventListener(el)
     frame.setVisible(true)

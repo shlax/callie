@@ -1,6 +1,6 @@
 package org.callie.jogl
 
-object GL4 {
+object GL_4 {
   @inline def GL_CONTEXT_CORE_PROFILE_BIT = javax.media.opengl.GL3.GL_CONTEXT_CORE_PROFILE_BIT
   @inline def GL_CONTEXT_COMPATIBILITY_PROFILE_BIT = javax.media.opengl.GL3.GL_CONTEXT_COMPATIBILITY_PROFILE_BIT
   @inline def GL_LINES_ADJACENCY = javax.media.opengl.GL3.GL_LINES_ADJACENCY
@@ -1185,4 +1185,3 @@ object GL4 {
   @inline def GL_XOR = javax.media.opengl.GL.GL_XOR
   @inline def GL_HALF_FLOAT = javax.media.opengl.GL.GL_HALF_FLOAT
 }
-

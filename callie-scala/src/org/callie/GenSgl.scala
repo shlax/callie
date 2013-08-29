@@ -4,7 +4,7 @@ import javax.media.opengl.GL4
 
 object GenSgl extends App{
 
-  val out = new StringBuilder("object GL4 {")
+  val out = new StringBuilder("object GL_4 {")
 
   def prc(cls:Class[_]){
     if(cls != null && classOf[Object] != cls){
