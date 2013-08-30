@@ -10,7 +10,7 @@ object GenSgl extends App{
     if(cls != null && classOf[Object] != cls){
 
       for(f <- cls.getDeclaredFields){
-        out ++= "\n  @inline def " + f.getName + " = " + cls.getName + "." + f.getName
+        out ++= "\n  @inline def " + f.getName.substring(3) + " = " + cls.getName + "." + f.getName
       }
 
       prc(cls.getSuperclass)

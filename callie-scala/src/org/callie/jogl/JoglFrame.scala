@@ -18,6 +18,8 @@ object JoglFrame {
     }
   })
   
+  println(GLProfile.glAvailabilityToString)
+  
   val profile = GLProfile.get(GLProfile.GL4)
   val capabilities = new GLCapabilities(profile)
   val glCanvas = new GLCanvas(capabilities)
@@ -32,7 +34,7 @@ object JoglFrame {
   def apply(el:GLEventListener){
     glCanvas.addGLEventListener(el)
     frame.setVisible(true)
-    animator.start()
+    //animator.start()
   }
   
 }
