@@ -18,7 +18,7 @@ object JoglFrame {
     }
   })
   
-  println(GLProfile.glAvailabilityToString)
+  //println(GLProfile.glAvailabilityToString)
   
   val profile = GLProfile.get(GLProfile.GL4)
   val capabilities = new GLCapabilities(profile)

@@ -132,7 +132,9 @@ object Main extends App {
       
 
 //      println(fragment)
-      
+
+
+
       val tmp = Array(0)
         
       val vertexShader = gl.glCreateShader(GL_4.VERTEX_SHADER)
@@ -182,7 +184,7 @@ object Main extends App {
 
 
 //      gl.glBindBuffer(GL.GL_ARRAY_BUFFER, positionBufferObject)
-      gl.glEnableVertexAttribArray(0)
+
       gl.glVertexAttribPointer(0, 4, GL_4.FLOAT, false, 0, 0)
 
       gl.glBindBuffer(GL_4.ARRAY_BUFFER, 0)
@@ -198,10 +200,10 @@ object Main extends App {
     override def display(drawable:GLAutoDrawable){
       //drawable.setAutoSwapBufferMode(true)
       val gl = drawable.getGL.getGL4
-
+      gl.glEnableVertexAttribArray(0)
 
       gl.glClear(GL_4.COLOR_BUFFER_BIT)
-      
+
       gl.glBindVertexArray(positionBufferObject)
       gl.glDrawArrays(GL_4.TRIANGLES, 0, 3)
 

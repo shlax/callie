@@ -1,4 +1,7 @@
-.cache
-.idea/
-/bin
+/.idea
+callie-scala.iml
 /out
+.cache
+.project
+.classpath
+/bin
