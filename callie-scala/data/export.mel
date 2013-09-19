@@ -6,6 +6,7 @@ proc export( string $mesh, string $filename ){
 	// vertex
 	int $vertexCount[] = `polyEvaluate -v $mesh`;
 	//fprint $file ( "numVertices=" + $vertexCount[0] + "\n" );
+	fprint $file ( "v=[" );
 	
 	for( $i=0;$i<$vertexCount[0];$i++){
 		float $vert[]   = `getAttr ($mesh+".vt["+$i+"]")`;
@@ -16,9 +17,9 @@ proc export( string $mesh, string $filename ){
 		$vert[2] += $offset[2];
 		
 	
-		fprint $file ( "["+$vert[0]+","+$vert[1]+","+$vert[2]+"]" );
+		fprint $file ( "("+$vert[0]+","+$vert[1]+","+$vert[2]+")" );
 	}
-	fprint $file "\n";
+	fprint $file "]\n";
 	
 	// uv
 	
@@ -47,10 +48,11 @@ proc export( string $mesh, string $filename ){
 	}
 	
 	//fprint $file ( "numTexCoords=" + ($maxUvCount/2) + "\n" );
+	fprint $file ( "t=[");
 	for($k = 0; $k < $maxUvCount; $k +=2 ){
-		fprint $file ( "["+$uvArray[$k]+","+$uvArray[$k+1]+"]" );	
+		fprint $file ( "("+$uvArray[$k]+","+$uvArray[$k+1]+")" );	
 	}	
-	fprint $file "\n";
+	fprint $file "]\n";
 	
 	// normal
 	select -r $mesh;
@@ -93,17 +95,20 @@ proc export( string $mesh, string $filename ){
 	
 	//fprint $file ( "numNormals="+($maxCount/3)+"\n" );
 
+    fprint $file ( "n=[" );
+
 	for($k = 0; $k < $maxCount; $k +=3 ){
-		fprint $file ( "["+$normArray[$k]+","+$normArray[$k+1]+","+$normArray[$k+2]+"]" );	
+		fprint $file ( "("+$normArray[$k]+","+$normArray[$k+1]+","+$normArray[$k+2]+")" );	
 	}
 	
-	fprint $file "\n";
+	fprint $file "]\n";
 
 	// faces
 
 	select -r $mesh;
 	int $faceCount[] = `polyEvaluate -f`;
 	//fprint $file ( "numFaces=" + $faceCount[0]+"\n" );
+	fprint $file ( "f=[" );
 	
 	for( $i=0;$i<$faceCount[0];$i++){
 		int $vCount =0;
@@ -145,14 +150,14 @@ proc export( string $mesh, string $filename ){
 				}
 			}
 			
-			fprint $file ( "["+$split[(2+$j)]+","+$uvIndex+","+$nIndex+"]" );
+			fprint $file ( "("+$split[(2+$j)]+","+$uvIndex+","+$nIndex+")" );
 		//	fprint $file ( "["+$split[(2+$j)]+","+$buffer[1]+","+$nIndex+"]" );
 
 		}
 		fprint $file "}";
 
 	}	
-	fprint $file "\n";
+	fprint $file "]\n";
 
 	
 	fclose $file;
