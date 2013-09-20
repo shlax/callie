@@ -43,8 +43,6 @@ proc export( string $mesh, string $filename ){
 			
 			$maxUvCount += 2;
 		}
-		
-		
 	}
 	
 	//fprint $file ( "numTexCoords=" + ($maxUvCount/2) + "\n" );

@@ -64,6 +64,7 @@ object Mod extends RegexParsers {
   def apply(r:Reader) ={
     val m = new Mod()
     parseAll(value(m), r)
+    r.close()
     m
   }
 
