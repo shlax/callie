@@ -22,6 +22,8 @@ object JoglFrame {
   
   val profile = GLProfile.get(GLProfile.GL4)
   val capabilities = new GLCapabilities(profile)
+  capabilities.setSampleBuffers(true) // FSAA
+  capabilities.setNumSamples(4)
   val glCanvas = new GLCanvas(capabilities)
   val animator = new FPSAnimator(glCanvas, 60, true)
   

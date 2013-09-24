@@ -50,17 +50,23 @@ object MainMod extends App{
     """
       |#version 400
       |
-      |layout(location = 0) in vec3 inPosition;
+      |layout(location = 0) in vec4 inPosition;
       |layout(location = 1) in vec2 inTextureCoord;
       |layout(location = 2) in vec3 inNormal;
       |
       |out vec2 passTextureCoord;
-      |out vec3 passNormal;
+      |out float lightIntensity;
+      |//out vec3 passNormal;
+      |
+      |vec3 lightDirection = normalize(vec3(1, 1, 1));
       |
       |void main(){
-      |    gl_Position = vec4(inPosition, 1);
+      |    gl_Position = inPosition; //vec4(inPosition, 1);
       |    passTextureCoord = inTextureCoord;
-      |    passNormal = inNormal;
+      |
+      |    //passNormal = inNormal;
+      |    float l = max(dot(inNormal, lightDirection), 0.0);
+      |    lightIntensity = 0.2 + (l * 0.8);
       |}
     """.stripMargin
 
@@ -71,13 +77,16 @@ object MainMod extends App{
       |uniform sampler2D textureDiffuse;
       |
       |in vec2 passTextureCoord;
-      |in vec3 passNormal;
+      |//in vec3 passNormal;
+      |in float lightIntensity;
       |
       |out vec4 outputColor;
       |
       |void main(){
       |   //outputColor = vec4(passTextureCoord[0], passTextureCoord[1], 1.0f, 1.0f);
-      |   outputColor = texture(textureDiffuse, passTextureCoord);
+      |   outputColor = lightIntensity * texture(textureDiffuse, passTextureCoord);
+      |   //outputColor = vec4(lightIntensity, lightIntensity, lightIntensity, 1);
+      |   //outputColor = vec4(passNormal, 1);
       |}
     """.stripMargin
 
@@ -89,6 +98,12 @@ object MainMod extends App{
 
     override def initGL4(implicit gl: GL4) {
       val texture = TextureIO.newTextureData(gl.getGLProfile, getClass.getResourceAsStream("/t.png"), false, TextureIO.PNG)
+
+      gl.glEnable(GL_4.CULL_FACE)
+      gl.glCullFace(GL_4.BACK)
+
+      gl.glEnable(GL_4.DEPTH_TEST)
+      gl.glDepthMask(true)
 
       gl.glActiveTexture(GL_4.TEXTURE0)
 
@@ -136,7 +151,7 @@ object MainMod extends App{
     }
 
     override def displayGL4(implicit gl: GL4) {
-      gl.glClear(GL_4.COLOR_BUFFER_BIT)
+      gl.glClear(GL_4.COLOR_BUFFER_BIT | GL_4.DEPTH_BUFFER_BIT)
       // > code
       //gl.glDrawArrays(GL_4.TRIANGLES, 0, 3)
 
