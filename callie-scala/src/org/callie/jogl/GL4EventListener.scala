@@ -1,9 +1,45 @@
 package org.callie.jogl
 
 import javax.media.opengl.{GL4, GLAutoDrawable, GLEventListener}
+import java.awt.event._
+import scala.collection.mutable
 
-trait GL4EventListener extends GLEventListener{
+trait GL4EventListener extends GLEventListener with KeyListener with MouseListener with MouseMotionListener{
 
+// MouseMotionListener
+
+  override def mouseDragged(e: MouseEvent) {}
+
+  override def mouseMoved(e: MouseEvent) {}
+
+// MouseListener
+
+  override def mouseClicked(e: MouseEvent) {}
+
+  override def mousePressed(e: MouseEvent) {}
+
+  override def mouseReleased(e: MouseEvent) {}
+
+  override def mouseEntered(e: MouseEvent) {}
+
+  override def mouseExited(e: MouseEvent) {}
+
+// KeyListener
+
+  val keys = mutable.Set[Int]()
+
+  override def keyTyped(e: KeyEvent) {}
+
+  override def keyPressed(e: KeyEvent) {
+    //println(e.getKeyChar + " : " + e.getKeyCode)
+    keys += e.getKeyCode
+  }
+
+  override def keyReleased(e: KeyEvent) {
+    keys -= e.getKeyCode
+  }
+
+  // GLEventListener
   override def init(drawable: GLAutoDrawable) {
     drawable.setAutoSwapBufferMode(true)
     initGL4(drawable.getGL.getGL4)

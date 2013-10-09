@@ -33,8 +33,11 @@ object JoglFrame {
   frame.add(glCanvas, BorderLayout.CENTER)
   frame.pack()
 
-  def apply(el:GLEventListener){
+  def apply(el:GL4EventListener){
     glCanvas.addGLEventListener(el)
+    glCanvas.addKeyListener(el)
+    glCanvas.addMouseMotionListener(el)
+    glCanvas.addMouseListener(el)
     frame.setVisible(true)
     //animator.start()
   }
