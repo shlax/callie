@@ -3,10 +3,9 @@
   <component name="FacetManager">
     <facet type="scala" name="Scala">
       <configuration>
-        <option name="compilerLibraryLevel" value="Project" />
+        <option name="compilerLibraryLevel" value="Global" />
         <option name="compilerLibraryName" value="scala-compiler" />
         <option name="deprecationWarnings" value="true" />
-        <option name="explainTypeErrors" value="true" />
         <option name="optimiseBytecode" value="true" />
         <option name="uncheckedWarnings" value="true" />
       </configuration>
@@ -21,8 +20,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="scala-library" level="project" />
     <orderEntry type="library" name="jogl" level="project" />
+    <orderEntry type="library" name="scala-library" level="project" />
   </component>
 </module>
 
