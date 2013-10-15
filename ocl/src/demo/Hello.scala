@@ -42,6 +42,8 @@ object Hello extends App{
 
   // -----------------------------------------------------------------------------------------------------------------------------
 
+// http://stackoverflow.com/questions/5117961/is-there-really-a-timeout-for-kernels-on-nvidia-gpus
+
 //  CLPlatform [name: Intel(R) OpenCL, vendor: Intel(R) Corporation, profile: FULL_PROFILE, version: OpenCL 1.2 ]
 //  CLPlatform [name: NVIDIA CUDA, vendor: NVIDIA Corporation, profile: FULL_PROFILE, version: OpenCL 1.1 CUDA 4.2.1]
   val d = CLPlatform.listCLPlatforms()
