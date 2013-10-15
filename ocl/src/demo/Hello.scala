@@ -19,7 +19,7 @@ object Hello extends App{
       | }
       |
       | // add the vector elements
-      | for(int i = 0; i < 10000; i++){
+      | for(int i = 0; i < 1000; i++){
       |   c[iGID] = a[iGID] * b[iGID];
       | }
       |}
@@ -48,7 +48,7 @@ object Hello extends App{
   d.foreach(println)
 
   // set up (uses default CLPlatform and creates context for all devices)
-  val context = CLContext.create(d(1), CLDevice.Type.GPU)
+  val context = CLContext.create(d(0), CLDevice.Type.GPU)
   println("created "+context)
 
   // always make sure to release the context under all circumstances
@@ -69,38 +69,36 @@ object Hello extends App{
     // load sources, create and build program
     val program = context.createProgram(code).build()
 
-  // A, B are input buffers, C is for the result
-  val clBufferA = context.createFloatBuffer(globalWorkSize, com.jogamp.opencl.CLMemory.Mem.READ_ONLY)
-  val clBufferB = context.createFloatBuffer(globalWorkSize, com.jogamp.opencl.CLMemory.Mem.READ_ONLY)
-  val clBufferC = context.createFloatBuffer(globalWorkSize, com.jogamp.opencl.CLMemory.Mem.WRITE_ONLY)
+    // A, B are input buffers, C is for the result
+    val clBufferA = context.createFloatBuffer(globalWorkSize, com.jogamp.opencl.CLMemory.Mem.READ_ONLY)
+    val clBufferB = context.createFloatBuffer(globalWorkSize, com.jogamp.opencl.CLMemory.Mem.READ_ONLY)
+    val clBufferC = context.createFloatBuffer(globalWorkSize, com.jogamp.opencl.CLMemory.Mem.WRITE_ONLY)
 
-  println("used device memory: " + (clBufferA.getCLSize+clBufferB.getCLSize+clBufferC.getCLSize)/1000000 +"MB")
+    println("used device memory: " + (clBufferA.getCLSize+clBufferB.getCLSize+clBufferC.getCLSize)/1000000 +"MB")
 
-  // fill input buffers with random numbers
-  // (just to have test data; seed is fixed -> results will not change between runs).
-  fillBuffer(clBufferA.getBuffer, 12345)
-  fillBuffer(clBufferB.getBuffer, 67890)
+    // fill input buffers with random numbers
+    // (just to have test data; seed is fixed -> results will not change between runs).
+    fillBuffer(clBufferA.getBuffer, 12345)
+    fillBuffer(clBufferB.getBuffer, 67890)
 
-  // get a reference to the kernel function with the name 'VectorAdd'
-  // and map the buffers to its input parameters.
-  val kernel = program.createCLKernel("VectorAdd")
-  kernel.putArgs(clBufferA, clBufferB, clBufferC).putArg(elementCount)
+    // get a reference to the kernel function with the name 'VectorAdd'
+    // and map the buffers to its input parameters.
+    val kernel = program.createCLKernel("VectorAdd")
+    kernel.putArgs(clBufferA, clBufferB, clBufferC).putArg(elementCount)
 
-  // asynchronous write of data to GPU device,
-  // followed by blocking read to get the computed results back.
-  var time = System.nanoTime()
+    // asynchronous write of data to GPU device,
+    // followed by blocking read to get the computed results back.
+    var time = System.nanoTime()
 
-    queue.putWriteBuffer(clBufferA, false)
-    .putWriteBuffer(clBufferB, false)
-    .put1DRangeKernel(kernel, 0, globalWorkSize, localWorkSize)
-    .putReadBuffer(clBufferC, true)
+    queue.putWriteBuffer(clBufferA, false).putWriteBuffer(clBufferB, false).put1DRangeKernel(kernel, 0, globalWorkSize, localWorkSize).putReadBuffer(clBufferC, true)
 
-  time = System.nanoTime() - time
+    time = System.nanoTime() - time
 
-  // print first few elements of the resulting buffer to the console.
-  println("a+b=c results snapshot: ")
-  for(i <- 0 until 10)
-    print(clBufferC.getBuffer.get() + ", ")
+    // print first few elements of the resulting buffer to the console.
+    println("a+b=c results snapshot: ")
+
+    for(i <- 0 until 10) print(clBufferC.getBuffer.get() + ", ")
+
     println("...; " + clBufferC.getBuffer.remaining() + " more")
 
     println("computation took: "+(time/1000000)+"ms")
