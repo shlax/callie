@@ -64,9 +64,9 @@ object Hello extends App{
     // create command queue on device.
     val queue = device.createCommandQueue()
 
-    val elementCount = 1444477                                  // Length of arrays to process
-    val  localWorkSize = Math.min(device.getMaxWorkGroupSize, 256)  // Local work size dimensions
-    val globalWorkSize = roundUp(localWorkSize, elementCount)   // rounded up to the nearest multiple of the localWorkSize
+    val elementCount = 1444477                                    // Length of arrays to process
+    val localWorkSize = Math.min(device.getMaxWorkGroupSize, 256) // Local work size dimensions
+    val globalWorkSize = roundUp(localWorkSize, elementCount)     // rounded up to the nearest multiple of the localWorkSize
 
     // load sources, create and build program
     val program = context.createProgram(code).build()
