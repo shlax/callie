@@ -16,6 +16,9 @@ object Hello2 extends App{
       |    return;
       |  }
       |
+      |  int ar[2];
+      |  ar[0] = 1;
+      |
       |  // add the vector elements
       |  c[iGID * 2 + 0] = a[iGID * 2 + 0] + b[iGID * 2 + 0]; // = iGID;
       |  c[iGID * 2 + 1] = a[iGID * 2 + 1] + b[iGID * 2 + 1] + 1; // = iGID;
@@ -32,11 +35,12 @@ object Hello2 extends App{
     val queue = device.createCommandQueue()
 
     val program = context.createProgram(code).build()
-
-    println( device.getMaxComputeUnits+"/"+device.getMaxWorkGroupSize)
+    val kernel = program.createCLKernel("func")
 
     val units = device.getMaxComputeUnits
-    val size = device.getMaxWorkGroupSize
+    val size = kernel.getWorkGroupSize(device).toInt
+
+    println(device.getMaxComputeUnits+"/"+kernel.getWorkGroupSize(device)+"/"+device.getMaxWorkGroupSize+"/"+device.getGlobalMemSize)
 
     def fillBuffer(buffer : CLBuffer[IntBuffer], seed:Int) = {
       val buff = buffer.getBuffer
@@ -49,27 +53,37 @@ object Hello2 extends App{
     val clBufferB = fillBuffer( context.createIntBuffer(units*size * 2, com.jogamp.opencl.CLMemory.Mem.READ_ONLY), 2 )
     val clBufferC = context.createIntBuffer(units*size * 2, com.jogamp.opencl.CLMemory.Mem.WRITE_ONLY)
 
-    val kernel = program.createCLKernel("func")
+
     kernel.putArgs(clBufferA, clBufferB, clBufferC).putArg(units*size)
+    queue.putWriteBuffer(clBufferA, false)
 
-    var time = System.nanoTime()
+    for(i <- 0 until 2){
+      var time = System.nanoTime()
 
-    queue.putWriteBuffer(clBufferA, false).putWriteBuffer(clBufferB, false).put1DRangeKernel(kernel, 0, units*size, size).putReadBuffer(clBufferC, true)
+      queue.putWriteBuffer(clBufferB, false).put1DRangeKernel(kernel, 0, units*size, 0).putReadBuffer(clBufferC, true)
 
-    time = System.nanoTime() - time
+      time = System.nanoTime() - time
 
-    println((time/1000000)+"ms")
+      println((time/1000000)+"ms")
 
-    val buff = clBufferC.getBuffer
-    var i = 0
-    while(buff.remaining() != 0){
-      print(buff.get() + " ")
-      i += 1
-      if(i == 50){
-        println()
-        i = 0
+      val buff = clBufferC.getBuffer
+      var i = 0
+      while(buff.remaining() != 0){
+        print(buff.get() + " ")
+        i += 1
+        if(i == 50){
+          println()
+          i = 0
+        }
       }
+
+      println()
+
+      clBufferB.getBuffer.rewind()
+      clBufferC.getBuffer.rewind()
+
     }
+
   }finally {
     context.release()
   }

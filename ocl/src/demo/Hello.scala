@@ -76,6 +76,7 @@ object Hello extends App{
     val clBufferB = context.createFloatBuffer(globalWorkSize, com.jogamp.opencl.CLMemory.Mem.READ_ONLY)
     val clBufferC = context.createFloatBuffer(globalWorkSize, com.jogamp.opencl.CLMemory.Mem.WRITE_ONLY)
 
+
     println("used device memory: " + (clBufferA.getCLSize+clBufferB.getCLSize+clBufferC.getCLSize)/1000000 +"MB")
 
     // fill input buffers with random numbers
