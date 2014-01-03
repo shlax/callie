@@ -5,7 +5,7 @@ import org.callie.math.intr.Intr
 import org.callie.math.Vector3
 
 class IntrJoint(val offset:Matrix4, val ax: Intr, val ay:Intr, val az : Intr, 
-				val points:Traversable[(Vector3, Vector3)], val normals:Traversable[(Vector3, Vector3)] ) extends Joint{
+				val points:Array[(Vector3, Vector3)], val normals:Array[(Vector3, Vector3)] ) extends Joint{
   
   var rotX : Float = _
   var rotY : Float = _
@@ -16,8 +16,8 @@ class IntrJoint(val offset:Matrix4, val ax: Intr, val ay:Intr, val az : Intr,
     rotX = ax(time); rotY = ay(time); rotZ = az(time)
     val m = new Matrix4().rotZ(rotX) * n.rotY(rotY) * n.rotX(rotZ)
     
-    n ** (trans, offset) * m // next trans
-    m ** (normalTrans, m) // next normalTrans
+    n.mul(trans, offset) * m // next trans
+    m.mul(normalTrans, m) // next normalTrans
     
     //cluster(n, m)
     for(v <- points) n(v._1, v._2)

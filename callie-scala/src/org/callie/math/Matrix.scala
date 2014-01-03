@@ -29,9 +29,9 @@ class Matrix4(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  /
       out
   }
 
-  def * (m : Matrix4) : Matrix4 = ** (this, m)
+  def * (m : Matrix4) : Matrix4 = mul(this, m)
   
-  def ** (n : Matrix4, m : Matrix4) = {
+  def mul(n : Matrix4, m : Matrix4) = {
     val t00 = n.m00*m.m00 + n.m01*m.m10 + n.m02*m.m20 + n.m03*m.m30
     val t01 = n.m00*m.m01 + n.m01*m.m11 + n.m02*m.m21 + n.m03*m.m31
     val t02 = n.m00*m.m02 + n.m01*m.m12 + n.m02*m.m22 + n.m03*m.m32

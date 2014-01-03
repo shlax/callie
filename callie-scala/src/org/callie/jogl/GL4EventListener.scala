@@ -58,6 +58,7 @@ trait GL4EventListener extends GLEventListener with KeyListener with MouseListen
     gl.glViewport(x, y, width, height)
   }
 
+  var disposeTestures : List[Int] = Nil
   var disposeVbo : List[Int] = Nil
   var disposeVao : List[Int] = Nil
   var disposeProgram : List[Int] = Nil
@@ -67,6 +68,7 @@ trait GL4EventListener extends GLEventListener with KeyListener with MouseListen
 
     if(disposeVbo.size > 0) gl.glDeleteBuffers(disposeVbo.size, disposeVbo.toArray, 0)
     if(disposeVao.size > 0) gl.glDeleteVertexArrays(disposeVao.size, disposeVao.toArray, 0)
+    if(disposeTestures.size > 0) gl.glDeleteTextures(disposeTestures.size, disposeTestures.toArray, 0)
 
     for(p <- disposeProgram) gl.glDeleteProgram(p)
   }
@@ -82,6 +84,18 @@ trait GL4EventListener extends GLEventListener with KeyListener with MouseListen
 
   // implicit GL
 
+  def createTexture(f: =>Unit)(implicit gl : GL4) = {
+    val texId = &(gl.glGenTextures(1, _, 0))
+    bindTexture(texId)(f)
+    texId
+  }
+  
+  def bindTexture(tex:Int)(f: =>Unit)(implicit gl : GL4){
+    gl.glBindTexture(GL_4.TEXTURE_2D, tex)   
+    f
+    gl.glBindTexture(GL_4.TEXTURE_2D, 0)
+  }
+  
   def createVertexArray(f: =>Unit)(implicit gl : GL4) = {
     val vao = &(gl.glGenVertexArrays(1, _, 0))
     disposeVao = vao :: disposeVao
