@@ -70,7 +70,7 @@ class LinearJoint(parent:IntrTravJoint, ix:(LinearJoint.Value, Float), iy:(Linea
   override def apply(trans:Matrix4, normalTrans:Matrix4, time:Float){
     val n = Matrix4() 
     val m = Matrix4()
-    m.rotZ(iz._2 * value(iz._1)).mul(n.rotY(iy._2 * value(iy._1))).mul(n.rotY(ix._2 * value(ix._1)))
+    m.rotZ(iz._2 * value(iz._1)).mul(n.rotY(iy._2 * value(iy._1))).mul(n.rotX(ix._2 * value(ix._1)))
     
     n.mul(trans, m) // next trans
     m.mul(normalTrans, m) // next normalTrans
