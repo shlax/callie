@@ -55,10 +55,12 @@ class IntrTravJoint(offset:Matrix4, ax: Intr, ay:Intr, az : Intr, childs:Array[J
 }
 
 object LinearJoint extends Enumeration{
-   val X, Y, Z = Value
+  case class Parms(axis:Value, value:Float) 
+  
+  val X, Y, Z = Value
 }
 
-class LinearJoint(parent:IntrTravJoint, ix:(LinearJoint.Value, Float), iy:(LinearJoint.Value, Float), iz:(LinearJoint.Value, Float),
+class LinearJoint(parent:IntrTravJoint, ix:LinearJoint.Parms, iy:LinearJoint.Parms, iz:LinearJoint.Parms,
     								points:Array[(Vector3, Vector3)], normals:Array[(Vector3, Vector3)] ) extends Joint{
   
   def value(m:LinearJoint.Value) = m match {
@@ -70,7 +72,7 @@ class LinearJoint(parent:IntrTravJoint, ix:(LinearJoint.Value, Float), iy:(Linea
   override def apply(trans:Matrix4, normalTrans:Matrix4, time:Float){
     val n = Matrix4() 
     val m = Matrix4()
-    m.rotZ(iz._2 * value(iz._1)).mul(n.rotY(iy._2 * value(iy._1))).mul(n.rotX(ix._2 * value(ix._1)))
+    m.rotZ(iz.value * value(iz.axis)).mul(n.rotY(iy.value * value(iy.axis))).mul(n.rotX(ix.value * value(ix.axis)))
     
     n.mul(trans, m) // next trans
     m.mul(normalTrans, m) // next normalTrans
