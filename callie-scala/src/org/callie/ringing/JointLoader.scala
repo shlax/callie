@@ -2,8 +2,16 @@ package org.callie.ringing
 
 import scala.util.parsing.combinator.RegexParsers
 
-class Node{
-  
+trait Node{
+  //def joint() : Joint
+}
+
+case class IntNode(x: Float, y:Float, z:Float, childs:List[Node]) extends Node{
+  //override def joint() = new
+}
+
+case class LinNode(ix:LinearJoint.Parms, iy:LinearJoint.Parms, iz:LinearJoint.Parms, childs:List[Node])  extends Node{
+  //override def joint() = new 
 }
 
 object Node extends RegexParsers {
@@ -26,14 +34,33 @@ object Node extends RegexParsers {
   def linear : Parser[List[LinMapTp]] = "linear" ~> ":" ~> repsep(linMap, ",")
     
   def node : Parser[Node] = name ~ ("(" ~> ( normal | linear ) <~ ")" ) ~ ("[" ~> repsep(index, ",") <~ "]" ) ~ ( "{" ~> rep(node) <~ "}" ) ^^ { case nm ~ tp ~ pt ~ ch =>    
-    val n = new Node()
     tp match{
       case (x:Float, y:Float, z:Float) =>
-        
+        IntNode(x, y, z, ch)
       case m:List[_] =>
+        var ix = LinearJoint.Parms(LinearJoint.X, 0f)
+        var iy = LinearJoint.Parms(LinearJoint.Y, 0f) 
+        var iz = LinearJoint.Parms(LinearJoint.Z, 0f)
         
-    }
-    n
+        for(i <- m.asInstanceOf[List[LinMapTp]]){
+          val to = i._2 match{
+            case "x" => LinearJoint.X
+            case "y" => LinearJoint.Y
+            case "z" => LinearJoint.Z
+          }
+          
+          i._1 match {
+            case "x" => 
+              ix = LinearJoint.Parms(to, i._3)
+            case "y" =>
+              iy = LinearJoint.Parms(to, i._3)
+            case "z" =>
+              iz = LinearJoint.Parms(to, i._3)
+          }
+        }
+        
+        LinNode(ix, iy, iz, ch)
+    }    
   }
   
 }
