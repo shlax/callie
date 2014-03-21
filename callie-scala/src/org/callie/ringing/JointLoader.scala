@@ -1,17 +1,26 @@
 package org.callie.ringing
 
 import scala.util.parsing.combinator.RegexParsers
+import org.callie.math.{Matrix4, Vector3}
+import org.callie.math.intr.Accl
+import org.callie.Mod
 
 trait Node{
-  //def joint() : Joint
+  def joint(m:Mod) : Joint
 }
 
-case class IntNode(x: Float, y:Float, z:Float, childs:List[Node]) extends Node{
-  //override def joint() = new
+case class IntNode(v:Vector3, childs:List[Node]) extends Node{
+  override def joint(m:Mod) = {
+    val ax = new Accl; val ay = new Accl; val az = new Accl
+    val m = Matrix4(v)
+    
+    //if(childs.isEmpty) new IntrJoint(m, )
+    null
+  }
 }
 
 case class LinNode(ix:LinearJoint.Parms, iy:LinearJoint.Parms, iz:LinearJoint.Parms, childs:List[Node])  extends Node{
-  //override def joint() = new 
+  override def joint(m:Mod) = null
 }
 
 object Node extends RegexParsers {
@@ -36,7 +45,7 @@ object Node extends RegexParsers {
   def node : Parser[Node] = name ~ ("(" ~> ( normal | linear ) <~ ")" ) ~ ("[" ~> repsep(index, ",") <~ "]" ) ~ ( "{" ~> rep(node) <~ "}" ) ^^ { case nm ~ tp ~ pt ~ ch =>    
     tp match{
       case (x:Float, y:Float, z:Float) =>
-        IntNode(x, y, z, ch)
+        IntNode(Vector3(x, y, z), ch)
       case m:List[_] =>
         var ix = LinearJoint.Parms(LinearJoint.X, 0f)
         var iy = LinearJoint.Parms(LinearJoint.Y, 0f) 

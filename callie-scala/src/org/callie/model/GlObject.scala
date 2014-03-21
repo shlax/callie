@@ -61,7 +61,7 @@ class TextureGroup(ev: GL4EventListener, image:String, objs:GlObject*) extends O
   
 }
 
-class MorfingObject(ev:GL4EventListener, m:Mod) extends GlObject{
+/* class MorfingObject(ev:GL4EventListener, m:Mod) extends GlObject{
   val (coords, indices, projPoint, projNormals) = {
     // stack
     val s = ListBuffer[Mod.vtn]()
@@ -140,7 +140,7 @@ class MorfingObject(ev:GL4EventListener, m:Mod) extends GlObject{
       }     
     }
   }
-}
+} */
 
 class StaticObject(ev:GL4EventListener, m:Mod) extends GlObject{
   
