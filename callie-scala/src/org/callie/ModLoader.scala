@@ -55,18 +55,17 @@ object Mod extends RegexParsers {
       | faces ^^ (m.faces = _)
     )
 
-  def apply(r:CharSequence) ={
+  def apply(r:CharSequence) = {
     val m = new Mod()
     parseAll(value(m), r)
     m
   }
 
-  def apply(r:Reader) ={
+  def apply(r:Reader) = try{
     val m = new Mod()
     parseAll(value(m), r)
-    r.close()
     m
-  }
+  }finally { r.close() }
 
 }
 

@@ -3,35 +3,47 @@ package org.callie.math
 object Matrix4{
   def apply() = new Matrix4()
   
+  def apply(v: Vector3) = new Matrix4(v)
+  
   def apply(m00: Float, m01: Float, m02: Float, m03: Float,
-			m10: Float, m11: Float, m12: Float, m13: Float,
-			m20: Float, m21: Float, m22: Float, m23: Float,
-			m30: Float, m31: Float, m32: Float, m33: Float) = new Matrix4(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33)
+            m10: Float, m11: Float, m12: Float, m13: Float,
+            m20: Float, m21: Float, m22: Float, m23: Float,
+            m30: Float, m31: Float, m32: Float, m33: Float) = new Matrix4(m00, m01, m02, m03, 
+                                                                          m10, m11, m12, m13, 
+                                                                          m20, m21, m22, m23, 
+                                                                          m30, m31, m32, m33)
 }
 
 class Matrix4(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  // 0  1  2  3
-			  var m10: Float, var m11: Float, var m12: Float, var m13: Float,  // 4  5  6  7
-			  var m20: Float, var m21: Float, var m22: Float, var m23: Float,  // 8  9  10 11
-			  var m30: Float, var m31: Float, var m32: Float, var m33: Float) {// 12 13 14 15
+              var m10: Float, var m11: Float, var m12: Float, var m13: Float,  // 4  5  6  7
+              var m20: Float, var m21: Float, var m22: Float, var m23: Float,  // 8  9  10 11
+              var m30: Float, var m31: Float, var m32: Float, var m33: Float) {// 12 13 14 15
 
   def this() = this(1, 0, 0, 0,
-				    0, 1, 0, 0,
-				    0, 0, 1, 0,
-				    0, 0, 0, 1)
+                    0, 1, 0, 0,
+                    0, 0, 1, 0,
+                    0, 0, 0, 1)
 
+  def this(v:Vector3) = this(1, 0, 0, v.x,
+                 		         0, 1, 0, v.y,
+                 		         0, 0, 1, v.z,
+                 		         0, 0, 0, 1)
+                    		
+                    
+                    
   def apply(v: Vector3) : Vector3 = apply(v, v)
   
   def apply(in: Vector3, out : Vector3) = {
-	  val x = m00*in.x + m01*in.y + m02*in.z + m03
+	    val x = m00*in.x + m01*in.y + m02*in.z + m03
       val y = m10*in.x + m11*in.y + m12*in.z + m13
       val z = m20*in.x + m21*in.y + m22*in.z + m23
       out.x = x; out.y =y; out.z = z 
       out
   }
 
-  def * (m : Matrix4) : Matrix4 = ** (this, m)
+  def mul (m : Matrix4) : Matrix4 = mul(this, m)
   
-  def ** (n : Matrix4, m : Matrix4) = {
+  def mul(n : Matrix4, m : Matrix4) = {
     val t00 = n.m00*m.m00 + n.m01*m.m10 + n.m02*m.m20 + n.m03*m.m30
     val t01 = n.m00*m.m01 + n.m01*m.m11 + n.m02*m.m21 + n.m03*m.m31
     val t02 = n.m00*m.m02 + n.m01*m.m12 + n.m02*m.m22 + n.m03*m.m32
