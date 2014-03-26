@@ -11,8 +11,8 @@ abstract class Node(ind:List[Int]){
   
   def apply(ev:GL4EventListener, m:Mod) ={
     val o = new MorfingObject(ev, m)
-    join(o.projPoint.zipWithIndex.collect{ case (p, i) if ind.contains(i) => p }, 
-         o.projNormals.zipWithIndex.collect{ case (p, i) if ind.contains(i) => p })
+    join(ind.map(o.projPoint(_)).toArray,
+         ind.map(o.projNormals(_)).toArray)
   }
   
   type Mapping = Array[(Vector3, Vector3)]
@@ -30,7 +30,8 @@ class IntNode(v:Vector3, ind:List[Int], childs:List[Node]) extends Node(ind){
       val ch = new Array[Joint](childs.size)
       val j = new IntrTravJoint(m, ax, ay, az, ch, coord, normals)
       val sj = Some(j)
-      childs.zipWithIndex.foreach{ i => ch(i._2) = i._1.join(coord, normals, sj) }
+      //childs.zipWithIndex.foreach{ i => ch(i._2) = i._1.join(coord, normals, sj) }
+      for(i <- 0 until ch.length) ch(i) = childs(i).join(coord, normals, sj)
       j
     }
   }
