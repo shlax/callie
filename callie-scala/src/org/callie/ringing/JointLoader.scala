@@ -9,10 +9,10 @@ import org.callie.Mod
 
 abstract class Node(ind:List[Int]){
   
-  def apply(ev:GL4EventListener, m:Mod) ={
+  def apply(ev:GL4EventListener, m:Mod) = {
     val o = new MorfingObject(ev, m)
-    join(ind.map(o.projPoint(_)).toArray,
-         ind.map(o.projNormals(_)).toArray)
+    (o, join(ind.map(o.projPoint(_)).toArray,
+        ind.map(o.projNormals(_)).toArray) )
   }
   
   type Mapping = Array[(Vector3, Vector3)]

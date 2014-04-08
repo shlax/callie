@@ -1,6 +1,5 @@
 package org.callie
 
-import org.callie.math.intr.Accl
 import java.awt.{BorderLayout, Frame}
 import javax.media.opengl.{GLCapabilities, GLProfile }
 import javax.media.opengl.awt.GLCanvas
@@ -10,9 +9,7 @@ import javax.media.opengl.GLEventListener
 import javax.media.opengl.GLAutoDrawable
 //import javax.media.opengl.{GL4, GL3, GL2GL3, GL2ES2, GL, GLBase}
 import org.callie.jogl.GL_4
-import java.nio.FloatBuffer
 import com.jogamp.opengl.util.FPSAnimator
-import com.jogamp.opengl.util.GLBuffers
 import com.jogamp.common.nio.Buffers
 
 // http://www.arcsynthesis.org/gltut/index.html
@@ -21,7 +18,7 @@ import com.jogamp.common.nio.Buffers
 
 // http://gamedev.stackexchange.com/questions/20584/error-when-trying-to-use-vbo-array-vertex-buffer-object-must-be-disabled-to-cal
 object Main extends App {
-
+	
   val vertex =
     """
       |#version 400
