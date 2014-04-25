@@ -20,15 +20,15 @@ abstract class Node(ind:List[Int]){
   def join(coord : Mapping, normals: Mapping, parent:Option[IntrTravJoint] = None) : Joint
 }
 
-class IntNode(v:Vector3, ind:List[Int], childs:List[Node]) extends Node(ind){
+class IntNode(name:String, v:Vector3, ind:List[Int], childs:List[Node]) extends Node(ind){
   override def join(coord : Mapping, normals: Mapping, parent:Option[IntrTravJoint]) = {
     val ax = new Accl; val ay = new Accl; val az = new Accl
     val m = Matrix4(v)
     
-    if(childs.isEmpty) new IntrJoint(m, ax, ay, az, coord, normals)
+    if(childs.isEmpty) new IntrJoint(name, m, ax, ay, az, coord, normals)
     else{
       val ch = new Array[Joint](childs.size)
-      val j = new IntrTravJoint(m, ax, ay, az, ch, coord, normals)
+      val j = new IntrTravJoint(name, m, ax, ay, az, ch, coord, normals)
       val sj = Some(j)
       //childs.zipWithIndex.foreach{ i => ch(i._2) = i._1.join(coord, normals, sj) }
       for(i <- 0 until ch.length) ch(i) = childs(i).join(coord, normals, sj)
@@ -37,8 +37,9 @@ class IntNode(v:Vector3, ind:List[Int], childs:List[Node]) extends Node(ind){
   }
 }
 
-class LinNode(ix:LinearJoint.Parms, iy:LinearJoint.Parms, iz:LinearJoint.Parms, ind:List[Int])  extends Node(ind){
-  override def join(coord : Mapping, normals: Mapping, parent:Option[IntrTravJoint]) = new LinearJoint(parent.get, ix, iy, iz, coord, normals)  
+class LinNode(name:String,
+              ix:LinearJoint.Parms, iy:LinearJoint.Parms, iz:LinearJoint.Parms, ind:List[Int])  extends Node(ind){
+  override def join(coord : Mapping, normals: Mapping, parent:Option[IntrTravJoint]) = new LinearJoint(name, parent.get, ix, iy, iz, coord, normals)
 }
 
 object Node extends RegexParsers {
@@ -63,7 +64,7 @@ object Node extends RegexParsers {
   def node : Parser[Node] = name ~ ("(" ~> ( normal | linear ) <~ ")" ) ~ ("[" ~> repsep(index, ",") <~ "]" ) ~ ( "{" ~> rep(node) <~ "}" ).? ^^ { case nm ~ tp ~ pt ~ ch =>    
     tp match{
       case (x:Float, y:Float, z:Float) =>
-        new IntNode(Vector3(x, y, z), pt, ch.getOrElse(Nil))
+        new IntNode(nm, Vector3(x, y, z), pt, ch.getOrElse(Nil))
       case m:List[_] =>
         assert(ch.isEmpty)
         
@@ -88,7 +89,7 @@ object Node extends RegexParsers {
           }
         }
         
-        new LinNode(ix, iy, iz, pt)
+        new LinNode(nm, ix, iy, iz, pt)
     }    
   }
   

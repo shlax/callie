@@ -6,14 +6,26 @@ import org.callie.math.Vector3
 
 trait Joint {
 
+  def name:String
+
   /** time s intervalu <0,1>  */
   def apply(trans : Matrix4, normalTrans : Matrix4, time:Float)// : (Matrix4, Matrix4)
-//def set(ax:Float, ay:Float, az:Float) 
-  
+
 }
 
-class IntrJoint(offset:Matrix4, ax: Intr, ay:Intr, az : Intr, 
-				points:Array[(Vector3, Vector3)], normals:Array[(Vector3, Vector3)] ) extends Joint{
+trait JointIntr extends Joint{
+  val ax: Intr
+  val ay: Intr
+  val az: Intr
+}
+
+trait JointTrav extends Joint{
+  val childs:Array[Joint]
+}
+
+class IntrJoint(override val name:String,
+                offset:Matrix4, override val ax: Intr, override val  ay:Intr, override val  az : Intr,
+				        points:Array[(Vector3, Vector3)], normals:Array[(Vector3, Vector3)] ) extends JointIntr{
   
   var rotX : Float = _
   var rotY : Float = _
@@ -42,8 +54,9 @@ class IntrJoint(offset:Matrix4, ax: Intr, ay:Intr, az : Intr,
 }
 
 /** join hierarchy */
-class IntrTravJoint(offset:Matrix4, ax: Intr, ay:Intr, az : Intr, childs:Array[Joint], 
-                    points:Array[(Vector3, Vector3)], normals:Array[(Vector3, Vector3)] ) extends IntrJoint(offset, ax, ay, az, points, normals){
+class IntrTravJoint(name:String,
+                    offset:Matrix4, ax: Intr, ay:Intr, az : Intr, override val childs:Array[Joint],
+                    points:Array[(Vector3, Vector3)], normals:Array[(Vector3, Vector3)] ) extends IntrJoint(name, offset, ax, ay, az, points, normals) with JointTrav{
 
   override def apply(trans : Matrix4, normalTrans : Matrix4, time:Float){
     val n = Matrix4() 
@@ -60,8 +73,9 @@ object LinearJoint extends Enumeration{
   val X, Y, Z = Value
 }
 
-class LinearJoint(parent:IntrTravJoint, ix:LinearJoint.Parms, iy:LinearJoint.Parms, iz:LinearJoint.Parms,
-    								points:Array[(Vector3, Vector3)], normals:Array[(Vector3, Vector3)] ) extends Joint{
+class LinearJoint(override val name:String,
+                  parent:IntrTravJoint, ix:LinearJoint.Parms, iy:LinearJoint.Parms, iz:LinearJoint.Parms,
+    							points:Array[(Vector3, Vector3)], normals:Array[(Vector3, Vector3)] ) extends Joint{
   
   def value(m:LinearJoint.Value) = m match {
     case LinearJoint.X => parent.rotX

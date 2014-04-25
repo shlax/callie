@@ -69,23 +69,23 @@ object Mod extends RegexParsers {
 
 }
 
-object ModLoaderTst extends App{
-  val m = Mod(
-    """
-      |v = [(0.18,-0.98,-0.07)
-      |     (0.13,-0.98,-0.13)]
-      |t = [(0   ,0.06)
-      |     (0.06,0.06)
-      |     (0.12,0.06)]
-      |n = [(0.2 ,-0.07,-0.9e-1)
-      |     (0.15,-0.97,-0.1   )]
-      |f = [{(0 ,0 ,0)(1,1,1)(16,17,2)}
-      |     {(16,17,2)(1,1,1)(17,18,3)}]
-    """.stripMargin)
-
-  println(m.points)
-  println(m.normals)
-  println(m.uvCoord)
-
-  println(m.faces)
-}
+//object ModLoaderTst extends App{
+//  val m = Mod(
+//    """
+//      |v = [(0.18,-0.98,-0.07)
+//      |     (0.13,-0.98,-0.13)]
+//      |t = [(0   ,0.06)
+//      |     (0.06,0.06)
+//      |     (0.12,0.06)]
+//      |n = [(0.2 ,-0.07,-0.9e-1)
+//      |     (0.15,-0.97,-0.1   )]
+//      |f = [{(0 ,0 ,0)(1,1,1)(16,17,2)}
+//      |     {(16,17,2)(1,1,1)(17,18,3)}]
+//    """.stripMargin)
+//
+//  println(m.points)
+//  println(m.normals)
+//  println(m.uvCoord)
+//
+//  println(m.faces)
+//}
