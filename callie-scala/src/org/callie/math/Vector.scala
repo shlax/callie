@@ -7,17 +7,41 @@ trait Vector3{
   def x:Float; def x_=(v:Float)
   def y:Float; def y_=(v:Float)
   def z:Float; def z_=(v:Float)
-  
-  
+
   def len2 = x*x + y*y + z*z
   def len = Math.sqrt(len2).asInstanceOf[Float]
-  
+
+  def normalize() = {
+    val l = len
+    x = x / l
+    y = y / l
+    z = z / l
+    this
+  }
+
   def cross(v1:Vector3, v2:Vector3) = {
     x = v1.y * v2.z - v1.z * v2.y
     y = v1.z * v2.x - v1.x * v2.z
     z = v1.x * v2.y - v1.y * v2.x
     this
   }
+
+  def add(a:Vector3, b:Vector3) = {
+    x = a.x + b.x
+    y = a.y + b.y
+    z = a.z + b.z
+    this
+  }
+
+  def sub(a:Vector3, b:Vector3) = {
+    x = a.x - b.x
+    y = a.y - b.y
+    z = a.z - b.z
+    this
+  }
+
+  override def toString = "("+x+",\t"+y+",\t"+z+")"
+
 }
 
 object Vector3{
@@ -26,8 +50,18 @@ object Vector3{
   def apply(v : Array[Float], i: Array[Int]) : Vector3 = new VectorProjection(v, i)
     
   def cross(v1:Vector3, v2:Vector3) = new VectorVar(v1.y * v2.z - v1.z * v2.y, 
-		  										    v1.z * v2.x - v1.x * v2.z, 
-		  										    v1.x * v2.y - v1.y * v2.x)
+		  										                          v1.z * v2.x - v1.x * v2.z,
+		  										                          v1.x * v2.y - v1.y * v2.x)
+
+  def add(a:Vector3, b:Vector3) = new VectorVar(a.x + b.x, a.y + b.y, a.z + b.z)
+
+  def sub(a:Vector3, b:Vector3) = new VectorVar(a.x - b.x, a.y - b.y, a.z - b.z)
+
+  def normalize(v:Vector3){
+    val l = v.len
+    new VectorVar(v.x / l, v.y / l, v.z / l)
+  }
+
 }
 
 class VectorVar(var x : Float, var y : Float, var z : Float) extends Vector3 {

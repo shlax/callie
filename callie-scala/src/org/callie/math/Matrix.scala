@@ -19,15 +19,15 @@ class Matrix4(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  /
               var m20: Float, var m21: Float, var m22: Float, var m23: Float,  // 8  9  10 11
               var m30: Float, var m31: Float, var m32: Float, var m33: Float) {// 12 13 14 15
 
-  def this() = this(1, 0, 0, 0,
-                    0, 1, 0, 0,
-                    0, 0, 1, 0,
-                    0, 0, 0, 1)
+  def this() = this(1f, 0f, 0f, 0f,
+                    0f, 1f, 0f, 0f,
+                    0f, 0f, 1f, 0f,
+                    0f, 0f, 0f, 1f)
 
-  def this(v:Vector3) = this(1, 0, 0, v.x,
-                 		         0, 1, 0, v.y,
-                 		         0, 0, 1, v.z,
-                 		         0, 0, 0, 1)
+  def this(v:Vector3) = this(1f, 0f, 0f, v.x,
+                 		         0f, 1f, 0f, v.y,
+                 		         0f, 0f, 1f, v.z,
+                 		         0f, 0f, 0f, 1f)
                     		
                     
                     
@@ -73,10 +73,10 @@ class Matrix4(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  /
   }
   
   def update(v: Vector3) = {
-    m00 = 1; m01 = 0; m02 = 0; m03 = v.x
-    m10 = 0; m11 = 1; m12 = 0; m13 = v.y
-    m20 = 0; m21 = 0; m22 = 1; m23 = v.z
-    m30 = 0; m31 = 0; m32 = 0; m33 = 1
+    m00 = 1f; m01 = 0f; m02 = 0f; m03 = v.x
+    m10 = 0f; m11 = 1f; m12 = 0f; m13 = v.y
+    m20 = 0f; m21 = 0f; m22 = 1f; m23 = v.z
+    m30 = 0f; m31 = 0f; m32 = 0f; m33 = 1f
     
     this
   }
@@ -85,10 +85,10 @@ class Matrix4(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  /
     val s = Math.sin(angle).asInstanceOf[Float]
     val c = Math.cos(angle).asInstanceOf[Float]
 
-    m00 = 1; m01 = 0; m02 = 0 ; m03 = 0
-    m10 = 0; m11 = c; m12 = -s; m13 = 0
-    m20 = 0; m21 = s; m22 = c ; m23 = 0
-    m30 = 0; m31 = 0; m32 = 0 ; m33 = 1
+    m00 = 1f; m01 = 0f; m02 = 0f; m03 = 0f
+    m10 = 0f; m11 = c ; m12 = -s; m13 = 0f
+    m20 = 0f; m21 = s ; m22 = c ; m23 = 0f
+    m30 = 0f; m31 = 0f; m32 = 0f; m33 = 1f
     
     this
   }
@@ -97,10 +97,10 @@ class Matrix4(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  /
     val s = Math.sin(angle).asInstanceOf[Float]
     val c = Math.cos(angle).asInstanceOf[Float]
 
-    m00 = c ; m01 = 0; m02 = s; m03 = 0
-    m10 = 0 ; m11 = 1; m12 = 0; m13 = 0
-    m20 = -s; m21 = 0; m22 = c; m23 = 0
-    m30 = 0 ; m31 = 0; m32 = 0; m33 = 1
+    m00 = c ; m01 = 0f; m02 = s ; m03 = 0f
+    m10 = 0f; m11 = 1f; m12 = 0f; m13 = 0f
+    m20 = -s; m21 = 0f; m22 = c ; m23 = 0f
+    m30 = 0f; m31 = 0f; m32 = 0f; m33 = 1f
     
     this
   }
@@ -109,12 +109,17 @@ class Matrix4(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  /
     val s = Math.sin(angle).asInstanceOf[Float]
     val c = Math.cos(angle).asInstanceOf[Float]
 
-    m00 = c; m01 = -s; m02 = 0; m03 = 0
-    m10 = s; m11 = c ; m12 = 0; m13 = 0
-    m20 = 0; m21 = 0 ; m22 = 1; m23 = 0
-    m30 = 0; m31 = 0 ; m32 = 0; m33 = 1
+    m00 = c ; m01 = -s; m02 = 0f; m03 = 0f
+    m10 = s ; m11 = c ; m12 = 0f; m13 = 0f
+    m20 = 0f; m21 = 0f; m22 = 1f; m23 = 0f
+    m30 = 0f; m31 = 0f; m32 = 0f; m33 = 1f
     
     this
   }
-  
+
+  override def toString = "("+m00+",\t"+m01+",\t"+m02+",\t"+m03+"\n"+
+                          " "+m10+",\t"+m11+",\t"+m12+",\t"+m13+"\n"+
+                          " "+m20+",\t"+m21+",\t"+m22+",\t"+m23+"\n"+
+                          " "+m30+",\t"+m31+",\t"+m32+",\t"+m33+")"
+
 }

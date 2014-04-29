@@ -1,8 +1,8 @@
 package org.callie.input
 
-import java.awt.event.{MouseEvent, KeyEvent, MouseListener, KeyListener}
+import java.awt.event.{MouseEvent, KeyEvent, MouseListener, KeyListener, MouseMotionListener}
 
-object Inputs extends KeyListener with MouseListener{
+object Inputs extends KeyListener with MouseListener with MouseMotionListener{
 
   def hasKey(k:Int) = lockKb.synchronized{ keys.contains(k) }
   def hasButton(b:Int) = lockMb.synchronized{ buttons.companion(b) }
@@ -87,7 +87,18 @@ object Inputs extends KeyListener with MouseListener{
     }
   }
 
+  // motion
+
+  override def mouseMoved(e: MouseEvent){
+
+  }
+
+  override def mouseDragged(e: MouseEvent){
+
+  }
+
   // none
+
   override def mouseExited(e: MouseEvent){}
   override def mouseEntered(e: MouseEvent){}
 }
