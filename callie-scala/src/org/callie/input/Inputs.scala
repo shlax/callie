@@ -25,6 +25,15 @@ object Inputs extends KeyListener with MouseListener{
     }
   }
 
+  def clear(){
+    lockMe.synchronized{
+      mouseEvents = Nil
+    }
+    lockKe.synchronized{
+      keyEvents = Nil
+    }
+  }
+
   // impl
 
   var lockMb = new Object

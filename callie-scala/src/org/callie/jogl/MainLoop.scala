@@ -16,6 +16,7 @@ object MainLoop extends App {
     override def displayGL4(implicit gl: GL4){
       Physics.update()
       Graphics.display(gl)
+      Inputs.clear()
     }
   })
 }
