@@ -9,6 +9,19 @@ import org.callie.math.Vector3
 import org.callie.Mod
 import buffers._
 
+object Graphics{
+  var parts:Array[GlObject] = Array()
+
+  def init(gl:GL4){
+    for(o <- parts)o.init(gl)
+  }
+
+  def display(gl:GL4){
+    for(o <- parts)o.display(gl)
+  }
+
+}
+
 trait GlObject{
 
   def init(implicit gl:GL4)

@@ -1,7 +1,7 @@
 package org.callie.jogl
 
 import java.awt.{Frame, BorderLayout}
-import java.awt.event.{WindowAdapter, WindowEvent}
+import java.awt.event.{MouseListener, KeyListener, WindowAdapter, WindowEvent}
 import javax.media.opengl.{GLProfile, GLCapabilities, GLEventListener}
 import javax.media.opengl.awt.GLCanvas
 import com.jogamp.opengl.util.FPSAnimator
@@ -33,11 +33,19 @@ object JoglFrame {
   frame.add(glCanvas, BorderLayout.CENTER)
   frame.pack()
 
-  def apply(el:GL4EventListener){
+  def key(k: KeyListener) = {
+    glCanvas.addKeyListener(k)
+    this
+  }
+
+  def mouse(m: MouseListener) = {
+    glCanvas.addMouseListener(m)
+    this
+  }
+
+
+  def gl(el:GL4EventListener){
     glCanvas.addGLEventListener(el)
-    glCanvas.addKeyListener(el)
-    glCanvas.addMouseMotionListener(el)
-    glCanvas.addMouseListener(el)
     frame.setVisible(true)
     //animator.start()
   }

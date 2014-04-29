@@ -48,7 +48,7 @@ object MainDyn extends App{
     2, 3, 0
   )
 
-  JoglFrame(new GL4EventListener(){
+  JoglFrame.gl(new GL4EventListener(){
 
     override def initGL4(implicit gl: GL4) {
       val p = createProgram(createShader(GL_4.VERTEX_SHADER, vertex),

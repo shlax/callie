@@ -54,7 +54,7 @@ object MainIndTex extends App{
     2, 3, 0
   )
 
-  JoglFrame(new GL4EventListener(){
+  JoglFrame.gl(new GL4EventListener(){
     //var texture : TextureData = _
     var texId : Int = _
 
