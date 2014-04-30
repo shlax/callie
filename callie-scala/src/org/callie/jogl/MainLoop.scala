@@ -7,7 +7,7 @@ import org.callie.input.{Camera, Inputs}
 object MainLoop extends App {
   // load stuff
 
-  JoglFrame.key(Inputs).mouse(Inputs).gl(new GL4EventListener(){
+  JoglFrame(new GL4EventListener(){
     override def initGL4(implicit gl: GL4){
       Physics.init()
       Graphics.init(gl)
@@ -18,7 +18,6 @@ object MainLoop extends App {
       Physics.update()
       Graphics.display(gl)
       Camera.display(gl)
-      Inputs.clear()
     }
   })
 }

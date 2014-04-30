@@ -1,10 +1,11 @@
 package org.callie.jogl
 
-import java.awt.{Point, Frame, BorderLayout}
-import java.awt.event.{MouseListener, KeyListener, WindowAdapter, WindowEvent}
-import javax.media.opengl.{GLProfile, GLCapabilities, GLEventListener}
+import java.awt.{Robot, Frame, BorderLayout}
+import java.awt.event._
+import javax.media.opengl.{GLProfile, GLCapabilities}
 import javax.media.opengl.awt.GLCanvas
 import com.jogamp.opengl.util.FPSAnimator
+import org.callie.input.Inputs
 
 object JoglFrame {
 
@@ -17,7 +18,7 @@ object JoglFrame {
       frame.dispose()
     }
   })
-  
+
   //println(GLProfile.glAvailabilityToString)
   
   val profile = GLProfile.get(GLProfile.GL4)
@@ -33,23 +34,40 @@ object JoglFrame {
   frame.add(glCanvas, BorderLayout.CENTER)
   frame.pack()
 
-  def point : Point = glCanvas.getLocationOnScreen
+  val robot = new Robot()
+  glCanvas.addMouseMotionListener(new MouseMotionAdapter {
+    override def mouseMoved(e: MouseEvent){
+      val w2 = glCanvas.getWidth / 2
+      val h2 = glCanvas.getHeight / 2
 
-  def key(k: KeyListener) = {
-    glCanvas.addKeyListener(k)
-    this
-  }
+      val p = e.getPoint
+      Inputs.mouseX += p.x - w2
+      Inputs.mouseY += p.y - h2
 
-  def mouse(m: MouseListener) = {
-    glCanvas.addMouseListener(m)
-    this
-  }
+      val sp = glCanvas.getLocationOnScreen
+      robot.mouseMove(sp.x + w2, sp.y + h2)
+    }
+  })
 
+  glCanvas.addKeyListener(new KeyAdapter {
+    override def keyPressed(e: KeyEvent){
+      if(e.getKeyCode == KeyEvent.VK_W) Inputs.w = true
+      else if(e.getKeyCode == KeyEvent.VK_A) Inputs.a = true
+      else if(e.getKeyCode == KeyEvent.VK_S) Inputs.s = true
+      else if(e.getKeyCode == KeyEvent.VK_D) Inputs.d = true
+    }
+    override def keyReleased(e: KeyEvent){
+      if(e.getKeyCode == KeyEvent.VK_W) Inputs.w = false
+      else if(e.getKeyCode == KeyEvent.VK_A) Inputs.a = false
+      else if(e.getKeyCode == KeyEvent.VK_S) Inputs.s = false
+      else if(e.getKeyCode == KeyEvent.VK_D) Inputs.d = false
+    }
+  })
 
-  def gl(el:GL4EventListener){
+  def apply(el:GL4EventListener){
     glCanvas.addGLEventListener(el)
     frame.setVisible(true)
-    //animator.start()
+    animator.start()
   }
   
 }

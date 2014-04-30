@@ -23,9 +23,9 @@ object Camera {
 
     // viewing matrix
     val m = Matrix4(right.x, tmp.x, -forward.x, 0f,
-      right.y, tmp.y, -forward.y, 0f,
-      right.z, tmp.z, -forward.z, 0f,
-      0f    , 0f   , 0f        , 1f)
+                    right.y, tmp.y, -forward.y, 0f,
+                    right.z, tmp.z, -forward.z, 0f,
+                    0f     , 0f   , 0f        , 1f)
 
     Matrix4(Vector3(-position.x, -position.y, -position.z)).mul(m)
   }
