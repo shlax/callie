@@ -1,6 +1,6 @@
 package org.callie.jogl
 
-import java.awt.{Frame, BorderLayout}
+import java.awt.{Point, Frame, BorderLayout}
 import java.awt.event.{MouseListener, KeyListener, WindowAdapter, WindowEvent}
 import javax.media.opengl.{GLProfile, GLCapabilities, GLEventListener}
 import javax.media.opengl.awt.GLCanvas
@@ -32,6 +32,8 @@ object JoglFrame {
   frame.setLayout(new BorderLayout())
   frame.add(glCanvas, BorderLayout.CENTER)
   frame.pack()
+
+  def point : Point = glCanvas.getLocationOnScreen
 
   def key(k: KeyListener) = {
     glCanvas.addKeyListener(k)

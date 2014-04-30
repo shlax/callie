@@ -34,6 +34,14 @@ object Inputs extends KeyListener with MouseListener with MouseMotionListener{
     }
   }
 
+  def x() = {
+
+  }
+
+  def y() = {
+
+  }
+
   // impl
 
   var lockMb = new Object
