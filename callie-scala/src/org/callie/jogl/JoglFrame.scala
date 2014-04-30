@@ -20,7 +20,7 @@ object JoglFrame {
   })
 
   //println(GLProfile.glAvailabilityToString)
-  
+
   val profile = GLProfile.get(GLProfile.GL4)
   val capabilities = new GLCapabilities(profile)
   capabilities.setSampleBuffers(true) // FSAA
