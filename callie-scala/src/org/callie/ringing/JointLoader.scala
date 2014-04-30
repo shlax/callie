@@ -48,7 +48,7 @@ object Node extends RegexParsers {
 
   def float: Parser[Float] = """[+-]?(\d+(\.\d*)?|\d*\.\d+)([eE][+-]?\d+)?""".r ^^ (_.toFloat)
   
-  def name: Parser[String] = "[a-zA-Z0-9_]+".r // ^^ (_.toInt)
+  def name: Parser[String] = "[a-zA-Z0-9_]+".r
   
   def normal : Parser[(Float, Float, Float)] = "normal" ~> ":" ~> repsep(float, ",") ^^ { a =>
     assert(a.size == 3)

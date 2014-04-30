@@ -6,10 +6,10 @@ class KeyValue(a:Intr, v:Float){
   def apply(){ a() = v }
 }
 
-class KeyJoint(x:KeyValue, y:KeyValue, z:KeyValue){
-  def apply(){ x(); y(); z() }
+class KeyJoint(v:Array[KeyValue]){
+  def apply(){ for(t <- v) t() }
 }
 
-class KeyFrame(joints:List[KeyJoint]) {
+class KeyFrame(joints:Array[KeyJoint]) {
   def apply(){ for (j <- joints) j() }
 }
