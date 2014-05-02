@@ -5,6 +5,8 @@ import org.callie.math.{Matrix4, Vector3}
 import org.callie.math.intr.Accl
 import org.callie.jogl.GL4EventListener
 import org.callie.model.{Mod, MorfingObject}
+import org.callie.math.Axis
+import Axis.AxisValue
 
 abstract class Node(ind:List[Int]){
   
@@ -37,7 +39,7 @@ class IntNode(name:String, v:Vector3, ind:List[Int], childs:List[Node]) extends 
 }
 
 class LinNode(name:String,
-              ix:LinearJoint.Parms, iy:LinearJoint.Parms, iz:LinearJoint.Parms, ind:List[Int])  extends Node(ind){
+              ix:AxisValue, iy:AxisValue, iz:AxisValue, ind:List[Int])  extends Node(ind){
   override def join(coord : Mapping, normals: Mapping, parent:Option[IntrTravJoint]) = new LinearJoint(name, parent.get, ix, iy, iz, coord, normals)
 }
 
@@ -67,24 +69,20 @@ object Node extends RegexParsers {
       case m:List[_] =>
         assert(ch.isEmpty)
         
-        var ix = LinearJoint.Parms(LinearJoint.X, 0f)
-        var iy = LinearJoint.Parms(LinearJoint.Y, 0f) 
-        var iz = LinearJoint.Parms(LinearJoint.Z, 0f)
+        var ix = AxisValue(Axis.X, 0f)
+        var iy = AxisValue(Axis.Y, 0f)
+        var iz = AxisValue(Axis.Z, 0f)
         
         for(i <- m.asInstanceOf[List[LinMapTp]]){
-          val to = i._2 match{
-            case "x" => LinearJoint.X
-            case "y" => LinearJoint.Y
-            case "z" => LinearJoint.Z
-          }
+          val to = Axis(i._2)
           
           i._1 match {
             case "x" => 
-              ix = LinearJoint.Parms(to, i._3)
+              ix = AxisValue(to, i._3)
             case "y" =>
-              iy = LinearJoint.Parms(to, i._3)
+              iy = AxisValue(to, i._3)
             case "z" =>
-              iz = LinearJoint.Parms(to, i._3)
+              iz = AxisValue(to, i._3)
           }
         }
         

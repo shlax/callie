@@ -3,14 +3,14 @@ package org.callie.ringing
 import org.callie.math.Matrix4
 import org.callie.math.intr.Intr
 import org.callie.math.Vector3
+import org.callie.math.Axis
+import Axis.AxisValue
 
 trait Joint {
-
   def name:String
 
   /** time s intervalu <0,1>  */
   def apply(trans : Matrix4, normalTrans : Matrix4, time:Float)// : (Matrix4, Matrix4)
-
 }
 
 trait JointIntr extends Joint{
@@ -42,7 +42,6 @@ class IntrJoint(override val name:String,
     //cluster(n, m)
     for(v <- points) n(v._1, v._2)
     for(v <- normals) m(v._1, v._2)
-        
   }
   
   def apply(trans : Matrix4, normalTrans : Matrix4, time:Float){
@@ -50,7 +49,6 @@ class IntrJoint(override val name:String,
     val m = Matrix4()
     transform(trans, normalTrans, time, n, m)
   }
-  
 }
 
 /** join hierarchy */
@@ -64,23 +62,18 @@ class IntrTravJoint(name:String,
     transform(trans, normalTrans, time, n, m)
     for(j <- childs) j.apply(n, m, time) 
   }
-  
-}
-
-object LinearJoint extends Enumeration{
-  case class Parms(axis:Value, value:Float) 
-  
-  val X, Y, Z = Value
 }
 
 class LinearJoint(override val name:String,
-                  parent:IntrTravJoint, ix:LinearJoint.Parms, iy:LinearJoint.Parms, iz:LinearJoint.Parms,
+                  parent:IntrTravJoint, ix:AxisValue, iy:AxisValue, iz:AxisValue,
     							points:Array[(Vector3, Vector3)], normals:Array[(Vector3, Vector3)] ) extends Joint{
-  
-  def value(m:LinearJoint.Value) = m match {
-    case LinearJoint.X => parent.rotX
-    case LinearJoint.Y => parent.rotY
-    case LinearJoint.Z => parent.rotZ
+
+  import Axis._
+
+  def value(m:Axis.Value) = m match {
+    case X => parent.rotX
+    case Y => parent.rotY
+    case Z => parent.rotZ
   }
   
   override def apply(trans:Matrix4, normalTrans:Matrix4, time:Float){
@@ -95,5 +88,4 @@ class LinearJoint(override val name:String,
     for(v <- points) n(v._1, v._2)
     for(v <- normals) m(v._1, v._2)    
   }
-  
 }

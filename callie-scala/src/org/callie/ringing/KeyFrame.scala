@@ -2,8 +2,8 @@ package org.callie.ringing
 
 import org.callie.math.intr.Intr
 
-class KeyValue(a:Intr, v:Float){
-  def apply(){ a() = v }
+class KeyValue(i:Intr, v:Float){
+  def apply(){ i() = v }
 }
 
 class KeyJoint(v:Array[KeyValue]){
