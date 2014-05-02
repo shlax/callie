@@ -6,7 +6,6 @@ import com.jogamp.common.nio.Buffers
 import com.jogamp.opengl.util.texture.TextureIO
 import org.callie.jogl.{buffers, GL_4, GL4EventListener}
 import org.callie.math.Vector3
-import org.callie.Mod
 import buffers._
 
 object Graphics{

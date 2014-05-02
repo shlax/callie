@@ -4,8 +4,7 @@ import scala.util.parsing.combinator.RegexParsers
 import org.callie.math.{Matrix4, Vector3}
 import org.callie.math.intr.Accl
 import org.callie.jogl.GL4EventListener
-import org.callie.model.MorfingObject
-import org.callie.Mod
+import org.callie.model.{Mod, MorfingObject}
 
 abstract class Node(ind:List[Int]){
   

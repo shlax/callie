@@ -1,10 +1,8 @@
 package org.callie.model
 
 trait Physics {
-
   /** seconds */
   def update(deltaTime:Float)
-
 }
 
 object Physics{

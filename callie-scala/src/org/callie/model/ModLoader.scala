@@ -1,4 +1,4 @@
-package org.callie
+package org.callie.model
 
 import scala.util.parsing.combinator.RegexParsers
 import java.io.Reader

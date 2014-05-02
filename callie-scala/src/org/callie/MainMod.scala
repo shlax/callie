@@ -7,6 +7,7 @@ import scala.collection.mutable.ListBuffer
 import com.jogamp.opengl.util.texture.TextureIO
 import com.jogamp.common.nio.Buffers
 import buffers._
+import org.callie.model.Mod
 
 object MainMod extends App{
 
