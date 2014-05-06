@@ -91,7 +91,7 @@ object MainMod extends App{
       |}
     """.stripMargin
 
-  JoglFrame.gl(new GL4EventListener(){
+  JoglFrame(new GL4EventListener(){
     var texId : Int = _
 
     var vao : Int = _
