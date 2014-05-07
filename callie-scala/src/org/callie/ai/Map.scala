@@ -18,6 +18,7 @@ class Map[T](map:Map25[T]){
 
   class Path(val path:List[Node]){
     // http://en.wikipedia.org/wiki/B%C3%A9zier_curve
+    // http://html5tutorial.com/how-to-draw-n-grade-bezier-curve-with-canvas-api/
   }
 
   def path(from:Triangle25[T], to:Triangle25[T]) : Option[Path] = {
