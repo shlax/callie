@@ -1,6 +1,6 @@
 //Maya ASCII 2015 scene
 //Name: tes.ma
-//Last modified: Tue, May 13, 2014 11:06:25 PM
+//Last modified: Wed, May 14, 2014 05:54:29 AM
 //Codeset: 1252
 requires maya "2015";
 requires -nodeType "mentalrayFramebuffer" -nodeType "mentalrayOptions" -nodeType "mentalrayGlobals"
@@ -8,8 +8,8 @@ requires -nodeType "mentalrayFramebuffer" -nodeType "mentalrayOptions" -nodeType
 currentUnit -l centimeter -a degree -t film;
 createNode transform -s -n "persp";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 19.064571939205862 9.8681486191960577 25.461670919667068 ;
-	setAttr ".r" -type "double3" -16.538352729656523 396.99999999977575 -9.9562148234110993e-016 ;
+	setAttr ".t" -type "double3" 20.372702770025757 3.0704636444192843 26.0502997612248 ;
+	setAttr ".r" -type "double3" -4.538352729660013 398.19999999977057 0 ;
 createNode camera -s -n "perspShape" -p "persp";
 	setAttr -k off ".v" no;
 	setAttr ".fl" 34.999999999999993;
@@ -115,10 +115,9 @@ createNode mesh -n "pConeShape2" -p "transform1";
 createNode transform -n "pCone3";
 createNode mesh -n "pCone3Shape" -p "pCone3";
 	setAttr -k off ".v";
-	setAttr -s 2 ".iog[0].og";
 	setAttr ".vir" yes;
 	setAttr ".vif" yes;
-	setAttr ".pv" -type "double2" 0.5 0.5 ;
+	setAttr ".pv" -type "double2" 0.1557244136929512 0.15144510753452778 ;
 	setAttr ".uvst[0].uvsn" -type "string" "map1";
 	setAttr ".cuvs" -type "string" "map1";
 	setAttr ".dcc" -type "string" "Ambient+Diffuse";
@@ -377,9 +376,6 @@ createNode polyAppend -n "polyAppend9";
 	setAttr ".tx" 1;
 createNode groupId -n "groupId5";
 	setAttr ".ihi" 0;
-createNode groupParts -n "groupParts11";
-	setAttr ".ihi" 0;
-	setAttr ".ic" -type "componentList" 1 "f[0:19]";
 createNode polySoftEdge -n "polySoftEdge1";
 	setAttr ".uopa" yes;
 	setAttr ".ics" -type "componentList" 1 "e[*]";
@@ -464,6 +460,81 @@ createNode script -n "uiConfigurationScriptNode";
 createNode script -n "sceneConfigurationScriptNode";
 	setAttr ".b" -type "string" "playbackOptions -min 1 -max 120 -ast 1 -aet 200 ";
 	setAttr ".st" 6;
+createNode polyPlanarProj -n "polyPlanarProj1";
+	setAttr ".uopa" yes;
+	setAttr ".ics" -type "componentList" 1 "f[0:4]";
+	setAttr ".ix" -type "matrix" 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1;
+	setAttr ".ws" yes;
+	setAttr ".pc" -type "double3" 0.41046226024627686 3.6734151840209961 0.14050531387329102 ;
+	setAttr ".ic" -type "double2" -0.79729425672518039 0.5 ;
+	setAttr ".ro" -type "double3" -90 0 0 ;
+	setAttr ".ps" -type "double2" 8.0846083164215088 8.5006608963012695 ;
+	setAttr ".cam" -type "matrix" 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1;
+createNode polyPlanarProj -n "polyPlanarProj2";
+	setAttr ".uopa" yes;
+	setAttr ".ics" -type "componentList" 1 "f[5:9]";
+	setAttr ".ix" -type "matrix" 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1;
+	setAttr ".ws" yes;
+	setAttr ".pc" -type "double3" -0.44305217266082764 -2.7665121555328369 0.14050531387329102 ;
+	setAttr ".ic" -type "double2" 0.5 -0.58199857565072888 ;
+	setAttr ".ro" -type "double3" -90 0 0 ;
+	setAttr ".ps" -type "double2" 8.0846083164215088 8.5006608963012695 ;
+	setAttr ".cam" -type "matrix" 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1;
+createNode polyCylProj -n "polyCylProj1";
+	setAttr ".uopa" yes;
+	setAttr ".ics" -type "componentList" 1 "f[10:19]";
+	setAttr ".ix" -type "matrix" 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1;
+	setAttr ".ws" yes;
+	setAttr ".pc" -type "double3" -0.016294956207275391 0.45345139503479004 0.14050531387329102 ;
+	setAttr ".ps" -type "double2" 180 3.9697375297546387 ;
+	setAttr ".r" 8.9381227493286133;
+createNode polyTweakUV -n "polyTweakUV1";
+	setAttr ".uopa" yes;
+	setAttr -s 24 ".uvtk[0:23]" -type "float2" 1.0012577772 -0.06120339
+		 1.34477615 0.044949792 1.096203923 0.2167089 1.34477615 0.38846803 1.0012577772 0.49462104
+		 0.78895187 0.2167089 0.082426071 -0.7776686 0.31092149 1.06693387 -0.033543393 1.17337942
+		 0.21571365 1.34561181 -0.033543453 1.5178442 0.31092143 1.62428975 0.52381247 1.34561181
+		 0.19335997 0.025112718 -0.028507821 0.025112718 0.30429384 -0.7776686 -0.13944161
+		 -0.7776686 -0.25037551 0.025112718 -0.36130941 -0.7776686 -0.47224325 0.025112718
+		 0.41522768 0.025112718 -0.80504483 -0.7776686 -0.58317709 -0.7776686 -0.69411099
+		 0.025112718;
+createNode polyMapCut -n "polyMapCut1";
+	setAttr ".uopa" yes;
+	setAttr ".ics" -type "componentList" 1 "e[24]";
+createNode polyTweakUV -n "polyTweakUV2";
+	setAttr ".uopa" yes;
+	setAttr -s 15 ".uvtk";
+	setAttr ".uvtk[6]" -type "float2" 0.09383183 0.1500273 ;
+	setAttr ".uvtk[13]" -type "float2" 0.052705694 0.058961838 ;
+	setAttr ".uvtk[14]" -type "float2" 0.13495803 0.058961838 ;
+	setAttr ".uvtk[15]" -type "float2" 0.011579532 0.1500273 ;
+	setAttr ".uvtk[16]" -type "float2" 0.17608419 0.1500273 ;
+	setAttr ".uvtk[17]" -type "float2" 0.19703665 0.16975603 ;
+	setAttr ".uvtk[18]" -type "float2" 0.22380507 0.22902939 ;
+	setAttr ".uvtk[19]" -type "float2" 0.25057358 0.16975603 ;
+	setAttr ".uvtk[20]" -type "float2" -0.029546626 0.058961838 ;
+	setAttr ".uvtk[21]" -type "float2" 0.33087921 0.22902939 ;
+	setAttr ".uvtk[22]" -type "float2" 0.27734211 0.22902939 ;
+	setAttr ".uvtk[23]" -type "float2" 0.30411074 0.16975603 ;
+	setAttr ".uvtk[24]" -type "float2" 0.21721032 0.058961838 ;
+	setAttr ".uvtk[25]" -type "float2" 0.17026818 0.22902939 ;
+createNode polyMapCut -n "polyMapCut2";
+	setAttr ".uopa" yes;
+	setAttr ".ics" -type "componentList" 1 "e[21]";
+createNode polyMapCut -n "polyMapCut3";
+	setAttr ".uopa" yes;
+	setAttr ".ics" -type "componentList" 1 "e[27]";
+createNode polyTweakUV -n "polyTweakUV3";
+	setAttr ".uopa" yes;
+	setAttr -s 30 ".uvtk[0:29]" -type "float2" 0.084288277 0.034712888 0.071512289
+		 0.12384023 0.019277852 0.06910041 -0.013449915 0.137319 -0.053183459 0.0565219 0.0072220843
+		 -0.0068921 0.011361867 -0.092524759 -0.17052019 -0.26701605 -0.35151672 0.088477075
+		 -0.022675931 0.023355305 -0.078066766 0.35397434 0.27193117 0.16256738 0.21479183
+		 -0.22122568 0.025590517 -0.061018284 -0.14694908 0.22049934 0.039819181 -0.092524759
+		 -0.46295816 0.1462982 -0.1130247 -0.17273593 -0.1130247 -0.17273593 -0.38968417 0.32090819
+		 0.054047875 -0.061018284 -0.35883817 -0.14390716 -0.22409126 0.066513248 -0.52443111
+		 0.11048751 -0.30968127 0.4324339 -0.11302473 -0.17273593 -0.002866823 -0.061018284
+		 -0.30022597 -0.065636471 -0.1130247 -0.17273593 -0.1130247 -0.17273593;
 select -ne :time1;
 	setAttr ".o" 1;
 	setAttr ".unw" 1;
@@ -478,7 +549,7 @@ select -ne :defaultRenderingList1;
 select -ne :initialShadingGroup;
 	setAttr -s 5 ".dsm";
 	setAttr ".ro" yes;
-	setAttr -s 5 ".gn";
+	setAttr -s 4 ".gn";
 select -ne :initialParticleSE;
 	setAttr ".ro" yes;
 select -ne :defaultResolution;
@@ -500,9 +571,8 @@ connectAttr "groupId2.id" "pConeShape1.ciog.cog[0].cgid";
 connectAttr "groupId3.id" "pConeShape2.iog.og[0].gid";
 connectAttr ":initialShadingGroup.mwc" "pConeShape2.iog.og[0].gco";
 connectAttr "groupId4.id" "pConeShape2.ciog.cog[0].cgid";
-connectAttr "polySoftEdge1.out" "pCone3Shape.i";
-connectAttr "groupId5.id" "pCone3Shape.iog.og[0].gid";
-connectAttr ":initialShadingGroup.mwc" "pCone3Shape.iog.og[0].gco";
+connectAttr "polyTweakUV3.out" "pCone3Shape.i";
+connectAttr "polyTweakUV3.uvtk[0]" "pCone3Shape.uvst[0].uvtw";
 relationship "link" ":lightLinker1" ":initialShadingGroup.message" ":defaultLightSet.message";
 relationship "link" ":lightLinker1" ":initialParticleSE.message" ":defaultLightSet.message";
 relationship "shadowLink" ":lightLinker1" ":initialShadingGroup.message" ":defaultLightSet.message";
@@ -540,20 +610,29 @@ connectAttr "polyAppend7.out" "groupParts9.ig";
 connectAttr "groupParts9.og" "polyAppend8.ip";
 connectAttr "polyAppend8.out" "groupParts10.ig";
 connectAttr "groupParts10.og" "polyAppend9.ip";
-connectAttr "polyAppend9.out" "groupParts11.ig";
-connectAttr "groupId5.id" "groupParts11.gi";
 connectAttr "polyTweak1.out" "polySoftEdge1.ip";
 connectAttr "pCone3Shape.wm" "polySoftEdge1.mp";
-connectAttr "groupParts11.og" "polyTweak1.ip";
+connectAttr "polyAppend9.out" "polyTweak1.ip";
+connectAttr "polySoftEdge1.out" "polyPlanarProj1.ip";
+connectAttr "pCone3Shape.wm" "polyPlanarProj1.mp";
+connectAttr "polyPlanarProj1.out" "polyPlanarProj2.ip";
+connectAttr "pCone3Shape.wm" "polyPlanarProj2.mp";
+connectAttr "polyPlanarProj2.out" "polyCylProj1.ip";
+connectAttr "pCone3Shape.wm" "polyCylProj1.mp";
+connectAttr "polyCylProj1.out" "polyTweakUV1.ip";
+connectAttr "polyTweakUV1.out" "polyMapCut1.ip";
+connectAttr "polyMapCut1.out" "polyTweakUV2.ip";
+connectAttr "polyTweakUV2.out" "polyMapCut2.ip";
+connectAttr "polyMapCut2.out" "polyMapCut3.ip";
+connectAttr "polyMapCut3.out" "polyTweakUV3.ip";
 connectAttr "defaultRenderLayer.msg" ":defaultRenderingList1.r" -na;
 connectAttr "pConeShape1.iog.og[0]" ":initialShadingGroup.dsm" -na;
 connectAttr "pConeShape1.ciog.cog[0]" ":initialShadingGroup.dsm" -na;
 connectAttr "pConeShape2.iog.og[0]" ":initialShadingGroup.dsm" -na;
 connectAttr "pConeShape2.ciog.cog[0]" ":initialShadingGroup.dsm" -na;
-connectAttr "pCone3Shape.iog.og[0]" ":initialShadingGroup.dsm" -na;
+connectAttr "pCone3Shape.iog" ":initialShadingGroup.dsm" -na;
 connectAttr "groupId1.msg" ":initialShadingGroup.gn" -na;
 connectAttr "groupId2.msg" ":initialShadingGroup.gn" -na;
 connectAttr "groupId3.msg" ":initialShadingGroup.gn" -na;
 connectAttr "groupId4.msg" ":initialShadingGroup.gn" -na;
-connectAttr "groupId5.msg" ":initialShadingGroup.gn" -na;
 // End of tes.ma
