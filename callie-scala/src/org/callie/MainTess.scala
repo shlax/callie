@@ -8,7 +8,6 @@ import com.jogamp.common.nio.Buffers
 import buffers._
 import org.callie.model.Mod
 
-// http://prideout.net/blog/?p=48
 object MainTess extends App{
 
   // coords : position(x, y, z) ~ texture(u, v) ~ normal(x, y, z)
@@ -55,16 +54,24 @@ object MainTess extends App{
       |layout(location = 1) in vec2 inTextureCoord;
       |layout(location = 2) in vec3 inNormal;
       |
+      |out vec3 outNormal;
+      |
       |void main(){
-      |    gl_Position = inPosition;
+      |  outNormal = inNormal;
+      |  gl_Position = inPosition;
       |}
     """.stripMargin
+
+  // http://ogldev.atspace.co.uk/www/tutorial31/tutorial31.html
 
   val tessControl =
     """
       |#version 430 core
       |
       |layout (vertices = 3) out;
+      |
+      |in vec3 outNormal[];
+      |out vec3 tcNormal[];
       |
       |void main(void){
       |  if (gl_InvocationID == 0){
@@ -74,6 +81,7 @@ object MainTess extends App{
       |    gl_TessLevelOuter[2] = 4.0;
       |  }
       |
+      |  tcNormal[gl_InvocationID] = outNormal[gl_InvocationID];
       |  gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
       |}
     """.stripMargin
@@ -83,6 +91,7 @@ object MainTess extends App{
       |#version 430 core
       |
       |layout(triangles, equal_spacing, ccw) in;
+      |in vec3 tcNormal[];
       |
       |void main(void){
       |  vec3 p0 = gl_TessCoord.x * gl_in[0].gl_Position.xyz;
