@@ -81,11 +81,9 @@ object MainMod extends App{
       |//in vec3 passNormal;
       |in float lightIntensity;
       |
-      |out vec4 outputColor;
-      |
       |void main(){
       |   //outputColor = vec4(passTextureCoord[0], passTextureCoord[1], 1.0f, 1.0f);
-      |   outputColor = lightIntensity * texture(textureDiffuse, passTextureCoord);
+      |   gl_FragColor  = lightIntensity * texture(textureDiffuse, passTextureCoord);
       |   //outputColor = vec4(lightIntensity, lightIntensity, lightIntensity, 1);
       |   //outputColor = vec4(passNormal, 1);
       |}

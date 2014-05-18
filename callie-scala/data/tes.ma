@@ -1,23 +1,24 @@
 //Maya ASCII 2015 scene
 //Name: tes.ma
-//Last modified: Wed, May 14, 2014 05:54:29 AM
+//Last modified: Sun, May 18, 2014 04:27:59 PM
 //Codeset: 1252
 requires maya "2015";
 requires -nodeType "mentalrayFramebuffer" -nodeType "mentalrayOptions" -nodeType "mentalrayGlobals"
-		 -nodeType "mentalrayItemsList" -dataType "byteArray" "Mayatomr" "2015.0 - 3.12.1.12 ";
+		 -nodeType "mentalrayItemsList" -nodeType "mia_material_x_passes" -dataType "byteArray"
+		 "Mayatomr" "2015.0 - 3.12.1.12 ";
 currentUnit -l centimeter -a degree -t film;
 createNode transform -s -n "persp";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 20.372702770025757 3.0704636444192843 26.0502997612248 ;
-	setAttr ".r" -type "double3" -4.538352729660013 398.19999999977057 0 ;
+	setAttr ".t" -type "double3" 6.685031677019615 2.3346002279603786 4.6470741860016949 ;
+	setAttr ".r" -type "double3" -15.338352729656943 415.39999999975669 0 ;
 createNode camera -s -n "perspShape" -p "persp";
 	setAttr -k off ".v" no;
 	setAttr ".fl" 34.999999999999993;
-	setAttr ".coi" 33.073817869271807;
+	setAttr ".coi" 8.4261652293191887;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
-	setAttr ".tp" -type "double3" -0.016294956207275391 0.45345163345336914 0.14050531387329102 ;
+	setAttr ".tp" -type "double3" -0.0037991743821725876 0.10572239700780522 0.032758859995474954 ;
 	setAttr ".hc" -type "string" "viewSet -p %camera";
 createNode transform -s -n "top";
 	setAttr ".v" no;
@@ -113,6 +114,8 @@ createNode mesh -n "pConeShape2" -p "transform1";
 	setAttr ".cvd" -type "dataPolyComponent" Index_Data Vertex 0 ;
 	setAttr ".hfd" -type "dataPolyComponent" Index_Data Face 0 ;
 createNode transform -n "pCone3";
+	setAttr ".rp" -type "double3" 0 -0.10132274788257045 0 ;
+	setAttr ".sp" -type "double3" 0 -0.10132274788257045 0 ;
 createNode mesh -n "pCone3Shape" -p "pCone3";
 	setAttr -k off ".v";
 	setAttr ".vir" yes;
@@ -503,7 +506,7 @@ createNode polyMapCut -n "polyMapCut1";
 	setAttr ".ics" -type "componentList" 1 "e[24]";
 createNode polyTweakUV -n "polyTweakUV2";
 	setAttr ".uopa" yes;
-	setAttr -s 15 ".uvtk";
+	setAttr -s 14 ".uvtk";
 	setAttr ".uvtk[6]" -type "float2" 0.09383183 0.1500273 ;
 	setAttr ".uvtk[13]" -type "float2" 0.052705694 0.058961838 ;
 	setAttr ".uvtk[14]" -type "float2" 0.13495803 0.058961838 ;
@@ -535,6 +538,30 @@ createNode polyTweakUV -n "polyTweakUV3";
 		 0.054047875 -0.061018284 -0.35883817 -0.14390716 -0.22409126 0.066513248 -0.52443111
 		 0.11048751 -0.30968127 0.4324339 -0.11302473 -0.17273593 -0.002866823 -0.061018284
 		 -0.30022597 -0.065636471 -0.1130247 -0.17273593 -0.1130247 -0.17273593;
+createNode transformGeometry -n "transformGeometry1";
+	setAttr ".txf" -type "matrix" 0.18712478631976084 0 0 0 0 0.18712478631976084 0 0
+		 0 0 0.18712478631976084 0 0 -0.10132274788257045 0 1;
+createNode mia_material_x_passes -n "pasted__mia_material_x_passes1";
+	setAttr ".S04" -type "float3" 0 0 0 ;
+	setAttr ".S06" 1;
+	setAttr ".S13" 1;
+	setAttr ".S16" 1.5;
+	setAttr ".S20" -type "float3" 0.69999999 0.5 0.2 ;
+	setAttr ".S25" yes;
+	setAttr ".S26" 0.69999998807907104;
+	setAttr ".S36" yes;
+	setAttr ".S37" 1;
+	setAttr ".S38" yes;
+	setAttr ".S39" -type "float3" 1 0.28100002 0.28100002 ;
+	setAttr ".S40" 8;
+	setAttr ".S42" yes;
+	setAttr ".S43" 1;
+	setAttr ".S44" yes;
+	setAttr ".S45" -type "float3" 1 0 0 ;
+	setAttr ".S46" 8;
+	setAttr ".S53" 4;
+	setAttr ".S59" no;
+	setAttr ".S62" yes;
 select -ne :time1;
 	setAttr ".o" 1;
 	setAttr ".unw" 1;
@@ -542,7 +569,7 @@ select -ne :renderPartition;
 	setAttr -s 2 ".st";
 select -ne :renderGlobalsList1;
 select -ne :defaultShaderList1;
-	setAttr -s 2 ".s";
+	setAttr -s 3 ".s";
 select -ne :postProcessList1;
 	setAttr -s 2 ".p";
 select -ne :defaultRenderingList1;
@@ -564,6 +591,8 @@ select -ne :hardwareRenderingGlobals;
 		 0 0 0 0 ;
 select -ne :defaultHardwareRenderGlobals;
 	setAttr ".res" -type "string" "ntsc_4d 646 485 1.333";
+select -ne :ikSystem;
+	setAttr -s 4 ".sol";
 connectAttr "groupId1.id" "pConeShape1.iog.og[0].gid";
 connectAttr ":initialShadingGroup.mwc" "pConeShape1.iog.og[0].gco";
 connectAttr "groupParts1.og" "pConeShape1.i";
@@ -571,7 +600,7 @@ connectAttr "groupId2.id" "pConeShape1.ciog.cog[0].cgid";
 connectAttr "groupId3.id" "pConeShape2.iog.og[0].gid";
 connectAttr ":initialShadingGroup.mwc" "pConeShape2.iog.og[0].gco";
 connectAttr "groupId4.id" "pConeShape2.ciog.cog[0].cgid";
-connectAttr "polyTweakUV3.out" "pCone3Shape.i";
+connectAttr "transformGeometry1.og" "pCone3Shape.i";
 connectAttr "polyTweakUV3.uvtk[0]" "pCone3Shape.uvst[0].uvtw";
 relationship "link" ":lightLinker1" ":initialShadingGroup.message" ":defaultLightSet.message";
 relationship "link" ":lightLinker1" ":initialParticleSE.message" ":defaultLightSet.message";
@@ -625,6 +654,8 @@ connectAttr "polyMapCut1.out" "polyTweakUV2.ip";
 connectAttr "polyTweakUV2.out" "polyMapCut2.ip";
 connectAttr "polyMapCut2.out" "polyMapCut3.ip";
 connectAttr "polyMapCut3.out" "polyTweakUV3.ip";
+connectAttr "polyTweakUV3.out" "transformGeometry1.ig";
+connectAttr "pasted__mia_material_x_passes1.msg" ":defaultShaderList1.s" -na;
 connectAttr "defaultRenderLayer.msg" ":defaultRenderingList1.r" -na;
 connectAttr "pConeShape1.iog.og[0]" ":initialShadingGroup.dsm" -na;
 connectAttr "pConeShape1.ciog.cog[0]" ":initialShadingGroup.dsm" -na;
