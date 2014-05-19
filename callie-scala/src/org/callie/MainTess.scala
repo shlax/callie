@@ -50,28 +50,61 @@ object MainTess extends App{
     """
       |#version 430
       |
-      |layout(location = 0) in vec4 inPosition;
-      |layout(location = 1) in vec2 inTextureCoord;
+      |layout(location = 0) in vec3 inPosition;
+      |layout(location = 1) in vec2 inTexCoord;
       |layout(location = 2) in vec3 inNormal;
       |
-      |out vec3 outNormal;
+      |out vec3 position;
+      |out vec2 texCoord;
+      |out vec3 normal;
       |
       |void main(){
-      |  outNormal = inNormal;
-      |  gl_Position = inPosition;
+      |  position = inPosition;
+      |  texCoord = inTexCoord;
+      |  normal = inNormal;
       |}
     """.stripMargin
 
   // http://ogldev.atspace.co.uk/www/tutorial31/tutorial31.html
 
-  val tessControl =
+  val  bezierSurface =
     """
+      |struct BezierSurface{
+      |  vec3 b030;
+      |  vec3 b021;
+      |  vec3 b012;
+      |  vec3 b003;
+      |  vec3 b102;
+      |  vec3 b201;
+      |  vec3 b300;
+      |  vec3 b210;
+      |  vec3 b120;
+      |  vec3 b111;
+      |
+      |  vec3 normal[3];
+      |  vec2 texCoord[3];
+      |}
+    """.stripMargin
+
+  val tessControl =
+    s"""
       |#version 430 core
       |
       |layout (vertices = 3) out;
       |
-      |in vec3 outNormal[];
-      |out vec3 tcNormal[];
+      |in vec3 position;
+      |in vec2 texCoord;
+      |in vec3 normal;
+      |
+      |$bezierSurface
+      |patch out BezierSurface plane;
+      |
+      |vec3 projectToPlane(vec3 point, vec3 planePoint, vec3 planeNormal) {
+      |  vec3 v = point - planePoint;
+      |  float len = dot(v, planeNormal);
+      |  vec3 d = len * planeNormal;
+      |  return (point - d);
+      |}
       |
       |void main(void){
       |  if (gl_InvocationID == 0){
@@ -81,24 +114,93 @@ object MainTess extends App{
       |    gl_TessLevelOuter[2] = 4.0;
       |  }
       |
+      |  for (int i = 0 ; i < 3 ; i++) {
+      |    plane.normal[i] = normal[i];
+      |    plane.texCoord[i] = texCoord[i];
+      |  }
+      |
+      |  // calc >
+      |
+      |  // The original vertices stay the same
+      |  plane.b030 = position[0];
+      |  plane.b003 = position[1];
+      |  plane.b300 = position[2];
+      |
+      |  // Edges are names according to the opposing vertex
+      |  vec3 edgeB300 = plane.b003 - plane.b030;
+      |  vec3 edgeB030 = plane.b300 - plane.b003;
+      |  vec3 edgeB003 = plane.b030 - plane.b300;
+      |
+      |  // Generate two midpoints on each edge
+      |  plane.b021 = plane.b030 + edgeB300 / 3.0;
+      |  plane.b012 = plane.b030 + edgeB300 * 2.0 / 3.0;
+      |  plane.b102 = plane.b003 + edgeB030 / 3.0;
+      |  plane.b201 = plane.b003 + edgeB030 * 2.0 / 3.0;
+      |  plane.b210 = plane.b300 + edgeB003 / 3.0;
+      |  plane.b120 = plane.b300 + edgeB003 * 2.0 / 3.0;
+      |
+      |  // Project each midpoint on the plane defined by the nearest vertex and its normal
+      |  plane.b021 = projectToPlane(plane.b021, plane.b030, normal[0]);
+      |  plane.b012 = projectToPlane(plane.b012, plane.b003, normal[1]);
+      |  plane.b102 = projectToPlane(plane.b102, plane.b003, normal[1]);
+      |  plane.b201 = projectToPlane(plane.b201, plane.b300, normal[2]);
+      |  plane.b210 = projectToPlane(plane.b210, plane.b300, normal[2]);
+      |  plane.b120 = projectToPlane(plane.b120, plane.b030, normal[0]);
+      |
+      |  // Handle the center
+      |  vec3 center = (plane.b003 + patch.b030 + patch.b300) / 3.0;
+      |  plane.b111 = (plane.b021 + patch.b012 + patch.b102 + plane.b201 + plane.b210 + plane.b120) / 6.0;
+      |  plane.b111 += (plane.b111 - center) / 2.0;
+      |
+      |  // < calc
+      |
       |  tcNormal[gl_InvocationID] = outNormal[gl_InvocationID];
       |  gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
       |}
     """.stripMargin
 
   val tessEval =
-    """
+    s"""
       |#version 430 core
       |
       |layout(triangles, equal_spacing, ccw) in;
-      |in vec3 tcNormal[];
+      |
+      |$bezierSurface
+      |patch in BezierSurface plane;
+      |
+      |out vec2 texCoord;
+      |out vec3 normal;
+      |
+      |vec2 interpolate2D(vec2 v0, vec2 v1, vec2 v2){
+      |  return vec2(gl_TessCoord.x) * v0 + vec2(gl_TessCoord.y) * v1 + vec2(gl_TessCoord.z) * v2;
+      |}
+      |
+      |vec3 interpolate3D(vec3 v0, vec3 v1, vec3 v2){
+      |  return vec3(gl_TessCoord.x) * v0 + vec3(gl_TessCoord.y) * v1 + vec3(gl_TessCoord.z) * v2;
+      |}
       |
       |void main(void){
-      |  vec3 p0 = gl_TessCoord.x * gl_in[0].gl_Position.xyz;
-      |  vec3 p1 = gl_TessCoord.y * gl_in[1].gl_Position.xyz;
-      |  vec3 p2 = gl_TessCoord.z * gl_in[2].gl_Position.xyz;
+      |  texCoord = interpolate2D(plane.texCoord[0], plane.texCoord[1], plane.texCoord[2]);
+      |  normal = interpolate3D(plane.normal[0], plane.normal[1], plane.normal[2]);
       |
-      |  gl_Position = vec4( (p0 + p1 + p2), 1) ; // normalize
+      |  float u = gl_TessCoord.x;
+      |  float v = gl_TessCoord.y;
+      |  float w = gl_TessCoord.z;
+      |
+      |  float uPow3 = pow(u, 3);
+      |  float vPow3 = pow(v, 3);
+      |  float wPow3 = pow(w, 3);
+      |
+      |  float uPow2 = pow(u, 2);
+      |  float vPow2 = pow(v, 2);
+      |  float wPow2 = pow(w, 2);
+      |
+      |  vec3 pos = plane.b300 * wPow3 + plane.b030 * uPow3 + plane.b003 * vPow3 +
+      |             plane.b210 * 3.0 * wPow2 * u + plane.b120 * 3.0 * w * uPow2 + plane.b201 * 3.0 * wPow2 * v +
+      |             plane.b021 * 3.0 * uPow2 * v + plane.b102 * 3.0 * w * vPow2 + plane.b012 * 3.0 * vPow2 * u +
+      |             plane.b111 * 6.0 * w * u * v;
+      |
+      |  gl_Position = vec4(pos, 1.0);
       |}
     """.stripMargin
 
