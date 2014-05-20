@@ -63,7 +63,7 @@ object MainTess extends App{
       |  texCoord = inTexCoord;
       |  normal = inNormal;
       |}
-    """.stripMargin
+    """.stripMargin.trim
 
   // http://ogldev.atspace.co.uk/www/tutorial31/tutorial31.html
 
@@ -83,8 +83,8 @@ object MainTess extends App{
       |
       |  vec3 normal[3];
       |  vec2 texCoord[3];
-      |}
-    """.stripMargin
+      |};
+    """.stripMargin.trim
 
   val tessControl =
     s"""
@@ -92,12 +92,12 @@ object MainTess extends App{
       |
       |layout (vertices = 3) out;
       |
-      |in vec3 position;
-      |in vec2 texCoord;
-      |in vec3 normal;
+      |in vec3 position[];
+      |in vec2 texCoord[];
+      |in vec3 normal[];
       |
       |$bezierSurface
-      |patch out BezierSurface plane;
+      |out patch BezierSurface plane;
       |
       |vec3 projectToPlane(vec3 point, vec3 planePoint, vec3 planeNormal) {
       |  vec3 v = point - planePoint;
@@ -148,16 +148,15 @@ object MainTess extends App{
       |  plane.b120 = projectToPlane(plane.b120, plane.b030, normal[0]);
       |
       |  // Handle the center
-      |  vec3 center = (plane.b003 + patch.b030 + patch.b300) / 3.0;
-      |  plane.b111 = (plane.b021 + patch.b012 + patch.b102 + plane.b201 + plane.b210 + plane.b120) / 6.0;
+      |  vec3 center = (plane.b003 + plane.b030 + plane.b300) / 3.0;
+      |  plane.b111 = (plane.b021 + plane.b012 + plane.b102 + plane.b201 + plane.b210 + plane.b120) / 6.0;
       |  plane.b111 += (plane.b111 - center) / 2.0;
       |
       |  // < calc
       |
-      |  tcNormal[gl_InvocationID] = outNormal[gl_InvocationID];
       |  gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
       |}
-    """.stripMargin
+    """.stripMargin.trim
 
   val tessEval =
     s"""
@@ -166,7 +165,7 @@ object MainTess extends App{
       |layout(triangles, equal_spacing, ccw) in;
       |
       |$bezierSurface
-      |patch in BezierSurface plane;
+      |in patch BezierSurface plane;
       |
       |out vec2 texCoord;
       |out vec3 normal;
@@ -202,7 +201,7 @@ object MainTess extends App{
       |
       |  gl_Position = vec4(pos, 1.0);
       |}
-    """.stripMargin
+    """.stripMargin.trim
 
   val fragment =
     """
@@ -211,7 +210,7 @@ object MainTess extends App{
       |void main(){
       |  gl_FragColor  = vec4(1,1,1,1);
       |}
-    """.stripMargin
+    """.stripMargin.trim
 
   JoglFrame(new GL4EventListener(){
     var vao : Int = _
