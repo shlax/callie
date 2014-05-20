@@ -117,6 +117,11 @@ class Matrix4(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  /
     this
   }
 
+  def toArray = Array(m00, m01, m02, m03,
+                      m10, m11, m12, m13,
+                      m20, m21, m22, m23,
+                      m30, m31, m32, m33)
+
   override def toString = "("+m00+",\t"+m01+",\t"+m02+",\t"+m03+"\n"+
                           " "+m10+",\t"+m11+",\t"+m12+",\t"+m13+"\n"+
                           " "+m20+",\t"+m21+",\t"+m22+",\t"+m23+"\n"+

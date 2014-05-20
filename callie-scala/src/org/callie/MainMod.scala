@@ -8,6 +8,7 @@ import com.jogamp.opengl.util.texture.TextureIO
 import com.jogamp.common.nio.Buffers
 import buffers._
 import org.callie.model.Mod
+import org.callie.input.Camera
 
 object MainMod extends App{
 
@@ -54,6 +55,9 @@ object MainMod extends App{
       |layout(location = 0) in vec4 inPosition;
       |layout(location = 1) in vec2 inTextureCoord;
       |layout(location = 2) in vec3 inNormal;
+      |
+      |uniform mat4 viewMatrix;
+      |uniform mat4 normalMatrix;
       |
       |out vec2 passTextureCoord;
       |out float lightIntensity;
@@ -119,7 +123,9 @@ object MainMod extends App{
       gl.glTexParameteri(GL_4.TEXTURE_2D, GL_4.TEXTURE_MAG_FILTER, GL_4.LINEAR)
       gl.glTexParameteri(GL_4.TEXTURE_2D, GL_4.TEXTURE_MIN_FILTER, GL_4.LINEAR_MIPMAP_LINEAR)
 
-      val p = createProgram(createShader(GL_4.VERTEX_SHADER, vertex),
+      val vertexSchader = createShader(GL_4.VERTEX_SHADER, vertex)
+      Camera.program(vertexSchader)
+      val p = createProgram(vertexSchader,
                             createShader(GL_4.FRAGMENT_SHADER, fragment))
 
       // > code

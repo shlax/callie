@@ -35,7 +35,14 @@ object JoglFrame {
   frame.pack()
 
   val robot = new Robot()
+  glCanvas.addMouseWheelListener(new MouseWheelListener {
+    override def mouseWheelMoved(e: MouseWheelEvent){
+      Inputs.mouseZ += e.getWheelRotation
+    }
+  })
+
   glCanvas.addMouseMotionListener(new MouseMotionAdapter {
+    override def mouseDragged(e: MouseEvent){ mouseMoved(e) }
     override def mouseMoved(e: MouseEvent){
       val w2 = glCanvas.getWidth / 2
       val h2 = glCanvas.getHeight / 2

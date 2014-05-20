@@ -8,13 +8,24 @@ object Camera {
   var target:TrackingObject = new ZeroTrackingObject
   def lookAt(t:TrackingObject){ target = t }
 
-  val position = Vector3(0, 0, 1f)
+  var position = Vector3(0, 0, 1f)
 
   def init(implicit gl:GL4){
     display(gl)
   }
 
+  var viewMatrix = -1
+  var normalMatrix = -1
+
+  def program(id:Int, view:String="viewMatrix", normal:String="normalMatrix")(implicit gl:GL4){
+    viewMatrix = gl.glGetUniformLocation(id, view)
+    normalMatrix = gl.glGetUniformLocation(id, normal)
+  }
+
   val up = Vector3(0f, 1f, 0f)
+
+  // http://gamedev.stackexchange.com/questions/56609/how-to-create-a-projection-matrix-in-opengl-es-2-0
+  // http://stackoverflow.com/questions/14713343/projection-theory-implimented-in-glsl
 
   def lookAt = {
     val forward = Vector3.add(target.position(), position).normalize()
@@ -30,8 +41,9 @@ object Camera {
     Matrix4(Vector3(-position.x, -position.y, -position.z)).mul(m)
   }
 
+  // mat4 normalMatrix = transpose(inverse(modelView));
   def display(implicit gl:GL4){
-
+    gl.glUniformMatrix4fv(viewMatrix, 1, false, lookAt.toArray, 0)
   }
 
 }

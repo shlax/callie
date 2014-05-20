@@ -19,6 +19,14 @@ object Inputs{
     y
   }
 
+  /** mouse wheel */
+  def zDiff() = {
+    val z = mouseZ
+    mouseZ -= z
+    z
+  }
+
   @volatile var mouseX = 0
   @volatile var mouseY = 0
+  @volatile var mouseZ = 0
 }
