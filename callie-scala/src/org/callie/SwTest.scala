@@ -49,8 +49,8 @@ object SwTest extends App{
 object Command{
   implicit def asRun[F](f: => F) = new Runnable(){ def run() { f } }
 
-  val eJob = ExecutionContext.fromExecutor(Executors.newCachedThreadPool())
-  val eGui = ExecutionContext.fromExecutor(new Executor(){
+  val ecJob = ExecutionContext.fromExecutor(Executors.newCachedThreadPool())
+  val ecGui = ExecutionContext.fromExecutor(new Executor(){
     override def execute(command: Runnable){ SwingUtilities.invokeLater(command) }
   })
 
@@ -59,21 +59,15 @@ object Command{
 }
 
 trait Command[T] extends Runnable{
-  //def execute()
-
   var next : Option[Task[T, _]] = None
 
-  def gui[V](nf : T => V) ={
-    val t = new GuiTask(this, nf)
+  def map[V](t:Task[T, V]) = {
     next = Some(t)
     t
   }
 
-  def job[V](nf : T => V) ={
-    val t = new JobTask(this, nf)
-    next = Some(t)
-    t
-  }
+  def gui[V](nf : T => V) = map(new GuiTask(this, nf))
+  def job[V](nf : T => V) = map(new JobTask(this, nf))
 
   def execute(t: Task[T, _],b:T)
 }
@@ -83,7 +77,7 @@ trait CommandGui[T] extends Command[T]{
     import Command._
     t match {
       case g: GuiTask[T, _] => g.complete(v)
-      case j: JobTask[T, _] => Command.eJob.execute(j.complete(v))
+      case j: JobTask[T, _] => Command.ecJob.execute(j.complete(v))
     }
   }
 }
@@ -92,7 +86,7 @@ trait CommandJob[T] extends Command[T]{
   override def execute(t: Task[T, _], v:T){
     import Command._
     t match {
-      case g: GuiTask[T, _] => Command.eGui.execute(g.complete(v))
+      case g: GuiTask[T, _] => Command.ecGui.execute(g.complete(v))
       case j: JobTask[T, _] => j.complete(v)
     }
   }
@@ -108,8 +102,8 @@ abstract class BaseCommand[T](f: => T, ec:ExecutionContextExecutor) extends Comm
   }
 }
 
-class GuiCommand[T](f: => T) extends BaseCommand[T](f, Command.eGui) with CommandGui[T]
-class JobCommand[T](f: => T) extends BaseCommand[T](f, Command.eJob) with CommandJob[T]
+class GuiCommand[T](f: => T) extends BaseCommand[T](f, Command.ecGui) with CommandGui[T]
+class JobCommand[T](f: => T) extends BaseCommand[T](f, Command.ecJob) with CommandJob[T]
 
 abstract class Task[A, B](c: Command[_], f: A => B) extends Command[B]{
   override def run(){ c.run() }
