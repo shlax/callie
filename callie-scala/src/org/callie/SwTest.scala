@@ -2,26 +2,36 @@ package org.callie
 
 import scala.language.implicitConversions
 import scala.concurrent.{ExecutionContextExecutor, ExecutionContext}
-import java.util.concurrent.Executors
+import java.util.concurrent.{Executor, Executors}
+import javax.swing.SwingUtilities
 
 object SwTest extends App{
 
-  println("1"+Thread.currentThread().getName)
-
-  Command.gui{
+  def g1() = {
     println("2"+Thread.currentThread().getName)
     4
-  }.job{ i =>
+  }
+
+  def j1(i:Int) = {
     println("3"+Thread.currentThread().getName)
     println(i)
     7
-  }.gui{ j =>
-    println("4"+Thread.currentThread().getName+""+j)
-    5
-  }.job{ i =>
+  }
+
+  def g2(a:Int) = {
+    println(a+"/"+Thread.currentThread().getName)
+    (j:Int) => {
+      println("4"+Thread.currentThread().getName+""+j)
+      5
+    }
+  }
+
+  println("1"+Thread.currentThread().getName)
+
+  Command.gui(g1()).job(j1).gui(g2(9)).job{ i =>
     println("5"+Thread.currentThread().getName)
     println(i)
-  }.execute()
+  }.run()
 
   Command.job{
     println("-3"+Thread.currentThread().getName)
@@ -32,22 +42,24 @@ object SwTest extends App{
   }.gui{ j =>
     println("-5"+Thread.currentThread().getName+""+j)
     5
-  }.execute()
+  }.run()
 
 }
 
 object Command{
   implicit def asRun[F](f: => F) = new Runnable(){ def run() { f } }
 
-  val eJob = ExecutionContext.fromExecutor(Executors.newSingleThreadExecutor())
-  val eGui = ExecutionContext.fromExecutor(Executors.newSingleThreadExecutor())
+  val eJob = ExecutionContext.fromExecutor(Executors.newCachedThreadPool())
+  val eGui = ExecutionContext.fromExecutor(new Executor(){
+    override def execute(command: Runnable){ SwingUtilities.invokeLater(command) }
+  })
 
   def gui[T](f : => T) = new GuiCommand[T](f)
   def job[T](f : => T) = new JobCommand[T](f)
 }
 
-trait Command[T]{
-  def execute()
+trait Command[T] extends Runnable{
+  //def execute()
 
   var next : Option[Task[T, _]] = None
 
@@ -87,7 +99,7 @@ trait CommandJob[T] extends Command[T]{
 }
 
 abstract class BaseCommand[T](f: => T, ec:ExecutionContextExecutor) extends Command[T]{
-  def execute() {
+  override def run() {
     import Command._
     ec.execute(asRun{
       val v = f
@@ -100,7 +112,7 @@ class GuiCommand[T](f: => T) extends BaseCommand[T](f, Command.eGui) with Comman
 class JobCommand[T](f: => T) extends BaseCommand[T](f, Command.eJob) with CommandJob[T]
 
 abstract class Task[A, B](c: Command[_], f: A => B) extends Command[B]{
-  override def execute(){ c.execute() }
+  override def run(){ c.run() }
 
   def complete(a: A){
     val v = f(a)
