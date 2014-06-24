@@ -59,19 +59,19 @@ object MainMod extends App{
       |uniform mat4 viewMatrix;
       |uniform mat4 normalMatrix;
       |
-      |out vec2 passTextureCoord;
-      |//out float lightIntensity;
-      |out vec3 passNormal;
+      |out vec2 texCoord;
+      |out float lightIntensity;
       |
       |vec3 lightDirection = normalize(vec3(1, 1, 1));
       |
       |void main(){
       |  gl_Position = viewMatrix * inPosition; //vec4(inPosition, 1);
-      |  passTextureCoord = inTextureCoord;
       |
-      |  passNormal = normalMatrix * inNormal;
-      |  //float l = max(dot(inNormal, lightDirection), 0.0);
-      |  //lightIntensity = 0.2 + (l * 0.8);
+      |  vec3 n = normalMatrix * inNormal;
+      |  float l = max(dot(n, lightDirection), 0.0);
+      |  lightIntensity = 0.2 + (l * 0.8);
+      |
+      |  texCoord = inTextureCoord;
       |}
     """.stripMargin
 
@@ -81,17 +81,11 @@ object MainMod extends App{
       |
       |uniform sampler2D textureDiffuse;
       |
-      |in vec2 passTextureCoord;
-      |in vec3 passNormal;
-      |//in float lightIntensity;
+      |in vec2 texCoord;
+      |in float lightIntensity;
       |
       |void main(){
-      |  float l = max(dot(passNormal, lightDirection), 0.0);
-      |  float lightIntensity = 0.2 + (l * 0.8);
-      |  //outputColor = vec4(passTextureCoord[0], passTextureCoord[1], 1.0f, 1.0f);
-      |  gl_FragColor  = lightIntensity * texture(textureDiffuse, passTextureCoord);
-      |  //outputColor = vec4(lightIntensity, lightIntensity, lightIntensity, 1);
-      |  //outputColor = vec4(passNormal, 1);
+      |  gl_FragColor  = lightIntensity * texture(textureDiffuse, texCoord);
       |}
     """.stripMargin
 

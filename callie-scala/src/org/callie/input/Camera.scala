@@ -14,8 +14,10 @@ object Camera {
     display(gl)
   }
 
-  var viewMatrix = -1
-  var normalMatrix = -1
+  // http://stackoverflow.com/questions/21079623/how-to-calculate-the-normal-matrix
+
+  var viewMatrix: Int = _
+  var normalMatrix: Int = _
 
   def program(id:Int, view:String="viewMatrix", normal:String="normalMatrix")(implicit gl:GL4){
     viewMatrix = gl.glGetUniformLocation(id, view)
@@ -27,8 +29,8 @@ object Camera {
   // http://gamedev.stackexchange.com/questions/56609/how-to-create-a-projection-matrix-in-opengl-es-2-0
   // http://stackoverflow.com/questions/14713343/projection-theory-implimented-in-glsl
 
-  def lookAt = {
-    val forward = Vector3.add(target.position(), position).normalize()
+  def lookAt() = {
+    val forward = Vector3.add(target.position, position).normalize()
     val right = Vector3.cross(forward, up).normalize()
     val tmp = Vector3.cross(right, forward).normalize()
 
@@ -43,15 +45,17 @@ object Camera {
 
   // mat4 normalMatrix = transpose(inverse(modelView));
   def display(implicit gl:GL4){
-    gl.glUniformMatrix4fv(viewMatrix, 1, false, lookAt.toArray, 0)
+    val m = lookAt()
+    gl.glUniformMatrix4fv(viewMatrix, 1, false, m.toArray, 0)
+    gl.glUniformMatrix4fv(normalMatrix, 1, false, m.inverse().transpose().toArray, 0)
   }
 
 }
 
 trait TrackingObject{
-  def position():Vector3
+  def position: Vector3
 }
 
 class ZeroTrackingObject extends TrackingObject{
-  override def position() = Vector3()
+  override val position = Vector3()
 }

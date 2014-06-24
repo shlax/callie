@@ -17,7 +17,8 @@ object Matrix4{
 class Matrix4(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  // 0  1  2  3
               var m10: Float, var m11: Float, var m12: Float, var m13: Float,  // 4  5  6  7
               var m20: Float, var m21: Float, var m22: Float, var m23: Float,  // 8  9  10 11
-              var m30: Float, var m31: Float, var m32: Float, var m33: Float) {// 12 13 14 15
+              var m30: Float, var m31: Float, var m32: Float, var m33: Float) {
+  // 12 13 14 15
 
   def this() = this(1f, 0f, 0f, 0f,
                     0f, 1f, 0f, 0f,
@@ -114,6 +115,63 @@ class Matrix4(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  /
     m20 = 0f; m21 = 0f; m22 = 1f; m23 = 0f
     m30 = 0f; m31 = 0f; m32 = 0f; m33 = 1f
     
+    this
+  }
+
+  // http://stackoverflow.com/questions/1148309/inverting-a-4x4-matrix
+  def inverse() = {
+    val t00 =  m11*m22*m33 - m11*m23*m32 - m21*m12*m33 + m21*m13*m32 + m31*m12*m23 - m31*m13*m22
+    val t10 = -m10*m22*m33 + m10*m23*m32 + m20*m12*m33 - m20*m13*m32 - m30*m12*m23 + m30*m13*m22
+    val t20 =  m10*m21*m33 - m10*m23*m31 - m20*m11*m33 + m20*m13*m31 + m30*m11*m23 - m30*m13*m21
+    val t30 = -m10*m21*m32 + m10*m22*m31 + m20*m11*m32 - m20*m12*m31 - m30*m11*m22 + m30*m12*m21
+    val t01 = -m01*m22*m33 + m01*m23*m32 + m21*m02*m33 - m21*m03*m32 - m31*m02*m23 + m31*m03*m22
+    val t11 =  m00*m22*m33 - m00*m23*m32 - m20*m02*m33 + m20*m03*m32 + m30*m02*m23 - m30*m03*m22
+    val t21 = -m00*m21*m33 + m00*m23*m31 + m20*m01*m33 - m20*m03*m31 - m30*m01*m23 + m30*m03*m21
+    val t31 =  m00*m21*m32 - m00*m22*m31 - m20*m01*m32 + m20*m02*m31 + m30*m01*m22 - m30*m02*m21
+    val t02 =  m01*m12*m33 - m01*m13*m32 - m11*m02*m33 + m11*m03*m32 + m31*m02*m13 - m31*m03*m12
+    val t12 = -m00*m12*m33 + m00*m13*m32 + m10*m02*m33 - m10*m03*m32 - m30*m02*m13 + m30*m03*m12
+    val t22 =  m00*m11*m33 - m00*m13*m31 - m10*m01*m33 + m10*m03*m31 + m30*m01*m13 - m30*m03*m11
+    val t32 = -m00*m11*m32 + m00*m12*m31 + m10*m01*m32 - m10*m02*m31 - m30*m01*m12 + m30*m02*m11
+    val t03 = -m01*m12*m23 + m01*m13*m22 + m11*m02*m23 - m11*m03*m22 - m21*m02*m13 + m21*m03*m12
+    val t13 =  m00*m12*m23 - m00*m13*m22 - m10*m02*m23 + m10*m03*m22 + m20*m02*m13 - m20*m03*m12
+    val t23 = -m00*m11*m23 + m00*m13*m21 + m10*m01*m23 - m10*m03*m21 - m20*m01*m13 + m20*m03*m11
+    val t33 =  m00*m11*m22 - m00*m12*m21 - m10*m01*m22 + m10*m02*m21 + m20*m01*m12 - m20*m02*m11
+
+    val det = 1f / (m00*t00 + m01*t10 + m02*t20 + m03*t30)
+
+    m00 = t00*det; m01 = t01*det; m02 = t02*det; m03 = t03*det
+    m10 = t10*det; m11 = t11*det; m12 = t12*det; m13 = t13*det
+    m20 = t20*det; m21 = t21*det; m22 = t22*det; m23 = t23*det
+    m30 = t30*det; m31 = t31*det; m32 = t32*det; m33 = t33*det
+
+    this
+  }
+
+  def transpose() = {
+    var tmp = m10
+    this.m10 = this.m01
+    this.m01 = tmp
+
+    tmp = this.m20
+    this.m20 = this.m02
+    this.m02 = tmp
+
+    tmp = this.m30
+    this.m30 = this.m03
+    this.m03 = tmp
+
+    tmp = this.m21
+    this.m21 = this.m12
+    this.m12 = tmp
+
+    tmp = this.m31
+    this.m31 = this.m13
+    this.m13 = tmp
+
+    tmp = this.m32
+    this.m32 = this.m23
+    this.m23 = tmp
+
     this
   }
 
