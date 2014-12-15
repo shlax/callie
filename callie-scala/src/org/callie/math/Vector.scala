@@ -40,7 +40,7 @@ trait Vector3{
     this
   }
 
-  override def toString = "("+x+",\t"+y+",\t"+z+")"
+  override def toString = "("+x+", "+y+", "+z+")"
 
 }
 

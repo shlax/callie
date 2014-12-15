@@ -4,6 +4,8 @@ object Matrix4{
   def apply() = new Matrix4()
   
   def apply(v: Vector3) = new Matrix4(v)
+
+  def apply(m: Matrix4) = new Matrix4(m)
   
   def apply(m00: Float, m01: Float, m02: Float, m03: Float,
             m10: Float, m11: Float, m12: Float, m13: Float,
@@ -29,8 +31,12 @@ class Matrix4(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  /
                  		         0f, 1f, 0f, v.y,
                  		         0f, 0f, 1f, v.z,
                  		         0f, 0f, 0f, 1f)
-                    		
-                    
+
+
+  def this(m:Matrix4) = this(m.m00, m.m01, m.m02, m.m03,
+                             m.m10, m.m11, m.m12, m.m13,
+                             m.m20, m.m21, m.m22, m.m23,
+                             m.m30, m.m31, m.m32, m.m33)
                     
   def apply(v: Vector3) : Vector3 = apply(v, v)
   
@@ -44,31 +50,28 @@ class Matrix4(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  /
 
   def mul (m : Matrix4) : Matrix4 = mul(this, m)
   
-  def mul(n : Matrix4, m : Matrix4) = {
-    val t00 = n.m00*m.m00 + n.m01*m.m10 + n.m02*m.m20 + n.m03*m.m30
-    val t01 = n.m00*m.m01 + n.m01*m.m11 + n.m02*m.m21 + n.m03*m.m31
-    val t02 = n.m00*m.m02 + n.m01*m.m12 + n.m02*m.m22 + n.m03*m.m32
-    val t03 = n.m00*m.m03 + n.m01*m.m13 + n.m02*m.m23 + n.m03*m.m33
-    
-    val t10 = n.m10*m.m00 + n.m10*m.m10 + n.m12*m.m20 + n.m13*m.m30
-    val t11 = n.m10*m.m01 + n.m10*m.m11 + n.m12*m.m21 + n.m13*m.m31
-    val t12 = n.m10*m.m02 + n.m10*m.m12 + n.m12*m.m22 + n.m13*m.m32
-    val t13 = n.m10*m.m03 + n.m10*m.m13 + n.m12*m.m23 + n.m13*m.m33
-    
-    val t20 = n.m20*m.m00 + n.m20*m.m10 + n.m22*m.m20 + n.m23*m.m30
-    val t21 = n.m20*m.m01 + n.m20*m.m11 + n.m22*m.m21 + n.m23*m.m31
-    val t22 = n.m20*m.m02 + n.m20*m.m12 + n.m22*m.m22 + n.m23*m.m32
-    val t23 = n.m20*m.m03 + n.m20*m.m13 + n.m22*m.m23 + n.m23*m.m33
-    
-    val t30 = n.m30*m.m00 + n.m30*m.m10 + n.m32*m.m20 + n.m33*m.m30
-    val t31 = n.m30*m.m01 + n.m30*m.m11 + n.m32*m.m21 + n.m33*m.m31
-    val t32 = n.m30*m.m02 + n.m30*m.m12 + n.m32*m.m22 + n.m33*m.m32
-    val t33 = n.m30*m.m03 + n.m30*m.m13 + n.m32*m.m23 + n.m33*m.m33
-    
-    m00 = t00; m01 = t01; m02 = t02; m03 = t03
-    m10 = t10; m11 = t11; m12 = t12; m13 = t13
-    m20 = t20; m21 = t21; m22 = t22; m23 = t23
-    m30 = t30; m31 = t31; m32 = t32; m33 = t33
+  def mul(m : Matrix4, n : Matrix4) = {
+    val t00 = m.m00 * n.m00 + m.m01 * n.m10 + m.m02 * n.m20 + m.m03 * n.m30
+    val t01 = m.m00 * n.m01 + m.m01 * n.m11 + m.m02 * n.m21 + m.m03 * n.m31
+    val t02 = m.m00 * n.m02 + m.m01 * n.m12 + m.m02 * n.m22 + m.m03 * n.m32
+    val t03 = m.m00 * n.m03 + m.m01 * n.m13 + m.m02 * n.m23 + m.m03 * n.m33
+    val t10 = m.m10 * n.m00 + m.m11 * n.m10 + m.m12 * n.m20 + m.m13 * n.m30
+    val t11 = m.m10 * n.m01 + m.m11 * n.m11 + m.m12 * n.m21 + m.m13 * n.m31
+    val t12 = m.m10 * n.m02 + m.m11 * n.m12 + m.m12 * n.m22 + m.m13 * n.m32
+    val t13 = m.m10 * n.m03 + m.m11 * n.m13 + m.m12 * n.m23 + m.m13 * n.m33
+    val t20 = m.m20 * n.m00 + m.m21 * n.m10 + m.m22 * n.m20 + m.m23 * n.m30
+    val t21 = m.m20 * n.m01 + m.m21 * n.m11 + m.m22 * n.m21 + m.m23 * n.m31
+    val t22 = m.m20 * n.m02 + m.m21 * n.m12 + m.m22 * n.m22 + m.m23 * n.m32
+    val t23 = m.m20 * n.m03 + m.m21 * n.m13 + m.m22 * n.m23 + m.m23 * n.m33
+    val t330 = m.m30 * n.m00 + m.m31 * n.m10 + m.m32 * n.m20 + m.m33 * n.m30
+    val t31 = m.m30 * n.m01 + m.m31 * n.m11 + m.m32 * n.m21 + m.m33 * n.m31
+    val t32 = m.m30 * n.m02 + m.m31 * n.m12 + m.m32 * n.m22 + m.m33 * n.m32
+    val t33 = m.m30 * n.m03 + m.m31 * n.m13 + m.m32 * n.m23 + m.m33 * n.m33
+
+    m00 = t00;  m01 = t01;  m02 = t02; m03 = t03
+    m10 = t10;  m11 = t11;  m12 = t12; m13 = t13
+    m20 = t20;  m21 = t21;  m22 = t22; m23 = t23
+    m30 = t330; m31 = t31;  m32 = t32; m33 = t33
     
     this
   }
@@ -180,9 +183,12 @@ class Matrix4(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  /
                       m20, m21, m22, m23,
                       m30, m31, m32, m33)
 
-  override def toString = "("+m00+",\t"+m01+",\t"+m02+",\t"+m03+"\n"+
-                          " "+m10+",\t"+m11+",\t"+m12+",\t"+m13+"\n"+
-                          " "+m20+",\t"+m21+",\t"+m22+",\t"+m23+"\n"+
-                          " "+m30+",\t"+m31+",\t"+m32+",\t"+m33+")"
+  override def toString = {
+    def padMk(n: Float) =  (if(n < 0f) "+" else "-" )+Math.abs(n).toString.padTo(12, " ").mkString
+    "(" + padMk(m00) + ", " + padMk(m01) + ", " + padMk(m02) + ", " + padMk(m03) + "\n" +
+    " " + padMk(m10) + ", " + padMk(m11) + ", " + padMk(m12) + ", " + padMk(m13) + "\n" +
+    " " + padMk(m20) + ", " + padMk(m21) + ", " + padMk(m22) + ", " + padMk(m23) + "\n" +
+    " " + padMk(m30) + ", " + padMk(m31) + ", " + padMk(m32) + ", " + padMk(m33) + ")"
+  }
 
 }
