@@ -1,7 +1,7 @@
 package org.callie
 
 import org.callie.jogl.{buffers, JoglFrame, GL4EventListener, GL_4}
-import javax.media.opengl.GL4
+import com.jogamp.opengl.GL4
 import buffers._
 
 object MainInd extends App{

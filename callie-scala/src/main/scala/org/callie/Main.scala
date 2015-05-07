@@ -1,12 +1,12 @@
 package org.callie
 
 import java.awt.{BorderLayout, Frame}
-import javax.media.opengl.{GLCapabilities, GLProfile }
-import javax.media.opengl.awt.GLCanvas
+import com.jogamp.opengl.{GLCapabilities, GLProfile }
+import com.jogamp.opengl.awt.GLCanvas
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
-import javax.media.opengl.GLEventListener
-import javax.media.opengl.GLAutoDrawable
+import com.jogamp.opengl.GLEventListener
+import com.jogamp.opengl.GLAutoDrawable
 //import javax.media.opengl.{GL4, GL3, GL2GL3, GL2ES2, GL, GLBase}
 import org.callie.jogl.GL_4
 import com.jogamp.opengl.util.FPSAnimator

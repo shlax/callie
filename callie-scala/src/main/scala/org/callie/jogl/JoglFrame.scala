@@ -2,8 +2,8 @@ package org.callie.jogl
 
 import java.awt.{Robot, Frame, BorderLayout}
 import java.awt.event._
-import javax.media.opengl.{GLProfile, GLCapabilities}
-import javax.media.opengl.awt.GLCanvas
+import com.jogamp.opengl.{GLProfile, GLCapabilities}
+import com.jogamp.opengl.awt.GLCanvas
 import com.jogamp.opengl.util.FPSAnimator
 import org.callie.input.Inputs
 

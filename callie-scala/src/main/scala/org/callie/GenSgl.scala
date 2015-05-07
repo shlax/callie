@@ -1,11 +1,11 @@
 package org.callie
 
-import javax.media.opengl.GL4
+import com.jogamp.opengl.GL4
 import scala.collection.mutable
 
 object GenSgl extends App{
 
-  val out = new StringBuilder("object GL_4 {")
+  val out = new StringBuilder("@inline\nobject GL_4 {")
   val done = mutable.Set[Class[_]]()
 
   def prc(cls:Class[_]){
@@ -13,7 +13,7 @@ object GenSgl extends App{
       if(cls != null && classOf[Object] != cls){
 
         for(f <- cls.getDeclaredFields){
-          out ++= "\n  def " + f.getName.substring(3) + " = " + cls.getName + "." + f.getName
+          out ++= "\n  @inline def " + f.getName.substring(3) + " = " + cls.getName + "." + f.getName
         }
 
         prc(cls.getSuperclass)

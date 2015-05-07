@@ -1,7 +1,7 @@
 package org.callie.model
 
 import scala.collection.mutable.ListBuffer
-import javax.media.opengl.GL4
+import com.jogamp.opengl.GL4
 import com.jogamp.common.nio.Buffers
 import com.jogamp.opengl.util.texture.TextureIO
 import org.callie.jogl.{buffers, GL_4, GL4EventListener}

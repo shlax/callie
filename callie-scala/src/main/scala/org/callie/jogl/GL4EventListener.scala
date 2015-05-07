@@ -1,6 +1,6 @@
 package org.callie.jogl
 
-import javax.media.opengl.{GL4, GLAutoDrawable, GLEventListener}
+import com.jogamp.opengl.{GL4, GLAutoDrawable, GLEventListener}
 
 trait GL4EventListener extends GLEventListener{
 

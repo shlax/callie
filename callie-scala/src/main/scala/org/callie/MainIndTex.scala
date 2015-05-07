@@ -1,6 +1,6 @@
 package org.callie
 
-import javax.media.opengl.GL4
+import com.jogamp.opengl.GL4
 import com.jogamp.opengl.util.texture.TextureIO
 import com.jogamp.common.nio.Buffers
 import org.callie.jogl.{buffers, GL_4, GL4EventListener, JoglFrame}

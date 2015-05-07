@@ -1,7 +1,7 @@
 package org.callie
 
 import org.callie.jogl.{buffers, GL_4, GL4EventListener, JoglFrame}
-import javax.media.opengl.GL4
+import com.jogamp.opengl.GL4
 import java.io.InputStreamReader
 import scala.collection.mutable.ListBuffer
 import com.jogamp.common.nio.Buffers

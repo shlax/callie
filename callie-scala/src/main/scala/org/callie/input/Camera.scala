@@ -1,6 +1,6 @@
 package org.callie.input
 
-import javax.media.opengl.GL4
+import com.jogamp.opengl.GL4
 import org.callie.math.{Matrix4, Vector3}
 
 // http://www.gamedev.net/topic/617711-glulookat-replacement/

@@ -1,6 +1,6 @@
 package org.callie.jogl
 
-import javax.media.opengl.GL4
+import com.jogamp.opengl.GL4
 import org.callie.model.{Graphics, Physics}
 import org.callie.input.Camera
 

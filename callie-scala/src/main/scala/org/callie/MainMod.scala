@@ -1,7 +1,7 @@
 package org.callie
 
 import org.callie.jogl.{buffers, GL_4, GL4EventListener, JoglFrame}
-import javax.media.opengl.GL4
+import com.jogamp.opengl.GL4
 import java.io.InputStreamReader
 import scala.collection.mutable.ListBuffer
 import com.jogamp.opengl.util.texture.TextureIO
@@ -56,8 +56,8 @@ object MainMod extends App{
       |layout(location = 1) in vec2 inTextureCoord;
       |layout(location = 2) in vec3 inNormal;
       |
-      |uniform mat4 viewMatrix;
-      |uniform mat4 normalMatrix;
+      |//uniform mat4 viewMatrix;
+      |//uniform mat4 normalMatrix;
       |
       |out vec2 texCoord;
       |out float lightIntensity;
@@ -65,9 +65,9 @@ object MainMod extends App{
       |vec3 lightDirection = normalize(vec3(1, 1, 1));
       |
       |void main(){
-      |  gl_Position = viewMatrix * inPosition; //vec4(inPosition, 1);
+      |  gl_Position = /* viewMatrix * */ inPosition; //vec4(inPosition, 1);
       |
-      |  vec3 n = normalMatrix * inNormal;
+      |  vec3 n = /* normalMatrix * */ inNormal;
       |  float l = max(dot(n, lightDirection), 0.0);
       |  lightIntensity = 0.2 + (l * 0.8);
       |
