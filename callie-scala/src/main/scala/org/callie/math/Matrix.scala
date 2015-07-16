@@ -6,7 +6,39 @@ object Matrix4{
   def apply(v: Vector3) = new Matrix4(v)
 
   def apply(m: Matrix4) = new Matrix4(m)
-  
+
+  def apply(x:Float, y:Float, z:Float) = new Matrix4(x, y, z)
+
+  def rotX(angle: Float) = {
+    val s = Math.sin(angle).asInstanceOf[Float]
+    val c = Math.cos(angle).asInstanceOf[Float]
+    new Matrix4(1f, 0f, 0f, 0f,
+                0f, c , -s, 0f,
+                0f, s , c , 0f,
+                0f, 0f, 0f, 1f)
+  }
+
+  def rotY(angle: Float) = {
+    val s = Math.sin(angle).asInstanceOf[Float]
+    val c = Math.cos(angle).asInstanceOf[Float]
+
+    new Matrix4( c, 0f, s , 0f,
+                0f, 1f, 0f, 0f,
+                -s, 0f, c , 0f,
+                0f, 0f, 0f, 1f)
+
+  }
+
+  def rotZ(angle: Float) = {
+    val s = Math.sin(angle).asInstanceOf[Float]
+    val c = Math.cos(angle).asInstanceOf[Float]
+
+    new Matrix4( c, -s, 0f, 0f,
+                 s, c , 0f, 0f,
+                0f, 0f, 1f, 0f,
+                0f, 0f, 0f, 1f)
+  }
+
   def apply(m00: Float, m01: Float, m02: Float, m03: Float,
             m10: Float, m11: Float, m12: Float, m13: Float,
             m20: Float, m21: Float, m22: Float, m23: Float,
@@ -32,6 +64,10 @@ class Matrix4(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  /
                  		         0f, 0f, 1f, v.z,
                  		         0f, 0f, 0f, 1f)
 
+  def this(x:Float, y:Float, z:Float) = this(1f, 0f, 0f, x,
+                                             0f, 1f, 0f, y,
+                                             0f, 0f, 1f, z,
+                                             0f, 0f, 0f, 1f)
 
   def this(m:Matrix4) = this(m.m00, m.m01, m.m02, m.m03,
                              m.m10, m.m11, m.m12, m.m13,
@@ -184,7 +220,7 @@ class Matrix4(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  /
                       m30, m31, m32, m33)
 
   override def toString = {
-    def padMk(n: Float) =  (if(n < 0f) "+" else "-" )+Math.abs(n).toString.padTo(12, " ").mkString
+    def padMk(n: Float) =  (if(n < 0f) "-" else "+" )+Math.abs(n).toString.padTo(12, " ").mkString
     "(" + padMk(m00) + ", " + padMk(m01) + ", " + padMk(m02) + ", " + padMk(m03) + "\n" +
     " " + padMk(m10) + ", " + padMk(m11) + ", " + padMk(m12) + ", " + padMk(m13) + "\n" +
     " " + padMk(m20) + ", " + padMk(m21) + ", " + padMk(m22) + ", " + padMk(m23) + "\n" +

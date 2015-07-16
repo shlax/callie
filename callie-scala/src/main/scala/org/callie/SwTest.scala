@@ -47,7 +47,7 @@ object SwTest extends App{
 }
 
 object Command{
-  implicit def asRun[F](f: => F) = new Runnable(){ def run() { f } }
+  implicit def asRun[F](f: => F):Runnable = new Runnable(){ def run() { f } }
 
   val ecJob = ExecutionContext.fromExecutor(Executors.newCachedThreadPool())
   val ecGui = ExecutionContext.fromExecutor(new Executor(){

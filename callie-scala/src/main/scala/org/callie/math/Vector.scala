@@ -40,6 +40,8 @@ trait Vector3{
     this
   }
 
+  def dot(a: Vector3) = a.x * this.x + a.y * this.y + a.z * this.z
+
   override def toString = "("+x+", "+y+", "+z+")"
 
 }
@@ -56,6 +58,8 @@ object Vector3{
   def add(a:Vector3, b:Vector3) = new VectorVar(a.x + b.x, a.y + b.y, a.z + b.z)
 
   def sub(a:Vector3, b:Vector3) = new VectorVar(a.x - b.x, a.y - b.y, a.z - b.z)
+
+  def dot(a: Vector3, b: Vector3) = a.x * b.x + a.y * b.y + a.z * b.z
 
   def normalize(v:Vector3){
     val l = v.len
