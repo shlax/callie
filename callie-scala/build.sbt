@@ -5,7 +5,7 @@ version := "1.0"
 scalaVersion := "2.11.7"
 
 // https://github.com/sbt/sbt/issues/1821
-resolvers += "nexus releases" at "http://mr01.hq.gratex.com/nexus/content/groups/public/"
+//resolvers += "nexus releases" at "http://mr01.hq.gratex.com/nexus/content/groups/public/"
 
 libraryDependencies ++= Seq("org.jogamp.gluegen" % "gluegen-rt-main" % "2.3.1",
                             "org.jogamp.jogl" % "jogl-all-main" % "2.3.1",

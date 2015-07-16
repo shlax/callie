@@ -40,6 +40,20 @@ trait Vector3{
     this
   }
 
+  def mul(m:Float) = {
+    x = x * m
+    y = y * m
+    z = z * m
+    this
+  }
+
+  def div(m:Float) = {
+    x = x / m
+    y = y / m
+    z = z / m
+    this
+  }
+
   def dot(a: Vector3) = a.x * this.x + a.y * this.y + a.z * this.z
 
   override def toString = "("+x+", "+y+", "+z+")"
@@ -60,6 +74,10 @@ object Vector3{
   def sub(a:Vector3, b:Vector3) = new VectorVar(a.x - b.x, a.y - b.y, a.z - b.z)
 
   def dot(a: Vector3, b: Vector3) = a.x * b.x + a.y * b.y + a.z * b.z
+
+  def mul(v:Vector3, m:Float) = Vector3(v.x * m, v.y * m, v.z * m)
+
+  def div(v:Vector3, m:Float) = Vector3(v.x / m, v.y / m, v.z / m)
 
   def normalize(v:Vector3){
     val l = v.len

@@ -34,38 +34,18 @@ object Camera {
   def lookAt() = {
     val up = Vector3(0f, 1f, 0f)
 
-    val f = Vector3.sub(target.position, position).normalize()
-    val s = Vector3.cross(f, up).normalize()
-    val u = Vector3.cross(s, f).normalize()
-
-//    // viewing matrix
-    val vm = Matrix4(s.x             , u.x             , -f.x            , 0f,
-                     s.y             , u.y             , -f.y            , 0f,
-                     s.z             , u.z             , -f.z            , 0f,
-                     -s.dot(position), -u.dot(position), -f.dot(position), 1f)
+//    val f = Vector3.sub(target.position, position).normalize()
+//    val s = Vector3.cross(f, up).normalize()
+//    val u = Vector3.cross(s, f).normalize()
+//
+////    // viewing matrix
+//    val vm = Matrix4(s.x             , u.x             , -f.x            , 0f,
+//                     s.y             , u.y             , -f.y            , 0f,
+//                     s.z             , u.z             , -f.z            , 0f,
+//                     -s.dot(position), -u.dot(position), -f.dot(position), 1f)
 
     // https://unspecified.wordpress.com/2012/06/21/calculating-the-gluperspective-matrix-and-other-opengl-matrix-maths/
     // http://blog.db-in.com/cameras-on-opengl-es-2-x/
-
-    val angleOfView = Math.PI.asInstanceOf[Float] / 2f
-    val aspectRatio = 1f
-
-    val nearPlane = 1f
-    val farPlane = 100f
-
-    val size = nearPlane * Math.tan(angleOfView / 2.0f).asInstanceOf[Float]
-    val left = -size
-    val right = size
-    val bottom = -size / aspectRatio
-    val top = size / aspectRatio
-
-    val pm = Matrix4(2f * nearPlane / (right-left), 0f, 0f, 0f,
-                     0f, 2f * nearPlane / (top - bottom), 0f, 0f,
-                     (right + left) / (right - left), (top + bottom) / (top - bottom), -(farPlane + nearPlane) / (farPlane - nearPlane), -1f,
-                     0f, 0f, -(2 * farPlane * nearPlane) / (farPlane - nearPlane), 0f )
-
-
-    println( pm.apply(Vector3(10,10,100)) )
 
     Matrix4(0.25f, 0.25f, -1.25f).mul(Matrix4.rotX(2f))
 

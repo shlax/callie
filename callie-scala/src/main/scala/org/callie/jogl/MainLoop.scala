@@ -27,7 +27,7 @@ object MainLoop extends App {
     override def initGL4(implicit gl: GL4){
       Physics.init()
       Graphics.init(gl)
-      Camera.init(gl)
+      //Camera.init(gl)
     }
 
     override def displayGL4(implicit gl: GL4){
