@@ -164,7 +164,7 @@ object MainModRotate extends App{
       gl.glBindTexture(GL_4.TEXTURE_2D, texId)
 
       bindVertexArray(vao){
-        bindBuffer(GL_4.ELEMENT_ARRAY_BUFFER, vbi){
+        bindBuffer(GL_4.ELEMENT_ARRAY_BUFFER, vbi){ // glDrawElementsIndirect
           gl.glDrawElements(GL_4.TRIANGLES, indices.length, GL_4.UNSIGNED_INT, 0)
         }
       }
