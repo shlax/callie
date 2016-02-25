@@ -220,11 +220,15 @@ class Matrix4(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  /
                       m30, m31, m32, m33)
 
   override def toString = {
-    def padMk(n: Float) =  (if(n < 0f) "-" else "+" )+Math.abs(n).toString.padTo(12, " ").mkString
-    "(" + padMk(m00) + ", " + padMk(m01) + ", " + padMk(m02) + ", " + padMk(m03) + "\n" +
-    " " + padMk(m10) + ", " + padMk(m11) + ", " + padMk(m12) + ", " + padMk(m13) + "\n" +
-    " " + padMk(m20) + ", " + padMk(m21) + ", " + padMk(m22) + ", " + padMk(m23) + "\n" +
-    " " + padMk(m30) + ", " + padMk(m31) + ", " + padMk(m32) + ", " + padMk(m33) + ")"
+    //def padMk(n: Float) =  (if(n < 0f) "-" else "+" )+Math.abs(n).toString.padTo(12, " ").mkString
+//    "(" + padMk(m00) + ", " + padMk(m01) + ", " + padMk(m02) + ", " + padMk(m03) + "\n" +
+//    " " + padMk(m10) + ", " + padMk(m11) + ", " + padMk(m12) + ", " + padMk(m13) + "\n" +
+//    " " + padMk(m20) + ", " + padMk(m21) + ", " + padMk(m22) + ", " + padMk(m23) + "\n" +
+//    " " + padMk(m30) + ", " + padMk(m31) + ", " + padMk(m32) + ", " + padMk(m33) + ")"
+    "{{" + m00 + ", " + m01 + ", " + m02 + ", " + m03 + "}, " +
+     "{" + m10 + ", " + m11 + ", " + m12 + ", " + m13 + "}, " +
+     "{" + m20 + ", " + m21 + ", " + m22 + ", " + m23 + "}, " +
+     "{" + m30 + ", " + m31 + ", " + m32 + ", " + m33 + "}}"
   }
 
 }

@@ -57,20 +57,23 @@ object MainModRotate extends App{
       |layout(location = 2) in vec3 inNormal;
       |
       |uniform mat4 viewMatrix;
-      |// uniform mat4 normalMatrix;
+      |uniform mat4 normalMatrix;
+      |
+      |/* const mat4 projection = mat4( // 1 : 10 X 0.5
+      | vec4(2, 0, 0, 0),
+      | vec4(0, 2, 0, 0),
+      | vec4(0, 0, -1.2222222, -2.2222222),
+      | vec4(0, 0, -1, 0)
+      |); */
+      |
+      |const vec3 lightDirection = normalize(vec3(1, 1, 2));
       |
       |out vec2 texCoord;
       |out float lightIntensity;
       |
-      |vec3 lightDirection = normalize(vec3(1, 1, 1));
-      |
       |void main(){
-      |  gl_Position = viewMatrix * vec4(inPosition, 1); //vec4(inPosition, 1);
-      |
-      |  vec3 n = inNormal; // (normalMatrix * vec4(inNormal,abc)).xyz;
-      |  float l = max(dot(n, lightDirection), 0.0);
-      |  lightIntensity = 0.2 + (l * 0.8);
-      |
+      |  gl_Position = viewMatrix * vec4(inPosition, 1); // (projection * viewMatrix) * vec4(inPosition, 1); //vec4(inPosition, 1);
+      |  lightIntensity = 0.2 + (max(dot((normalMatrix * vec4(inNormal,1)).xyz, lightDirection), 0.0) * 0.8);
       |  texCoord = inTextureCoord;
       |}
     """.stripMargin
@@ -85,7 +88,7 @@ object MainModRotate extends App{
       |in float lightIntensity;
       |
       |void main(){
-      |  gl_FragColor  = texture(textureDiffuse, texCoord);
+      |  gl_FragColor = texture(textureDiffuse, texCoord)*lightIntensity; // vec4(lightIntensity,lightIntensity, lightIntensity, 1);
       |}
     """.stripMargin
 
