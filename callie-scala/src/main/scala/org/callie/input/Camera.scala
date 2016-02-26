@@ -81,7 +81,7 @@ object Camera {
 //            0, 0, 0, 1)
   }
 
-  val view = Matrix4()
+  //val view = Matrix4()
   val projection = Matrix4(1f, 0f, 0f, 0f,
                            0f, 1f, 0f, 0f,
                            0f, 0f, -1.002002f, -2.002002f,
@@ -91,7 +91,7 @@ object Camera {
   def display(implicit gl:GL4){
     val m = model()
 //    println(m)
-    gl.glUniformMatrix4fv(viewMatrix, 1, true, view.mul(projection, m).toArray, 0)
+    gl.glUniformMatrix4fv(viewMatrix, 1, true, tmp.mul(projection, m).toArray, 0)
     gl.glUniformMatrix4fv(normalMatrix, 1, false, m.inverse().toArray, 0)
   }
 
