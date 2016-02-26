@@ -31,9 +31,29 @@ object Camera {
 
   // http://spointeau.blogspot.sk/2013/12/hello-i-am-looking-at-opengl-3.html
 
-  var ang = 2f
+  var angX = 0f
+  var angY = 0f
+
+  val off = Vector3(0f, 0f, -5f)
+
+  val tmp = Matrix4()
+  val modMat = Matrix4()
+
+  val pi = Math.PI.toFloat
+  val pi2 = (2 * Math.PI).toFloat
+
+  def angle(v:Float) = {
+    var r = v
+    if(r < -pi) r += pi2
+    if(r > pi) r -= pi2
+    r
+  }
 
   def model() = {
+    off.z += Inputs.zDiff() * 0.25f
+    angX = angle(angX + Inputs.yDiff() * 0.025f)
+    angY = angle(angY + Inputs.xDiff() * 0.025f)
+
 //    val up = Vector3(0f, 1f, 0f)
 //
 //    val f = Vector3.sub(target.position, position).normalize()
@@ -46,11 +66,13 @@ object Camera {
 //                     s.z             , u.z             , -f.z            , 0f,
 //                     -s.dot(position), -u.dot(position), -f.dot(position), 1f)
 
+    modMat.set(off).mul(tmp.rotX(angX)).mul(tmp.rotY(angY)).mul(tmp.set(target.position))
+
     // https://unspecified.wordpress.com/2012/06/21/calculating-the-gluperspective-matrix-and-other-opengl-matrix-maths/
     // http://blog.db-in.com/cameras-on-opengl-es-2-x/
 
-    ang += 0.01f
-    Matrix4(0f, 0f, -2f).mul(Matrix4.rotX(ang))//.mul(Matrix4.rotY(ang)).mul(Matrix4.rotZ(ang))
+    //ang += 0.01f
+//    Matrix4(0f, 0f, -2f)//.mul(Matrix4.rotX(0))//.mul(Matrix4.rotY(ang)).mul(Matrix4.rotZ(ang))
 //    Matrix4(0.25f, 0.25f, -1.25f).mul(vm)
 
 //    Matrix4(1, 0, 0, 0,
@@ -68,6 +90,7 @@ object Camera {
   // mat4 normalMatrix = transpose(inverse(modelView));
   def display(implicit gl:GL4){
     val m = model()
+//    println(m)
     gl.glUniformMatrix4fv(viewMatrix, 1, true, view.mul(projection, m).toArray, 0)
     gl.glUniformMatrix4fv(normalMatrix, 1, false, m.inverse().toArray, 0)
   }
@@ -79,5 +102,5 @@ trait TrackingObject{
 }
 
 object ZeroTrackingObject extends TrackingObject{
-  override val position = Vector3()
+  override val position = Vector3(0,0,0)
 }

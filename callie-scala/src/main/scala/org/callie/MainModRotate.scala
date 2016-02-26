@@ -26,7 +26,7 @@ object MainModRotate extends App{
       val ind = s.indexOf(sel)
       if(ind == -1){
         val v = m.points(sel._1)
-        a += (v._1 / 2f) += (v._2 / 2f) += (v._3  / 2f)
+        a += v._1 += v._2 += v._3
 
         val t = m.uvCoord(sel._2)
         a += t._1 += t._2

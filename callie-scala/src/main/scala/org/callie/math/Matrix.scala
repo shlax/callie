@@ -12,6 +12,7 @@ object Matrix4{
   def rotX(angle: Float) = {
     val s = Math.sin(angle).asInstanceOf[Float]
     val c = Math.cos(angle).asInstanceOf[Float]
+
     new Matrix4(1f, 0f, 0f, 0f,
                 0f, c , -s, 0f,
                 0f, s , c , 0f,
@@ -112,7 +113,7 @@ class Matrix4(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  /
     this
   }
   
-  def update(v: Vector3) = {
+  def set(v: Vector3) = {
     m00 = 1f; m01 = 0f; m02 = 0f; m03 = v.x
     m10 = 0f; m11 = 1f; m12 = 0f; m13 = v.y
     m20 = 0f; m21 = 0f; m22 = 1f; m23 = v.z

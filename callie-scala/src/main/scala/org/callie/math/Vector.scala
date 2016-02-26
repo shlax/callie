@@ -56,7 +56,7 @@ trait Vector3{
 
   def dot(a: Vector3) = a.x * this.x + a.y * this.y + a.z * this.z
 
-  override def toString = "("+x+", "+y+", "+z+")"
+  override def toString = "{"+x+", "+y+", "+z+"}"
 
 }
 
