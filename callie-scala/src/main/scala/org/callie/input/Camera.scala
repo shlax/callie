@@ -1,7 +1,7 @@
 package org.callie.input
 
 import com.jogamp.opengl.GL4
-import org.callie.math.{Matrix4, Vector3}
+import org.callie.math.{Angle, Matrix4, Vector3}
 
 // http://www.gamedev.net/topic/617711-glulookat-replacement/
 object Camera {
@@ -31,23 +31,23 @@ object Camera {
 
   // http://spointeau.blogspot.sk/2013/12/hello-i-am-looking-at-opengl-3.html
 
-  var angX = 0f
-  var angY = 0f
+  val angX = Angle()
+  val angY = Angle()
 
   val off = Vector3(0f, 0f, -5f)
 
   val tmp = Matrix4()
   val modMat = Matrix4()
 
-  val pi = Math.PI.toFloat
-  val pi2 = (2 * Math.PI).toFloat
+//  val pi = Math.PI.toFloat
+//  val pi2 = (2 * Math.PI).toFloat
 
-  def angle(v:Float) = {
-    var r = v
-    if(r < -pi) r += pi2
-    if(r > pi) r -= pi2
-    r
-  }
+//  def angle(v:Float) = {
+//    var r = v
+//    if(r < -fMath.PI1) r += fMath.PI2
+//    if(r > fMath.PI1) r -= fMath.PI2
+//    r
+//  }
 
 /*  def model() = {
     off.z += Inputs.zDiff() * 0.25f
@@ -93,10 +93,10 @@ object Camera {
   // mat4 normalMatrix = transpose(inverse(modelView));
   def display(implicit gl:GL4){
     off.z += Inputs.zDiff() * 0.25f
-    angX = angle(angX + Inputs.yDiff() * 0.025f)
-    angY = angle(angY + Inputs.xDiff() * 0.025f)
+    angX() += Inputs.yDiff() * 0.025f
+    angY() += Inputs.xDiff() * 0.025f
 
-    modMat.set(off).mul(tmp.rotX(angX)).mul(tmp.rotY(angY)).mul(tmp.set(target.position))
+    modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position))
 //    println(m)
     gl.glUniformMatrix4fv(viewMatrix, 1, true, tmp.mul(projection, modMat).toArray(viewAr), 0)
     gl.glUniformMatrix4fv(normalMatrix, 1, false, modMat.inverse().toArray(normAr), 0)
