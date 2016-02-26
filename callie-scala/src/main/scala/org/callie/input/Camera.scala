@@ -8,7 +8,7 @@ object Camera {
   var target:TrackingObject = ZeroTrackingObject
   def lookAt(t:TrackingObject){ target = t }
 
-  var position = Vector3(0, 0, -1f)
+//  var position = Vector3(0, 0, -1f)
 
 //  def init(implicit gl:GL4){
 //    display(gl)
