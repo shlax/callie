@@ -52,8 +52,7 @@ object Matrix4{
 class Matrix4(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  // 0  1  2  3
               var m10: Float, var m11: Float, var m12: Float, var m13: Float,  // 4  5  6  7
               var m20: Float, var m21: Float, var m22: Float, var m23: Float,  // 8  9  10 11
-              var m30: Float, var m31: Float, var m32: Float, var m33: Float) {
-  // 12 13 14 15
+              var m30: Float, var m31: Float, var m32: Float, var m33: Float) {// 12 13 14 15
 
   def this() = this(1f, 0f, 0f, 0f,
                     0f, 1f, 0f, 0f,
