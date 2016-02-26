@@ -87,6 +87,9 @@ object Camera {
                            0f, 0f, -1.002002f, -2.002002f,
                            0f, 0f, -1f, 0f)
 
+  val viewAr = new Array[Float](16)
+  val normAr = new Array[Float](16)
+
   // mat4 normalMatrix = transpose(inverse(modelView));
   def display(implicit gl:GL4){
     off.z += Inputs.zDiff() * 0.25f
@@ -95,8 +98,8 @@ object Camera {
 
     modMat.set(off).mul(tmp.rotX(angX)).mul(tmp.rotY(angY)).mul(tmp.set(target.position))
 //    println(m)
-    gl.glUniformMatrix4fv(viewMatrix, 1, true, tmp.mul(projection, modMat).toArray, 0)
-    gl.glUniformMatrix4fv(normalMatrix, 1, false, modMat.inverse().toArray, 0)
+    gl.glUniformMatrix4fv(viewMatrix, 1, true, tmp.mul(projection, modMat).toArray(viewAr), 0)
+    gl.glUniformMatrix4fv(normalMatrix, 1, false, modMat.inverse().toArray(normAr), 0)
   }
 
 }

@@ -215,6 +215,14 @@ class Matrix4(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  /
     this
   }
 
+  def toArray(a:Array[Float]) = {
+    a(0)  = m00; a(1)  = m01; a(2)  = m02; a(3)  = m03
+    a(4)  = m10; a(5)  = m11; a(6)  = m12; a(7)  = m13
+    a(8)  = m20; a(9)  = m21; a(10) = m22; a(11) = m23
+    a(12) = m30; a(13) = m31; a(14) = m32; a(15) = m33
+    a
+  }
+
   def toArray = Array(m00, m01, m02, m03,
                       m10, m11, m12, m13,
                       m20, m21, m22, m23,
