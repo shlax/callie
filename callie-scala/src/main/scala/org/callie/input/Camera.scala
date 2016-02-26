@@ -49,7 +49,7 @@ object Camera {
     r
   }
 
-  def model() = {
+/*  def model() = {
     off.z += Inputs.zDiff() * 0.25f
     angX = angle(angX + Inputs.yDiff() * 0.025f)
     angY = angle(angY + Inputs.xDiff() * 0.025f)
@@ -79,7 +79,7 @@ object Camera {
 //            0, 1, 0, 0,
 //            0, 0, 1, 0,
 //            0, 0, 0, 1)
-  }
+  }   */
 
   //val view = Matrix4()
   val projection = Matrix4(1f, 0f, 0f, 0f,
@@ -89,10 +89,14 @@ object Camera {
 
   // mat4 normalMatrix = transpose(inverse(modelView));
   def display(implicit gl:GL4){
-    val m = model()
+    off.z += Inputs.zDiff() * 0.25f
+    angX = angle(angX + Inputs.yDiff() * 0.025f)
+    angY = angle(angY + Inputs.xDiff() * 0.025f)
+
+    modMat.set(off).mul(tmp.rotX(angX)).mul(tmp.rotY(angY)).mul(tmp.set(target.position))
 //    println(m)
-    gl.glUniformMatrix4fv(viewMatrix, 1, true, tmp.mul(projection, m).toArray, 0)
-    gl.glUniformMatrix4fv(normalMatrix, 1, false, m.inverse().toArray, 0)
+    gl.glUniformMatrix4fv(viewMatrix, 1, true, tmp.mul(projection, modMat).toArray, 0)
+    gl.glUniformMatrix4fv(normalMatrix, 1, false, modMat.inverse().toArray, 0)
   }
 
 }
