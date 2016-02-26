@@ -95,9 +95,9 @@ class VectorVar(var x : Float, var y : Float, var z : Float) extends Vector3 {
 
 class VectorProjection(val v : Array[Float], val i: Array[Int]) extends Vector3 {
     
-  override def x = v(i.head) /*+0*/
-  override def y = v(i.head + 1)
-  override def z = v(i.head + 2)
+  override def x = v(i(0)) /*+0*/
+  override def y = v(i(0) + 1)
+  override def z = v(i(0) + 2)
   
   override def x_=(nv:Float) = for(j <- i) v(j) = nv /*+0*/ 
   override def y_=(nv:Float) = for(j <- i) v(j + 1) = nv
