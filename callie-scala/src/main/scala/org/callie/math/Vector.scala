@@ -86,7 +86,7 @@ object Vector3{
 
 }
 
-class VectorVar(var x : Float, var y : Float, var z : Float) extends Vector3 {
+class VectorVar(override var x : Float, override var y : Float, override var z : Float) extends Vector3 {
 	
   def this() = this(0, 0, 0)
   def this(s : Float) = this(s, s, s)
