@@ -73,6 +73,10 @@ object MainModRotate extends App{
       |
       |void main(){
       |  gl_Position = viewMatrix * vec4(inPosition, 1); // (projection * viewMatrix) * vec4(inPosition, 1); //vec4(inPosition, 1);
+      |
+      |  //vec4 tmp = viewMatrix * vec4(inPosition, 1);
+      |  //gl_Position = vec4(tmp.x / tmp.w, tmp.y / tmp.w, tmp.z / tmp.w, 1);
+      |
       |  lightIntensity = 0.2 + (max(dot((normalMatrix * vec4(inNormal,1)).xyz, lightDirection), 0.0) * 0.8);
       |  texCoord = inTextureCoord;
       |}
