@@ -31,9 +31,9 @@ trait GL4EventListener extends GLEventListener{
   override def dispose(drawable: GLAutoDrawable) {
     val gl = drawable.getGL.getGL4
 
-    if(disposeVbo.size > 0) gl.glDeleteBuffers(disposeVbo.size, disposeVbo.toArray, 0)
-    if(disposeVao.size > 0) gl.glDeleteVertexArrays(disposeVao.size, disposeVao.toArray, 0)
-    if(disposeTestures.size > 0) gl.glDeleteTextures(disposeTestures.size, disposeTestures.toArray, 0)
+    if(disposeVbo.nonEmpty) gl.glDeleteBuffers(disposeVbo.size, disposeVbo.toArray, 0)
+    if(disposeVao.nonEmpty) gl.glDeleteVertexArrays(disposeVao.size, disposeVao.toArray, 0)
+    if(disposeTestures.nonEmpty) gl.glDeleteTextures(disposeTestures.size, disposeTestures.toArray, 0)
 
     for(p <- disposeProgram) gl.glDeleteProgram(p)
   }
