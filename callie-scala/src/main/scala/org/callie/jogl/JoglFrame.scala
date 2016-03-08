@@ -28,7 +28,7 @@ object JoglFrame {
   val glCanvas = new GLCanvas(capabilities)
   val animator = new FPSAnimator(glCanvas, 60, true)
   
-  glCanvas.setSize(300, 300)
+  glCanvas.setSize(1280/4, 720/4)
   frame.setLocation(100, 100)
   frame.setLayout(new BorderLayout())
   frame.add(glCanvas, BorderLayout.CENTER)

@@ -81,9 +81,9 @@ object Camera {
 //            0, 0, 0, 1)
   }   */
 
-  //val view = Matrix4()
-  val projection = Matrix4(1f, 0f, 0f, 0f,
-                           0f, 1f, 0f, 0f,
+  //val view = Matrix4() // {{1.5625, 0.0, 0.0, 0.0}, {0.0, 2.7777777, 0.0, 0.0}, {0.0, 0.0, -1.002002, -2.002002}, {0.0, 0.0, -1.0, 0.0}}
+  val projection = Matrix4(1.5625f, 0f, 0f, 0f,
+                           0f, 2.7777777f, 0f, 0f,
                            0f, 0f, -1.002002f, -2.002002f,
                            0f, 0f, -1f, 0f)
 

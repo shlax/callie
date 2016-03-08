@@ -5,13 +5,19 @@ import org.callie.math.{Vector3, Matrix4}
 // http://www.songho.ca/opengl/gl_projectionmatrix.html
 // http://www.songho.ca/opengl/gl_transform.html
 object Persp extends App{
+  val x = 16f
+  val y = 9f
+
+  val avg = (x + y)/2f
+  val xx = x / (avg * 2)
+  val yy = y / (avg * 2)
 
   //val r = 1f
-  val l = -1f
-  val r = 1f
+  val l = -1f * xx
+  val r = 1f * xx
 
-  val b = -1f
-  val t = 1f
+  val b = -1f * yy
+  val t = 1f * yy
 //
   val f = 1000f
   val n = 1f
