@@ -12,7 +12,7 @@ object MainTess extends App{
 
   // coords : position(x, y, z) ~ texture(u, v) ~ normal(x, y, z)
   val (coords, indices) = {
-    val m = Mod(new InputStreamReader(getClass.getResourceAsStream("/tes.mod"), "US-ASCII"))
+    val m = Mod(new InputStreamReader(getClass.getResourceAsStream("/bot.mod"), "US-ASCII"))
 
     // stack
     val s = ListBuffer[Mod.vtn]()
