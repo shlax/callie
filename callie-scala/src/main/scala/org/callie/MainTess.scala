@@ -1,18 +1,20 @@
 package org.callie
 
-import org.callie.jogl.{buffers, GL_4, GL4EventListener, JoglFrame}
+import org.callie.jogl.{GL4EventListener, GL_4, JoglFrame, buffers}
 import com.jogamp.opengl.GL4
 import java.io.InputStreamReader
+
 import scala.collection.mutable.ListBuffer
 import com.jogamp.common.nio.Buffers
 import buffers._
+import org.callie.input.Camera
 import org.callie.model.Mod
 
 object MainTess extends App{
 
   // coords : position(x, y, z) ~ texture(u, v) ~ normal(x, y, z)
   val (coords, indices) = {
-    val m = Mod(new InputStreamReader(getClass.getResourceAsStream("/bot.mod"), "US-ASCII"))
+    val m = Mod(new InputStreamReader(getClass.getResourceAsStream("/tes.mod"), "US-ASCII"))
 
     // stack
     val s = ListBuffer[Mod.vtn]()
@@ -54,14 +56,18 @@ object MainTess extends App{
       |layout(location = 1) in vec2 inTexCoord;
       |layout(location = 2) in vec3 inNormal;
       |
+      |uniform mat4 viewMatrix;
+      |uniform mat4 normalMatrix;
+      |
       |out vec3 position;
       |out vec2 texCoord;
       |out vec3 normal;
       |
       |void main(){
-      |  position = inPosition;
+      |  vec4 tmp = viewMatrix * vec4(inPosition, 1);
+      |  position = vec3(tmp.x / tmp.w, tmp.y / tmp.w, tmp.z / tmp.w);
       |  texCoord = inTexCoord;
-      |  normal = inNormal;
+      |  normal = (normalMatrix * vec4(inNormal, 1)).xyz;
       |}
     """.stripMargin.trim
 
@@ -252,6 +258,8 @@ object MainTess extends App{
       // < code
 
       gl.glUseProgram(p)
+      Camera.program(p)
+
       gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
     }
 
@@ -259,6 +267,7 @@ object MainTess extends App{
       gl.glClear(GL_4.COLOR_BUFFER_BIT | GL_4.DEPTH_BUFFER_BIT)
       // > code
       //gl.glDrawArrays(GL_4.TRIANGLES, 0, 3)
+      Camera.display
 
       bindVertexArray(vao){
         bindBuffer(GL_4.ELEMENT_ARRAY_BUFFER, vbi){
