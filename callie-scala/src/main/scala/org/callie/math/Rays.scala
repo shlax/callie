@@ -17,20 +17,20 @@ case class Ray(point: Vector3, dir:Vector3){
     vp.cross(dir, e2)
 
     val det = e1.dot(vp)
-    if(det == 0) None
+    if(det == 0) Float.NaN
     else{
       val iDet = 1f/det
 
       vt.sub(point, t.a)
 
       val u = vt.dot(vp) * iDet
-      if(u < 0 || u > 1) None
+      if(u < 0 || u > 1) Float.NaN
       else{
         vq.cross(vt, e1)
 
         val v = dir.dot(vq) * iDet
-        if(v < 0 || u + v > 1) None
-        else Some(e2.dot(vq) * iDet)
+        if(v < 0 || u + v > 1) Float.NaN
+        else e2.dot(vq) * iDet
       }
     }
   }
