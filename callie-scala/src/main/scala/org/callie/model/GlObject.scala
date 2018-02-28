@@ -4,7 +4,7 @@ import scala.collection.mutable.ListBuffer
 import com.jogamp.opengl.GL4
 import com.jogamp.common.nio.Buffers
 import com.jogamp.opengl.util.texture.TextureIO
-import org.callie.jogl.{buffers, GL_4, GL4EventListener}
+import org.callie.jogl.{buffers, Gl, GlEventListener}
 import org.callie.math.Vector3
 import buffers._
 
@@ -41,7 +41,7 @@ class ObjectGroup(objs:GlObject*) extends GlObject{
   
 }
 
-class TextureGroup(ev: GL4EventListener, image:String, objs:GlObject*) extends ObjectGroup(objs:_*){
+class TextureGroup(ev: GlEventListener, image:String, objs:GlObject*) extends ObjectGroup(objs:_*){
   
   var texId : Int = _
     
@@ -49,15 +49,15 @@ class TextureGroup(ev: GL4EventListener, image:String, objs:GlObject*) extends O
     val texture = TextureIO.newTextureData(gl.getGLProfile, getClass.getResourceAsStream(image), false, TextureIO.PNG)
     
     texId = ev.createTexture{
-	  gl.glPixelStorei(GL_4.TEXTURE_2D, texture.getAlignment)
-	  gl.glTexImage2D(GL_4.TEXTURE_2D, 0, texture.getInternalFormat, texture.getWidth, texture.getHeight, texture.getBorder, texture.getPixelFormat, texture.getPixelType, texture.getBuffer)
+	  gl.glPixelStorei(Gl.TEXTURE_2D, texture.getAlignment)
+	  gl.glTexImage2D(Gl.TEXTURE_2D, 0, texture.getInternalFormat, texture.getWidth, texture.getHeight, texture.getBorder, texture.getPixelFormat, texture.getPixelType, texture.getBuffer)
 	
-	  gl.glGenerateMipmap(GL_4.TEXTURE_2D)
+	  gl.glGenerateMipmap(Gl.TEXTURE_2D)
 	
-	  gl.glTexParameteri(GL_4.TEXTURE_2D, GL_4.TEXTURE_WRAP_S, GL_4.REPEAT)
-	  gl.glTexParameteri(GL_4.TEXTURE_2D, GL_4.TEXTURE_WRAP_T, GL_4.REPEAT)
-	  gl.glTexParameteri(GL_4.TEXTURE_2D, GL_4.TEXTURE_MAG_FILTER, GL_4.LINEAR)
-	  gl.glTexParameteri(GL_4.TEXTURE_2D, GL_4.TEXTURE_MIN_FILTER, GL_4.LINEAR_MIPMAP_LINEAR)
+	  gl.glTexParameteri(Gl.TEXTURE_2D, Gl.TEXTURE_WRAP_S, Gl.REPEAT)
+	  gl.glTexParameteri(Gl.TEXTURE_2D, Gl.TEXTURE_WRAP_T, Gl.REPEAT)
+	  gl.glTexParameteri(Gl.TEXTURE_2D, Gl.TEXTURE_MAG_FILTER, Gl.LINEAR)
+	  gl.glTexParameteri(Gl.TEXTURE_2D, Gl.TEXTURE_MIN_FILTER, Gl.LINEAR_MIPMAP_LINEAR)
     
       super.init
     }
@@ -73,7 +73,7 @@ class TextureGroup(ev: GL4EventListener, image:String, objs:GlObject*) extends O
   
 }
 
-class StaticObject(ev:GL4EventListener, m:Mod) extends GlObject{
+class StaticObject(ev:GlEventListener, m:Mod) extends GlObject{
   
   val (coords, indices) = {
     // stack
@@ -117,31 +117,31 @@ class StaticObject(ev:GL4EventListener, m:Mod) extends GlObject{
       gl.glEnableVertexAttribArray(1)
       gl.glEnableVertexAttribArray(2)
       
-      ev.createBuffer(GL_4.ARRAY_BUFFER){
-        coords.asBuffer(gl.glBufferData(GL_4.ARRAY_BUFFER, _, _, GL_4.STATIC_DRAW))
+      ev.createBuffer(Gl.ARRAY_BUFFER){
+        coords.asBuffer(gl.glBufferData(Gl.ARRAY_BUFFER, _, _, Gl.STATIC_DRAW))
 
-        gl.glVertexAttribPointer(0, 3, GL_4.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT, 0*Buffers.SIZEOF_FLOAT)
-        gl.glVertexAttribPointer(1, 2, GL_4.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT, 3*Buffers.SIZEOF_FLOAT)
-        gl.glVertexAttribPointer(2, 3, GL_4.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT, 5*Buffers.SIZEOF_FLOAT)
+        gl.glVertexAttribPointer(0, 3, Gl.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT, 0*Buffers.SIZEOF_FLOAT)
+        gl.glVertexAttribPointer(1, 2, Gl.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT, 3*Buffers.SIZEOF_FLOAT)
+        gl.glVertexAttribPointer(2, 3, Gl.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT, 5*Buffers.SIZEOF_FLOAT)
       }
     }
     
-    vbi = ev.createBuffer(GL_4.ELEMENT_ARRAY_BUFFER){
-      indices.asBuffer(gl.glBufferData(GL_4.ELEMENT_ARRAY_BUFFER, _, _, GL_4.STATIC_DRAW))
+    vbi = ev.createBuffer(Gl.ELEMENT_ARRAY_BUFFER){
+      indices.asBuffer(gl.glBufferData(Gl.ELEMENT_ARRAY_BUFFER, _, _, Gl.STATIC_DRAW))
     }
   }
   
   override def display(implicit gl:GL4){
     ev.bindVertexArray(vao){
-      ev.bindBuffer(GL_4.ELEMENT_ARRAY_BUFFER, vbi){
-        gl.glDrawElements(GL_4.TRIANGLES, indices.length, GL_4.UNSIGNED_INT, 0)
+      ev.bindBuffer(Gl.ELEMENT_ARRAY_BUFFER, vbi){
+        gl.glDrawElements(Gl.TRIANGLES, indices.length, Gl.UNSIGNED_INT, 0)
       }
     }
   }
   
 }
 
-class MorfingObject(ev:GL4EventListener, m:Mod) extends GlObject{
+class MorfingObject(ev:GlEventListener, m:Mod) extends GlObject{
   val (coords, indices, projPoint, projNormals) = {
     // stack
     val s = ListBuffer[Mod.vtn]()
@@ -197,29 +197,29 @@ class MorfingObject(ev:GL4EventListener, m:Mod) extends GlObject{
       gl.glEnableVertexAttribArray(1)
       gl.glEnableVertexAttribArray(2)
       
-      vbo = ev.createBuffer(GL_4.ARRAY_BUFFER){
-        coords.asBuffer(gl.glBufferData(GL_4.ARRAY_BUFFER, _, _, GL_4.DYNAMIC_DRAW))
+      vbo = ev.createBuffer(Gl.ARRAY_BUFFER){
+        coords.asBuffer(gl.glBufferData(Gl.ARRAY_BUFFER, _, _, Gl.DYNAMIC_DRAW))
 
-        gl.glVertexAttribPointer(0, 3, GL_4.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT, 0*Buffers.SIZEOF_FLOAT)
-        gl.glVertexAttribPointer(1, 2, GL_4.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT, 3*Buffers.SIZEOF_FLOAT)
-        gl.glVertexAttribPointer(2, 3, GL_4.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT, 5*Buffers.SIZEOF_FLOAT)
+        gl.glVertexAttribPointer(0, 3, Gl.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT, 0*Buffers.SIZEOF_FLOAT)
+        gl.glVertexAttribPointer(1, 2, Gl.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT, 3*Buffers.SIZEOF_FLOAT)
+        gl.glVertexAttribPointer(2, 3, Gl.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT, 5*Buffers.SIZEOF_FLOAT)
       }
     }
     
-    vbi = ev.createBuffer(GL_4.ELEMENT_ARRAY_BUFFER){
-      indices.asBuffer(gl.glBufferData(GL_4.ELEMENT_ARRAY_BUFFER, _, _, GL_4.DYNAMIC_DRAW))
+    vbi = ev.createBuffer(Gl.ELEMENT_ARRAY_BUFFER){
+      indices.asBuffer(gl.glBufferData(Gl.ELEMENT_ARRAY_BUFFER, _, _, Gl.DYNAMIC_DRAW))
     }
   }
   
   override def display(implicit gl:GL4){
     ev.bindVertexArray(vao){
       
-      ev.bindBuffer(GL_4.ARRAY_BUFFER, vbo){
-        coords.asBuffer(gl.glBufferData(GL_4.ARRAY_BUFFER, _, _, GL_4.DYNAMIC_DRAW))
+      ev.bindBuffer(Gl.ARRAY_BUFFER, vbo){
+        coords.asBuffer(gl.glBufferData(Gl.ARRAY_BUFFER, _, _, Gl.DYNAMIC_DRAW))
       }
       
-      ev.bindBuffer(GL_4.ELEMENT_ARRAY_BUFFER, vbi){
-        gl.glDrawElements(GL_4.TRIANGLES, indices.length, GL_4.UNSIGNED_INT, 0)
+      ev.bindBuffer(Gl.ELEMENT_ARRAY_BUFFER, vbi){
+        gl.glDrawElements(Gl.TRIANGLES, indices.length, Gl.UNSIGNED_INT, 0)
       }     
     }
   }

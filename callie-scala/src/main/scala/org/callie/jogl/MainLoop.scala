@@ -23,7 +23,7 @@ import org.callie.input.Camera
  * */
 object MainLoop extends App {
   // load stuff
-  JoglFrame(new GL4EventListener(){
+  JoglFrame(new GlEventListener(){
     override def initGL4(implicit gl: GL4){
       Physics.init()
       Graphics.init(gl)

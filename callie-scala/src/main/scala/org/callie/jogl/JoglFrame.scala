@@ -71,7 +71,7 @@ object JoglFrame {
     }
   })
 
-  def apply(el:GL4EventListener){
+  def apply(el:GlEventListener){
     glCanvas.addGLEventListener(el)
     frame.setVisible(true)
     animator.start()

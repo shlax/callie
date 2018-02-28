@@ -5,7 +5,7 @@ import scala.collection.mutable
 
 object GenSgl extends App{
 
-  val out = new StringBuilder("@inline\nobject GL_4 {")
+  val out = new StringBuilder("@inline\nobject Gl {")
   val done = mutable.Set[Class[_]]()
 
   def prc(cls:Class[_]){

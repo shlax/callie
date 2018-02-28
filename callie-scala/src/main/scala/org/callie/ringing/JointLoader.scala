@@ -3,14 +3,14 @@ package org.callie.ringing
 import scala.util.parsing.combinator.RegexParsers
 import org.callie.math.{Matrix4, Vector3}
 import org.callie.math.intr.Accl
-import org.callie.jogl.GL4EventListener
+import org.callie.jogl.GlEventListener
 import org.callie.model.{Mod, MorfingObject}
 import org.callie.math.Axis
 import Axis.AxisValue
 
 abstract class Node(ind:List[Int]){
   
-  def apply(ev:GL4EventListener, m:Mod) = {
+  def apply(ev:GlEventListener, m:Mod) = {
     val o = new MorfingObject(ev, m)
     (o, join(ind.map(o.projPoint(_)).toArray,
         ind.map(o.projNormals(_)).toArray) )

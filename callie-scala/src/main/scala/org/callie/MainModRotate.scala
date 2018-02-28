@@ -1,6 +1,6 @@
 package org.callie
 
-import org.callie.jogl.{buffers, GL_4, GL4EventListener, JoglFrame}
+import org.callie.jogl.{buffers, Gl, GlEventListener, JoglFrame}
 import com.jogamp.opengl.GL4
 import java.io.InputStreamReader
 import scala.collection.mutable.ListBuffer
@@ -96,7 +96,7 @@ object MainModRotate extends App{
       |}
     """.stripMargin
 
-  JoglFrame(new GL4EventListener(){
+  JoglFrame(new GlEventListener(){
     var texId : Int = _
 
     var vao : Int = _
@@ -105,30 +105,30 @@ object MainModRotate extends App{
     override def initGL4(implicit gl: GL4) {
       val texture = TextureIO.newTextureData(gl.getGLProfile, getClass.getResourceAsStream("/t.png"), false, TextureIO.PNG)
 
-      gl.glEnable(GL_4.CULL_FACE)
-      gl.glCullFace(GL_4.BACK)
+      gl.glEnable(Gl.CULL_FACE)
+      gl.glCullFace(Gl.BACK)
 
-      gl.glEnable(GL_4.DEPTH_TEST)
+      gl.glEnable(Gl.DEPTH_TEST)
       gl.glDepthMask(true)
 
-      gl.glActiveTexture(GL_4.TEXTURE0)
+      gl.glActiveTexture(Gl.TEXTURE0)
 
       texId = &(gl.glGenTextures(1, _, 0))
-      gl.glBindTexture(GL_4.TEXTURE_2D, texId)
+      gl.glBindTexture(Gl.TEXTURE_2D, texId)
 
-      gl.glPixelStorei(GL_4.TEXTURE_2D, texture.getAlignment)
-      gl.glTexImage2D(GL_4.TEXTURE_2D, 0, texture.getInternalFormat, texture.getWidth, texture.getHeight, texture.getBorder, texture.getPixelFormat, texture.getPixelType, texture.getBuffer)
+      gl.glPixelStorei(Gl.TEXTURE_2D, texture.getAlignment)
+      gl.glTexImage2D(Gl.TEXTURE_2D, 0, texture.getInternalFormat, texture.getWidth, texture.getHeight, texture.getBorder, texture.getPixelFormat, texture.getPixelType, texture.getBuffer)
 
-      gl.glGenerateMipmap(GL_4.TEXTURE_2D)
+      gl.glGenerateMipmap(Gl.TEXTURE_2D)
 
-      gl.glTexParameteri(GL_4.TEXTURE_2D, GL_4.TEXTURE_WRAP_S, GL_4.REPEAT)
-      gl.glTexParameteri(GL_4.TEXTURE_2D, GL_4.TEXTURE_WRAP_T, GL_4.REPEAT)
-      gl.glTexParameteri(GL_4.TEXTURE_2D, GL_4.TEXTURE_MAG_FILTER, GL_4.LINEAR)
-      gl.glTexParameteri(GL_4.TEXTURE_2D, GL_4.TEXTURE_MIN_FILTER, GL_4.LINEAR_MIPMAP_LINEAR)
+      gl.glTexParameteri(Gl.TEXTURE_2D, Gl.TEXTURE_WRAP_S, Gl.REPEAT)
+      gl.glTexParameteri(Gl.TEXTURE_2D, Gl.TEXTURE_WRAP_T, Gl.REPEAT)
+      gl.glTexParameteri(Gl.TEXTURE_2D, Gl.TEXTURE_MAG_FILTER, Gl.LINEAR)
+      gl.glTexParameteri(Gl.TEXTURE_2D, Gl.TEXTURE_MIN_FILTER, Gl.LINEAR_MIPMAP_LINEAR)
 
-      val vertexSchader = createShader(GL_4.VERTEX_SHADER, vertex)
+      val vertexSchader = createShader(Gl.VERTEX_SHADER, vertex)
       val p = createProgram(vertexSchader,
-        createShader(GL_4.FRAGMENT_SHADER, fragment))
+        createShader(Gl.FRAGMENT_SHADER, fragment))
 
       // > code
       vao = createVertexArray{
@@ -137,24 +137,24 @@ object MainModRotate extends App{
         gl.glEnableVertexAttribArray(2)
 
         //val vbo = &(gl.glGenBuffers(1, _, 0))
-        createBuffer(GL_4.ARRAY_BUFFER){
-          coords.asBuffer(gl.glBufferData(GL_4.ARRAY_BUFFER, _, _, GL_4.STATIC_DRAW))
+        createBuffer(Gl.ARRAY_BUFFER){
+          coords.asBuffer(gl.glBufferData(Gl.ARRAY_BUFFER, _, _, Gl.STATIC_DRAW))
 
-          gl.glVertexAttribPointer(0, 3, GL_4.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT, 0*Buffers.SIZEOF_FLOAT)
-          gl.glVertexAttribPointer(1, 2, GL_4.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT, 3*Buffers.SIZEOF_FLOAT)
-          gl.glVertexAttribPointer(2, 3, GL_4.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT, 5*Buffers.SIZEOF_FLOAT)
+          gl.glVertexAttribPointer(0, 3, Gl.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT, 0*Buffers.SIZEOF_FLOAT)
+          gl.glVertexAttribPointer(1, 2, Gl.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT, 3*Buffers.SIZEOF_FLOAT)
+          gl.glVertexAttribPointer(2, 3, Gl.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT, 5*Buffers.SIZEOF_FLOAT)
         }
 
       }
 
       // + glDrawElements
-      vbi = createBuffer(GL_4.ELEMENT_ARRAY_BUFFER){
-        indices.asBuffer(gl.glBufferData(GL_4.ELEMENT_ARRAY_BUFFER, _, _, GL_4.STATIC_DRAW))
+      vbi = createBuffer(Gl.ELEMENT_ARRAY_BUFFER){
+        indices.asBuffer(gl.glBufferData(Gl.ELEMENT_ARRAY_BUFFER, _, _, Gl.STATIC_DRAW))
       }
       // < code
 
-      //gl.glEnable(GL_4.DEPTH_TEST)
-      //gl.glEnable(GL_4.DEPTH_CLAMP)
+      //gl.glEnable(Gl.DEPTH_TEST)
+      //gl.glEnable(Gl.DEPTH_CLAMP)
       //gl.glDepthRange(-0.1d, -100d)
       gl.glUseProgram(p)
       Camera.program(p)
@@ -162,17 +162,17 @@ object MainModRotate extends App{
     }
 
     override def displayGL4(implicit gl: GL4) {
-      gl.glClear(GL_4.COLOR_BUFFER_BIT | GL_4.DEPTH_BUFFER_BIT)
+      gl.glClear(Gl.COLOR_BUFFER_BIT | Gl.DEPTH_BUFFER_BIT)
       // > code
 
       Camera.display
-      //gl.glDrawArrays(GL_4.TRIANGLES, 0, 3)
+      //gl.glDrawArrays(Gl.TRIANGLES, 0, 3)
 
-      gl.glBindTexture(GL_4.TEXTURE_2D, texId)
+      gl.glBindTexture(Gl.TEXTURE_2D, texId)
 
       bindVertexArray(vao){
-        bindBuffer(GL_4.ELEMENT_ARRAY_BUFFER, vbi){ // glDrawElementsIndirect
-          gl.glDrawElements(GL_4.TRIANGLES, indices.length, GL_4.UNSIGNED_INT, 0)
+        bindBuffer(Gl.ELEMENT_ARRAY_BUFFER, vbi){ // glDrawElementsIndirect
+          gl.glDrawElements(Gl.TRIANGLES, indices.length, Gl.UNSIGNED_INT, 0)
         }
       }
       // < code

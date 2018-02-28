@@ -7,8 +7,8 @@ import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import com.jogamp.opengl.GLEventListener
 import com.jogamp.opengl.GLAutoDrawable
-//import javax.media.opengl.{GL4, GL3, GL2GL3, GL2ES2, GL, GLBase}
-import org.callie.jogl.GL_4
+//import javax.media.opengl.{GL4, GL3, GL2GL3, GL2ES2, Gl, GLBase}
+import org.callie.jogl.Gl
 import com.jogamp.opengl.util.FPSAnimator
 import com.jogamp.common.nio.Buffers
 
@@ -119,11 +119,11 @@ object Main extends App {
 //      val sValuesBuffer = Array(0)
 //      gl.glGenBuffers(1, sValuesBuffer, 0)
 //      valuesBuffer = sValuesBuffer(0)
-//      gl.glBindBuffer(GL.GL_ARRAY_BUFFER, valuesBuffer)
-//      gl.glBufferData(GL.GL_ARRAY_BUFFER, sValues.length, buff, GL.GL_STATIC_DRAW)
+//      gl.glBindBuffer(Gl.GL_ARRAY_BUFFER, valuesBuffer)
+//      gl.glBufferData(Gl.GL_ARRAY_BUFFER, sValues.length, buff, Gl.GL_STATIC_DRAW)
 //
 //      gl.glUseProgram(program)
-//      gl.glVertexAttribPointer(locPosition, 2, GL.GL_FLOAT, false, 0, 0)
+//      gl.glVertexAttribPointer(locPosition, 2, Gl.GL_FLOAT, false, 0, 0)
 //      gl.glEnableVertexAttribArray(locPosition)
 
       
@@ -134,19 +134,19 @@ object Main extends App {
 
       val tmp = Array(0)
         
-      val vertexShader = gl.glCreateShader(GL_4.VERTEX_SHADER)
+      val vertexShader = gl.glCreateShader(Gl.VERTEX_SHADER)
       gl.glShaderSource(vertexShader, 1, Array(vertex), null)
       gl.glCompileShader(vertexShader)
 
-      gl.glGetShaderiv(vertexShader, GL_4.COMPILE_STATUS, tmp, 0);
+      gl.glGetShaderiv(vertexShader, Gl.COMPILE_STATUS, tmp, 0);
       
       println("vertexShader "+vertexShader+" "+tmp(0))
       
-      val fragmentShader = gl.glCreateShader(GL_4.FRAGMENT_SHADER)
+      val fragmentShader = gl.glCreateShader(Gl.FRAGMENT_SHADER)
       gl.glShaderSource(fragmentShader, 1, Array(fragment), null)
       gl.glCompileShader(fragmentShader)
 
-      gl.glGetShaderiv(vertexShader, GL_4.COMPILE_STATUS, tmp, 0);
+      gl.glGetShaderiv(vertexShader, Gl.COMPILE_STATUS, tmp, 0);
       
       println("fragmentShader "+fragmentShader+" "+tmp(0))
       
@@ -155,7 +155,7 @@ object Main extends App {
       gl.glAttachShader(theProgram, fragmentShader)
       gl.glLinkProgram(theProgram)
 
-      gl.glGetProgramiv(theProgram, GL_4.LINK_STATUS, tmp, 0)
+      gl.glGetProgramiv(theProgram, Gl.LINK_STATUS, tmp, 0)
       
       println("theProgram "+theProgram+" "+tmp(0))
       
@@ -174,17 +174,17 @@ object Main extends App {
       buff.put(vertexPositions)
       buff.rewind()
 
-      gl.glBindBuffer(GL_4.ARRAY_BUFFER, positionBufferObject)
-      gl.glBufferData(GL_4.ARRAY_BUFFER, vertexPositions.length * Buffers.SIZEOF_FLOAT , buff, GL_4.STATIC_DRAW)
+      gl.glBindBuffer(Gl.ARRAY_BUFFER, positionBufferObject)
+      gl.glBufferData(Gl.ARRAY_BUFFER, vertexPositions.length * Buffers.SIZEOF_FLOAT , buff, Gl.STATIC_DRAW)
 //
 
 
 
-//      gl.glBindBuffer(GL.GL_ARRAY_BUFFER, positionBufferObject)
+//      gl.glBindBuffer(Gl.GL_ARRAY_BUFFER, positionBufferObject)
 
-      gl.glVertexAttribPointer(0, 4, GL_4.FLOAT, false, 0, 0)
+      gl.glVertexAttribPointer(0, 4, Gl.FLOAT, false, 0, 0)
 
-      gl.glBindBuffer(GL_4.ARRAY_BUFFER, 0)
+      gl.glBindBuffer(Gl.ARRAY_BUFFER, 0)
 
       gl.glUseProgram(theProgram)
 
@@ -199,10 +199,10 @@ object Main extends App {
       val gl = drawable.getGL.getGL4
       gl.glEnableVertexAttribArray(0)
 
-      gl.glClear(GL_4.COLOR_BUFFER_BIT)
+      gl.glClear(Gl.COLOR_BUFFER_BIT)
 
       gl.glBindVertexArray(positionBufferObject)
-      gl.glDrawArrays(GL_4.TRIANGLES, 0, 3)
+      gl.glDrawArrays(Gl.TRIANGLES, 0, 3)
 
 //      gl.glDisableVertexAttribArray(0)
 //      gl.glUseProgram(0)
@@ -211,21 +211,21 @@ object Main extends App {
       println("+")
       
 //      gl.glClearColor(0f, 0f, 0f, 0f)
-//      gl.glClear(GL.GL_COLOR_BUFFER_BIT)
+//      gl.glClear(Gl.GL_COLOR_BUFFER_BIT)
 //
 //      gl.glUseProgram(program)
 //
 //      gl.glBindVertexArray(valuesBuffer)
 //
-//      gl.glBindBuffer(GL.GL_ARRAY_BUFFER, valuesBuffer)
+//      gl.glBindBuffer(Gl.GL_ARRAY_BUFFER, valuesBuffer)
 //
 //      gl.glEnableVertexAttribArray(locPosition)
-//      gl.glVertexAttribPointer(locPosition, 4, GL.GL_FLOAT, false, 0, 0)
+//      gl.glVertexAttribPointer(locPosition, 4, Gl.GL_FLOAT, false, 0, 0)
 //
 //      gl.glEnableVertexAttribArray(locColor)
-//      gl.glVertexAttribPointer(locColor, 4, GL.GL_FLOAT, false, 0, 48)
+//      gl.glVertexAttribPointer(locColor, 4, Gl.GL_FLOAT, false, 0, 48)
 //
-//      gl.glDrawArrays(GL.GL_TRIANGLES, 0, 3)
+//      gl.glDrawArrays(Gl.GL_TRIANGLES, 0, 3)
 //
 //      gl.glFlush()
     }

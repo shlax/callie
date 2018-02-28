@@ -2,7 +2,7 @@ package org.callie.jogl
 
 import com.jogamp.opengl.{GL4, GLAutoDrawable, GLEventListener}
 
-trait GL4EventListener extends GLEventListener{
+trait GlEventListener extends GLEventListener{
 
   // GLEventListener
   override def init(drawable: GLAutoDrawable) {
@@ -47,7 +47,7 @@ trait GL4EventListener extends GLEventListener{
     tmp(0)
   }
 
-  // implicit GL
+  // implicit Gl
 
   def createTexture(f: =>Unit)(implicit gl : GL4) = {
     val texId = &(gl.glGenTextures(1, _, 0))
@@ -56,9 +56,9 @@ trait GL4EventListener extends GLEventListener{
   }
   
   def bindTexture(tex:Int)(f: =>Unit)(implicit gl : GL4){
-    gl.glBindTexture(GL_4.TEXTURE_2D, tex)   
+    gl.glBindTexture(Gl.TEXTURE_2D, tex)
     f
-    gl.glBindTexture(GL_4.TEXTURE_2D, 0)
+    gl.glBindTexture(Gl.TEXTURE_2D, 0)
   }
   
   def createVertexArray(f: =>Unit)(implicit gl : GL4) = {
@@ -95,9 +95,9 @@ trait GL4EventListener extends GLEventListener{
     gl.glShaderSource(s, 1, Array(source), null)
     gl.glCompileShader(s)
     
-    gl.glGetShaderiv(s, GL_4.COMPILE_STATUS, tmp, 0)
-    if(tmp(0) == GL_4.FALSE){
-      gl.glGetShaderiv(s,GL_4.INFO_LOG_LENGTH, tmp, 0)      
+    gl.glGetShaderiv(s, Gl.COMPILE_STATUS, tmp, 0)
+    if(tmp(0) == Gl.FALSE){
+      gl.glGetShaderiv(s,Gl.INFO_LOG_LENGTH, tmp, 0)
       val msg = new Array[Byte](tmp(0))
       gl.glGetShaderInfoLog(s, tmp(0), null, 0, msg, 0)
       
@@ -114,10 +114,10 @@ trait GL4EventListener extends GLEventListener{
     gl.glLinkProgram(p)
      
     val tmp = Array(0)
-    gl.glGetProgramiv(p, GL_4.LINK_STATUS, tmp, 0)
+    gl.glGetProgramiv(p, Gl.LINK_STATUS, tmp, 0)
     
-    if(tmp(0) == GL_4.FALSE){
-      gl.glGetProgramiv(p,GL_4.INFO_LOG_LENGTH, tmp, 0)      
+    if(tmp(0) == Gl.FALSE){
+      gl.glGetProgramiv(p,Gl.INFO_LOG_LENGTH, tmp, 0)
       val msg = new Array[Byte](tmp(0))
       gl.glGetProgramInfoLog(p, tmp(0), null, 0, msg, 0)
       

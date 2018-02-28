@@ -1,6 +1,6 @@
 package org.callie
 
-import org.callie.jogl.{GL4EventListener, GL_4, JoglFrame, buffers}
+import org.callie.jogl.{GlEventListener, Gl, JoglFrame, buffers}
 import com.jogamp.opengl.GL4
 import java.io.InputStreamReader
 
@@ -218,21 +218,21 @@ object MainTess extends App{
       |}
     """.stripMargin.trim
 
-  JoglFrame(new GL4EventListener(){
+  JoglFrame(new GlEventListener(){
     var vao : Int = _
     var vbi : Int = _
 
     override def initGL4(implicit gl: GL4) {
 
-      gl.glEnable(GL_4.DEPTH_TEST)
+      gl.glEnable(Gl.DEPTH_TEST)
       gl.glDepthMask(true)
 
-      gl.glPolygonMode( GL_4.FRONT_AND_BACK, GL_4.LINE)
+      gl.glPolygonMode( Gl.FRONT_AND_BACK, Gl.LINE)
 
-      val p = createProgram(createShader(GL_4.VERTEX_SHADER, vertex),
-                            createShader(GL_4.TESS_CONTROL_SHADER, tessControl),
-                            createShader(GL_4.TESS_EVALUATION_SHADER, tessEval),
-                            createShader(GL_4.FRAGMENT_SHADER, fragment))
+      val p = createProgram(createShader(Gl.VERTEX_SHADER, vertex),
+                            createShader(Gl.TESS_CONTROL_SHADER, tessControl),
+                            createShader(Gl.TESS_EVALUATION_SHADER, tessEval),
+                            createShader(Gl.FRAGMENT_SHADER, fragment))
 
       // > code
       vao = createVertexArray{
@@ -241,19 +241,19 @@ object MainTess extends App{
         gl.glEnableVertexAttribArray(2)
 
         //val vbo = &(gl.glGenBuffers(1, _, 0))
-        createBuffer(GL_4.ARRAY_BUFFER){
-          coords.asBuffer(gl.glBufferData(GL_4.ARRAY_BUFFER, _, _, GL_4.STATIC_DRAW))
+        createBuffer(Gl.ARRAY_BUFFER){
+          coords.asBuffer(gl.glBufferData(Gl.ARRAY_BUFFER, _, _, Gl.STATIC_DRAW))
 
-          gl.glVertexAttribPointer(0, 3, GL_4.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT,     0*Buffers.SIZEOF_FLOAT)
-          gl.glVertexAttribPointer(1, 2, GL_4.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT,     3*Buffers.SIZEOF_FLOAT)
-          gl.glVertexAttribPointer(2, 3, GL_4.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT, (3+2)*Buffers.SIZEOF_FLOAT)
+          gl.glVertexAttribPointer(0, 3, Gl.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT,     0*Buffers.SIZEOF_FLOAT)
+          gl.glVertexAttribPointer(1, 2, Gl.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT,     3*Buffers.SIZEOF_FLOAT)
+          gl.glVertexAttribPointer(2, 3, Gl.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT, (3+2)*Buffers.SIZEOF_FLOAT)
         }
 
       }
 
       // + glDrawElements
-      vbi = createBuffer(GL_4.ELEMENT_ARRAY_BUFFER){
-        indices.asBuffer(gl.glBufferData(GL_4.ELEMENT_ARRAY_BUFFER, _, _, GL_4.STATIC_DRAW))
+      vbi = createBuffer(Gl.ELEMENT_ARRAY_BUFFER){
+        indices.asBuffer(gl.glBufferData(Gl.ELEMENT_ARRAY_BUFFER, _, _, Gl.STATIC_DRAW))
       }
       // < code
 
@@ -264,15 +264,15 @@ object MainTess extends App{
     }
 
     override def displayGL4(implicit gl: GL4) {
-      gl.glClear(GL_4.COLOR_BUFFER_BIT | GL_4.DEPTH_BUFFER_BIT)
+      gl.glClear(Gl.COLOR_BUFFER_BIT | Gl.DEPTH_BUFFER_BIT)
       // > code
-      //gl.glDrawArrays(GL_4.TRIANGLES, 0, 3)
+      //gl.glDrawArrays(Gl.TRIANGLES, 0, 3)
       Camera.display
 
       bindVertexArray(vao){
-        bindBuffer(GL_4.ELEMENT_ARRAY_BUFFER, vbi){
-          //gl.glPatchParameteri(GL_4.PATCH_VERTICES, 3)
-          gl.glDrawElements(GL_4.PATCHES, indices.length, GL_4.UNSIGNED_INT, 0)
+        bindBuffer(Gl.ELEMENT_ARRAY_BUFFER, vbi){
+          //gl.glPatchParameteri(Gl.PATCH_VERTICES, 3)
+          gl.glDrawElements(Gl.PATCHES, indices.length, Gl.UNSIGNED_INT, 0)
         }
       }
       // < code

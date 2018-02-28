@@ -1,6 +1,6 @@
 package org.callie
 
-import org.callie.jogl.{buffers, JoglFrame, GL4EventListener, GL_4}
+import org.callie.jogl.{buffers, JoglFrame, GlEventListener, Gl}
 import com.jogamp.opengl.GL4
 import buffers._
 
@@ -40,25 +40,25 @@ object MainInd extends App{
       2, 3, 0
     )
 
-  JoglFrame(new GL4EventListener(){
+  JoglFrame(new GlEventListener(){
     override def initGL4(implicit gl : GL4){
-      val p = createProgram(createShader(GL_4.VERTEX_SHADER, vertex),
-                            createShader(GL_4.FRAGMENT_SHADER, fragment))
+      val p = createProgram(createShader(Gl.VERTEX_SHADER, vertex),
+                            createShader(Gl.FRAGMENT_SHADER, fragment))
 
       // > code
       vao = createVertexArray{
         gl.glEnableVertexAttribArray(0)
 
         //val vbo = &(gl.glGenBuffers(1, _, 0))
-        createBuffer(GL_4.ARRAY_BUFFER){
-          positions.asBuffer(gl.glBufferData(GL_4.ARRAY_BUFFER, _, _, GL_4.STATIC_DRAW))
-          gl.glVertexAttribPointer(0, 3, GL_4.FLOAT, false, 0, 0)
+        createBuffer(Gl.ARRAY_BUFFER){
+          positions.asBuffer(gl.glBufferData(Gl.ARRAY_BUFFER, _, _, Gl.STATIC_DRAW))
+          gl.glVertexAttribPointer(0, 3, Gl.FLOAT, false, 0, 0)
         }
       }
 
       // + glDrawElements
-      vbi = createBuffer(GL_4.ELEMENT_ARRAY_BUFFER){
-        indices.asBuffer(gl.glBufferData(GL_4.ELEMENT_ARRAY_BUFFER, _, _, GL_4.STATIC_DRAW))
+      vbi = createBuffer(Gl.ELEMENT_ARRAY_BUFFER){
+        indices.asBuffer(gl.glBufferData(Gl.ELEMENT_ARRAY_BUFFER, _, _, Gl.STATIC_DRAW))
       }
       // < code
 
@@ -72,13 +72,13 @@ object MainInd extends App{
     var vbi : Int = _
 
     override def displayGL4(implicit gl : GL4){
-      gl.glClear(GL_4.COLOR_BUFFER_BIT)
+      gl.glClear(Gl.COLOR_BUFFER_BIT)
 
       // > code
-      //gl.glDrawArrays(GL_4.TRIANGLES, 0, 3)
+      //gl.glDrawArrays(Gl.TRIANGLES, 0, 3)
       bindVertexArray(vao){
-        bindBuffer(GL_4.ELEMENT_ARRAY_BUFFER, vbi){
-          gl.glDrawElements(GL_4.TRIANGLES, indices.length, GL_4.UNSIGNED_INT, 0)
+        bindBuffer(Gl.ELEMENT_ARRAY_BUFFER, vbi){
+          gl.glDrawElements(Gl.TRIANGLES, indices.length, Gl.UNSIGNED_INT, 0)
         }
       }
       // < code
