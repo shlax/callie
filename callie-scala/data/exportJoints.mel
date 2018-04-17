@@ -1,0 +1,200 @@
+// exportJointsFile("joint1", "C:/Users/root/IdeaProjects/callie/callie-scala/data/char/joints.mod");
+
+proc int isLinearMaped(string $name){
+	$arg = `listAttr -st "linXY" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "linXZ" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "linYX" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "linYZ" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "linZX" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "linZY" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	return 0;
+}
+
+proc int isLinear(string $name){
+	string $arg[];
+	$arg = `listAttr -st "linX" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "linY" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "linZ" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	return isLinearMaped($name);
+}
+
+proc float getLinear(string $name, string $ax, string $ay, string $az){
+	float $retV = 0;
+	string $arg[];
+
+	$arg = `listAttr -st $ax $name`;
+	if(size($arg) == 1){
+		$retV = getAttr($name+"."+$ax);
+	}
+
+	$arg = `listAttr -st $ay $name`;
+	if(size($arg) == 1){
+		$retV = getAttr($name+"."+$ay);
+	}
+
+	$arg = `listAttr -st $az $name`;
+	if(size($arg) == 1){
+		$retV = getAttr($name+"."+$az);
+	}
+
+	//print($name+"."+$ax+"="+$retV);
+	return $retV;
+}
+
+proc exportJoints(string $name,int $filename){
+
+	$is = 0;
+	$sep = 0;
+
+	$src_connections = `listConnections -d true -s false -t jointCluster $name`;
+	for( $cluster in $src_connections ){
+
+
+		$A = `listSets -o $cluster`;
+		for( $b in $A ){
+		//	print( $b+"\n" );
+			select $b;
+			$c = `ls -selection`;
+			for($q in $c){
+				if($is == 0){
+					$is = 1;
+					//print( $name+"\n" );
+					//fprint($filename, "start\n");
+					fprint($filename, "start\n"+$name+" ");
+
+					int $linear = isLinear($name);
+					if($linear == 0){
+						fprint($filename, "normal ");
+						string $arg;
+
+						$arg = `getAttr ($name+".translateX")`;
+						fprint($filename, $arg+" ");
+
+						$arg = `getAttr ($name+".translateY")`;
+						fprint($filename, $arg+" ");
+
+						$arg = `getAttr ($name+".translateZ")`;
+						fprint($filename, $arg);
+
+
+						$arg = `getAttr ($name+".rotateX")`;
+					//	fprint($filename, $arg+" ");
+
+						$arg = `getAttr ($name+".rotateY")`;
+					//	fprint($filename, $arg+" ");
+
+						$arg = `getAttr ($name+".rotateZ")`;
+					//	fprint($filename, $arg);
+					}else{
+						fprint($filename, "linear ");
+
+						float $vatL = getLinear($name, "linX", "linXY", "linXZ");
+						//print($name+".="+$vatL);
+						fprint($filename, $vatL+" ");
+
+						$vatL = getLinear($name, "linY", "linYX", "linYZ");
+						fprint($filename, $vatL+" ");
+						//print($name+".="+$vatL);
+
+						$vatL = getLinear($name, "linZ", "linZX", "linZY");
+						fprint($filename, $vatL);
+						//print($name+".="+$vatL);
+
+						if( isLinearMaped($name) ){
+							$arg = `listAttr -st "linXY" $name`;
+							if(size($arg) == 1){
+								fprint($filename, " x y");
+							}
+							$arg = `listAttr -st "linXZ" $name`;
+							if(size($arg) == 1){
+								fprint($filename, " x z");
+							}
+							$arg = `listAttr -st "linYX" $name`;
+							if(size($arg) == 1){
+								fprint($filename, " y x");
+							}
+							$arg = `listAttr -st "linYZ" $name`;
+							if(size($arg) == 1){
+								fprint($filename, " y z");
+							}
+							$arg = `listAttr -st "linZX" $name`;
+							if(size($arg) == 1){
+								fprint($filename, " z x");
+							}
+							$arg = `listAttr -st "linZY" $name`;
+							if(size($arg) == 1){
+								fprint($filename, " z y");
+							}
+						}
+					}
+					fprint $filename "\n";
+				}
+				// polySurface4.vtx[178]
+				// polySurface4.vtx[178:179]
+
+			//	print($q+"\n");
+				string $tmpTmp = $q;
+
+				string $buff[];
+				tokenize($tmpTmp, "[:]", $buff);
+
+				int $qwe;
+				int $max;
+				if($buff[2] == ""){
+					$max = $buff[1];
+				}else{
+					$max = $buff[2];
+
+				}
+				for($qwe = $buff[1]; $qwe <= $max; $qwe++ ){
+					if($sep == 0){
+						$sep = 1;
+					}else{
+						fprint $filename ",";
+					}
+					fprint $filename $qwe;
+				}
+			}
+
+		}
+		fprint $filename "\n";
+	}
+
+
+	$src_connections = `listConnections -d true -s false -t joint $name`;
+	for($joint in $src_connections){
+		exportJoints($joint, $filename);
+	}
+
+	if($is == 1){
+		fprint $filename "end\n";
+	}
+
+}
+
+proc exportJointsFile(string $name,string $filename){
+	int $file = `fopen $filename "w"`;
+
+	exportJoints($name, $file);
+
+	fclose $file;
+}
+
