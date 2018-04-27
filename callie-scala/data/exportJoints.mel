@@ -1,4 +1,3 @@
-// exportJointsFile("joint1", "C:/Users/root/IdeaProjects/callie/callie-scala/data/char/joints.mod");
 
 proc int isLinearMaped(string $name){
 	$arg = `listAttr -st "linXY" $name`;
@@ -73,9 +72,14 @@ proc exportJoints(string $name,int $filename){
 		//	print( $b+"\n" );
 			select $b;
 			$c = `ls -selection`;
+
+			$clCnt = 0;
+			string $clNm[];
+			int $clOff[];
+			int $clInd[];
+
 			for($q in $c){
 				if($is == 0){
-					$is = 1;
 					//print( $name+"\n" );
 					//fprint($filename, "start\n");
 					fprint($filename, "start\n"+$name+" ");
@@ -147,6 +151,8 @@ proc exportJoints(string $name,int $filename){
 					}
 					fprint $filename "\n";
 				}
+				$is ++;
+
 				// polySurface4.vtx[178]
 				// polySurface4.vtx[178:179]
 
@@ -162,8 +168,14 @@ proc exportJoints(string $name,int $filename){
 					$max = $buff[1];
 				}else{
 					$max = $buff[2];
-
 				}
+
+                string $buffNm[];
+                tokenize($buff[0], ".", $buffNm);
+
+				fprint $filename $buffNm[0];
+				fprint $filename ":";
+
 				for($qwe = $buff[1]; $qwe <= $max; $qwe++ ){
 					if($sep == 0){
 						$sep = 1;
@@ -171,6 +183,10 @@ proc exportJoints(string $name,int $filename){
 						fprint $filename ",";
 					}
 					fprint $filename $qwe;
+				}
+
+				if(size($clInd) == $is +1){
+
 				}
 			}
 
@@ -198,3 +214,4 @@ proc exportJointsFile(string $name,string $filename){
 	fclose $file;
 }
 
+// exportJointsFile("joint1", "C:/Users/root/IdeaProjects/callie/callie-scala/data/char/joints.mod");
