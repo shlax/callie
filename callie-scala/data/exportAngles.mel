@@ -30,7 +30,7 @@ proc int isLinear(string $name){
 	return 0;
 }
 
-proc exportJointsAngels(string $name,int $filename, int $height){
+proc int exportJointsAngels(string $name,int $filename, int $height){
 
 	$is = 0;
 	$sep = 0;
@@ -45,6 +45,7 @@ proc exportJointsAngels(string $name,int $filename, int $height){
 			$c = `ls -selection`;
 			for($q in $c){
 				if($is == 0){
+				    if($height > 0) fprint($filename, "\n");
 					for($k = 0; $k < $height; $k ++) fprint($filename, "\t");
 					fprint($filename, "["+$name+":(");
 
@@ -69,7 +70,7 @@ proc exportJointsAngels(string $name,int $filename, int $height){
 					fprint($filename, $arg+",");
 
 					$arg = `getAttr ($name+".rotateZ")`;
-					fprint($filename, $arg+")\n");
+					fprint($filename, $arg+")|");
 
 				}
 
@@ -79,17 +80,23 @@ proc exportJointsAngels(string $name,int $filename, int $height){
 		}
 	}
 
+    int $has = 0;
+
 	$src_connections = `listConnections -d true -s false -t joint $name`;
 	for($joint in $src_connections){
 		int $lin = isLinear($joint);
-		if($lin == 0) exportJointsAngels($joint, $filename, $height+1);
+		if($lin == 0) $has += exportJointsAngels($joint, $filename, $height+1);
 	}
 
     if($is > 0){
-        for($k = 0; $k < $height; $k ++) fprint($filename, "\t");
-        fprint($filename, "]\n");
+        if($has > 0){
+            fprint($filename, "\n");
+            for($k = 0; $k < $height; $k ++) fprint($filename, "\t");
+        }
+        fprint($filename, "]");
     }
 
+    return $is;
 }
 
 proc exportJointsAngelsFile(string $name,string $filename){
