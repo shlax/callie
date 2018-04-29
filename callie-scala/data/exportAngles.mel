@@ -70,7 +70,7 @@ proc int exportJointsAngels(string $name,int $filename, int $height){
 					fprint($filename, $arg+",");
 
 					$arg = `getAttr ($name+".rotateZ")`;
-					fprint($filename, $arg+")|");
+					fprint($filename, $arg+")");
 
 				}
 
