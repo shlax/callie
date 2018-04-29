@@ -24,34 +24,26 @@ object Mod extends RegexParsers {
     ( l(0), l(1) )
   }
 
-  // t
-  def uvCoord : Parser[List[(Float,Float)]] = ("t" ~ "=" ~ "[") ~> rep(vector2) <~ "]"
-
   def vector3 : Parser[(Float,Float,Float)] = "(" ~> repsep(float, ",") <~ ")" ^^ { l =>
     assert(l.size == 3)
     ( l(0), l(1), l(2) )
   }
 
   // v
-  def points : Parser[List[(Float,Float,Float)]] = ("v" ~ "=" ~ "[") ~> rep(vector3) <~ "]"
-
-  // n
-  def normals : Parser[List[(Float,Float,Float)]] = ("n" ~ "=" ~ "[") ~> rep(vector3) <~ "]"
+  def points : Parser[List[(Float,Float,Float)]] = "[" ~> rep(vector3) <~ "]"
 
   def index3 : Parser[Mod.vtn] = "(" ~> repsep(index, ",") <~ ")" ^^ { l =>
     assert(l.size == 3)
     ( l(0), l(1), l(2) )
   }
 
-  def triangle : Parser[(Mod.vtn,Mod.vtn,Mod.vtn)] = "{" ~> repN(3, index3) <~ "}" ^^ { l => ( l(0), l(1), l(2) )}
+  def triangle : Parser[(Mod.vtn,Mod.vtn,Mod.vtn)] = "[" ~> repN(3, index3) <~ "]" ^^ { l => ( l(0), l(1), l(2) )}
 
   // f
-  def faces : Parser[List[(Mod.vtn,Mod.vtn,Mod.vtn)]] = ("f" ~ "=" ~ "[") ~> rep(triangle) <~ "]"
+  def faces : Parser[List[(Mod.vtn,Mod.vtn,Mod.vtn)]] = "{" ~> rep(triangle) <~ "}"
 
   def value(m:Mod) = repN(4,
         points ^^ (m.points = _)
-      | uvCoord ^^ (m.uvCoord = _)
-      | normals ^^ (m.normals = _)
       | faces ^^ (m.faces = _)
     )
 

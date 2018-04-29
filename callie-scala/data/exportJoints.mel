@@ -58,7 +58,7 @@ proc float getLinear(string $name, string $ax, string $ay, string $az){
 	return $retV;
 }
 
-proc exportJoints(string $name,int $filename){
+proc exportJoints(string $name,int $filename, int $tabs){
 
 	$is = 0;
 	$sep = 0;
@@ -73,90 +73,87 @@ proc exportJoints(string $name,int $filename){
 			select $b;
 			$c = `ls -selection`;
 
-			$clCnt = 0;
-			string $clNm[];
-			int $clOff[];
-			int $clInd[];
-
 			for($q in $c){
 				if($is == 0){
 					//print( $name+"\n" );
-					//fprint($filename, "start\n");
-					fprint($filename, "start\n"+$name+" ");
+					//fprint($filename, "{\n");
+
+					for($k = 0; $k < $tabs; $k ++) fprint($filename, "\t");
+					fprint($filename, "["+$name);
 
 					int $linear = isLinear($name);
 					if($linear == 0){
-						fprint($filename, "normal ");
+						fprint($filename, ":(");
 						string $arg;
 
 						$arg = `getAttr ($name+".translateX")`;
-						fprint($filename, $arg+" ");
+						fprint($filename, $arg+",");
 
 						$arg = `getAttr ($name+".translateY")`;
-						fprint($filename, $arg+" ");
+						fprint($filename, $arg+",");
 
 						$arg = `getAttr ($name+".translateZ")`;
-						fprint($filename, $arg);
+						fprint($filename, $arg+")");
 
 
 						$arg = `getAttr ($name+".rotateX")`;
-					//	fprint($filename, $arg+" ");
+					//	fprint($filename, $arg+",");
 
 						$arg = `getAttr ($name+".rotateY")`;
-					//	fprint($filename, $arg+" ");
+					//	fprint($filename, $arg+",");
 
 						$arg = `getAttr ($name+".rotateZ")`;
-					//	fprint($filename, $arg);
+					//	fprint($filename, $arg+")");
 					}else{
-						fprint($filename, "linear ");
+						fprint($filename, "|(");
 
 						float $vatL = getLinear($name, "linX", "linXY", "linXZ");
 						//print($name+".="+$vatL);
-						fprint($filename, $vatL+" ");
+						fprint($filename, $vatL+",");
 
 						$vatL = getLinear($name, "linY", "linYX", "linYZ");
-						fprint($filename, $vatL+" ");
+						fprint($filename, $vatL+",");
 						//print($name+".="+$vatL);
 
 						$vatL = getLinear($name, "linZ", "linZX", "linZY");
-						fprint($filename, $vatL);
+						fprint($filename, $vatL+")");
 						//print($name+".="+$vatL);
 
 						if( isLinearMaped($name) ){
 							$arg = `listAttr -st "linXY" $name`;
 							if(size($arg) == 1){
-								fprint($filename, " x y");
+								fprint($filename, "|xy");
 							}
 							$arg = `listAttr -st "linXZ" $name`;
 							if(size($arg) == 1){
-								fprint($filename, " x z");
+								fprint($filename, "|xz");
 							}
 							$arg = `listAttr -st "linYX" $name`;
 							if(size($arg) == 1){
-								fprint($filename, " y x");
+								fprint($filename, "|yx");
 							}
 							$arg = `listAttr -st "linYZ" $name`;
 							if(size($arg) == 1){
-								fprint($filename, " y z");
+								fprint($filename, "|yz");
 							}
 							$arg = `listAttr -st "linZX" $name`;
 							if(size($arg) == 1){
-								fprint($filename, " z x");
+								fprint($filename, "|zx");
 							}
 							$arg = `listAttr -st "linZY" $name`;
 							if(size($arg) == 1){
-								fprint($filename, " z y");
+								fprint($filename, "|zy");
 							}
 						}
 					}
-					fprint $filename "\n";
+					fprint $filename ":{\n";
 				}
 				$is ++;
 
 				// polySurface4.vtx[178]
 				// polySurface4.vtx[178:179]
 
-			//	print($q+"\n");
+			//	print($q+":[\n");
 				string $tmpTmp = $q;
 
 				string $buff[];
@@ -173,8 +170,15 @@ proc exportJoints(string $name,int $filename){
                 string $buffNm[];
                 tokenize($buff[0], ".", $buffNm);
 
-				fprint $filename $buffNm[0];
-				fprint $filename ":";
+                if($is > 1){
+                    fprint $filename ",\n";
+                }
+
+                for($k = 0; $k < $tabs+2; $k ++) fprint($filename, "\t");
+				fprint($filename,""+$buffNm[0]);
+				fprint $filename ":(";
+
+                $sep = 0;
 
 				for($qwe = $buff[1]; $qwe <= $max; $qwe++ ){
 					if($sep == 0){
@@ -185,23 +189,24 @@ proc exportJoints(string $name,int $filename){
 					fprint $filename $qwe;
 				}
 
-				if(size($clInd) == $is +1){
-
-				}
+                fprint $filename ")";
 			}
 
 		}
-		fprint $filename "\n";
-	}
 
+		fprint $filename "\n";
+		for($k = 0; $k < $tabs+1; $k ++) fprint($filename, "\t");
+		fprint $filename "}\n";
+	}
 
 	$src_connections = `listConnections -d true -s false -t joint $name`;
 	for($joint in $src_connections){
-		exportJoints($joint, $filename);
+		exportJoints($joint, $filename, $tabs + 1);
 	}
 
-	if($is == 1){
-		fprint $filename "end\n";
+	if($is > 0){
+		for($k = 0; $k < $tabs; $k ++) fprint($filename, "\t");
+		fprint $filename "]\n";
 	}
 
 }
@@ -209,9 +214,9 @@ proc exportJoints(string $name,int $filename){
 proc exportJointsFile(string $name,string $filename){
 	int $file = `fopen $filename "w"`;
 
-	exportJoints($name, $file);
+	exportJoints($name, $file, 0);
 
 	fclose $file;
 }
 
-// exportJointsFile("joint1", "C:/Users/root/IdeaProjects/callie/callie-scala/data/char/joints.mod");
+exportJointsFile("joint1", "C:/Users/root/IdeaProjects/callie/callie-scala/data/char/joints.mod");
