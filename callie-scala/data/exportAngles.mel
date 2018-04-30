@@ -51,7 +51,7 @@ proc int exportJointsAngels(string $name,int $filename, int $height){
 
 					string $arg;
 
-					if($height == 0){
+					/* if($height == 0){
 						$arg = `getAttr ($name+".translateX")`;
 						fprint($filename, $arg+",");
 
@@ -61,7 +61,7 @@ proc int exportJointsAngels(string $name,int $filename, int $height){
 						$arg = `getAttr ($name+".translateZ")`;
 						fprint($filename, $arg+"):(");
 
-					}
+					} */
 
 					$arg = `getAttr ($name+".rotateX")`;
 					fprint($filename, $arg+",");
