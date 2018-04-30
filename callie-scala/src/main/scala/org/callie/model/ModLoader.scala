@@ -4,43 +4,39 @@ import scala.util.parsing.combinator.RegexParsers
 import java.io.Reader
 
 class Mod{
-  var points : List[(Float,Float,Float)] = _
-  var uvCoord : List[(Float,Float)] = _
-  var normals : List[(Float,Float,Float)] = _
-
-  var faces : List[(Mod.vtn,Mod.vtn,Mod.vtn)] = _
+  var points : List[Mod.F3] = _
+  var faces : List[Mod.Face] = _
 }
 
 object Mod extends RegexParsers {
-  //          v   t   n
-  type vtn = (Int,Int,Int)
+  type F2 = (Float,Float)
+  type F3 = (Float,Float,Float)
+
+  type Face = (Int,F2, F3)
 
   def index: Parser[Int] = """\d+""".r ^^ (_.toInt)
 
   def float: Parser[Float] = """[+-]?(\d+(\.\d*)?|\d*\.\d+)([eE][+-]?\d+)?""".r ^^ (_.toFloat)
 
-  def vector2 : Parser[(Float,Float)] = "(" ~> repsep(float, ",") <~ ")" ^^ { l =>
+  def vector2 : Parser[F2] = "(" ~> repsep(float, ",") <~ ")" ^^ { l =>
     assert(l.size == 2)
     ( l(0), l(1) )
   }
 
-  def vector3 : Parser[(Float,Float,Float)] = "(" ~> repsep(float, ",") <~ ")" ^^ { l =>
+  def vector3 : Parser[F3] = "(" ~> repsep(float, ",") <~ ")" ^^ { l =>
     assert(l.size == 3)
     ( l(0), l(1), l(2) )
   }
 
   // v
-  def points : Parser[List[(Float,Float,Float)]] = "[" ~> rep(vector3) <~ "]"
+  def points : Parser[List[F3]] = "[" ~> repsep(vector3, ",") <~ "]"
 
-  def index3 : Parser[Mod.vtn] = "(" ~> repsep(index, ",") <~ ")" ^^ { l =>
-    assert(l.size == 3)
-    ( l(0), l(1), l(2) )
+  def triangle : Parser[Face] = "[" ~> ((index <~ ":") ~ (vector3 <~ ":") ~ vector2) <~ "]" ^^ { i =>
+    (i._1._1, i._2, i._1._2 )
   }
 
-  def triangle : Parser[(Mod.vtn,Mod.vtn,Mod.vtn)] = "[" ~> repN(3, index3) <~ "]" ^^ { l => ( l(0), l(1), l(2) )}
-
   // f
-  def faces : Parser[List[(Mod.vtn,Mod.vtn,Mod.vtn)]] = "{" ~> rep(triangle) <~ "}"
+  def faces : Parser[List[Face]] = "{" ~> rep(triangle) <~ "}"
 
   def value(m:Mod) = repN(4,
         points ^^ (m.points = _)
@@ -60,24 +56,3 @@ object Mod extends RegexParsers {
   }finally { r.close() }
 
 }
-
-//object ModLoaderTst extends App{
-//  val m = Mod(
-//    """
-//      |v = [(0.18,-0.98,-0.07)
-//      |     (0.13,-0.98,-0.13)]
-//      |t = [(0   ,0.06)
-//      |     (0.06,0.06)
-//      |     (0.12,0.06)]
-//      |n = [(0.2 ,-0.07,-0.9e-1)
-//      |     (0.15,-0.97,-0.1   )]
-//      |f = [{(0 ,0 ,0)(1,1,1)(16,17,2)}
-//      |     {(16,17,2)(1,1,1)(17,18,3)}]
-//    """.stripMargin)
-//
-//  println(m.points)
-//  println(m.normals)
-//  println(m.uvCoord)
-//
-//  println(m.faces)
-//}

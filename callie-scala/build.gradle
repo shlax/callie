@@ -9,6 +9,15 @@ tasks.withType(ScalaCompile) {
     targetCompatibility = 1.8
 }
 
+repositories {
+    maven {
+        url 'http://mr01.hq.gratex.com/nexus/content/groups/public'
+    }
+    maven {
+        url 'http://mr01.hq.gratex.com/nexus/content/repositories/releases'
+    }
+}
+
 dependencies {
     compile 'org.scala-lang:scala-library:2.12.4'
     compile 'org.scala-lang.modules:scala-parser-combinators_2.12:1.1.0'

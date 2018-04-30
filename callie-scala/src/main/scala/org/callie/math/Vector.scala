@@ -62,6 +62,7 @@ trait Vector3{
 
 object Vector3{
   def apply() : Vector3 = new VectorVar(0, 0, 0)
+  def apply(v : (Float, Float, Float)) : Vector3 = new VectorVar(v._1, v._2, v._3)
   def apply(x : Float, y : Float, z : Float) : Vector3 = new VectorVar(x, y, z)
   def apply(v : Array[Float], i: Array[Int]) : Vector3 = new VectorProjection(v, i)
     

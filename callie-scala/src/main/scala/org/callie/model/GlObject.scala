@@ -77,33 +77,25 @@ class StaticObject(ev:GlEventListener, m:Mod) extends GlObject{
   
   val (coords, indices) = {
     // stack
-    val s = ListBuffer[Mod.vtn]()
+    val s = ListBuffer[(Mod.F3, Mod.F2, Mod.F3)]()
 
     val a = ListBuffer[Float]()
     val i = ListBuffer[Int]()
 
-    def vtx(sel: Mod.vtn){
-      val ind = s.indexOf(sel)
+    def vtx(f: Mod.Face){
+      val x = (m.points(f._1), f._2, f._3)
+      val ind = s.indexOf(x)
       if(ind == -1){
-        val v = m.points(sel._1)
-        a += v._1 += v._2 += v._3
-
-        val t = m.uvCoord(sel._2)
-        a += t._1 += t._2
-
-        val n = m.normals(sel._3)
-        a += n._1 += n._2 += n._3
+        a += x._1._1 += x._1._2 += x._1._3
+        a += x._2._1 += x._2._2
+        a += x._3._1 += x._3._2 += x._3._3
 
         i += s.size
-        s += sel
+        s += x
       }else i += ind
     }
 
-    for(f <- m.faces){
-      vtx(f._1)
-      vtx(f._2)
-      vtx(f._3)
-    }
+    for(f <- m.faces) vtx(f)
 
     (a.toArray, i.toArray)
   }
@@ -144,47 +136,41 @@ class StaticObject(ev:GlEventListener, m:Mod) extends GlObject{
 class MorfingObject(ev:GlEventListener, m:Mod) extends GlObject{
   val (coords, indices, projPoint, projNormals) = {
     // stack
-    val s = ListBuffer[Mod.vtn]()
+    val s = ListBuffer[(Int, Mod.F3, Mod.F2, Mod.F3)]()
 
     val a = ListBuffer[Float]()
     val i = ListBuffer[Int]()
-    
-    val prPoint = for(p <- m.points) yield ( Vector3(p._1, p._2, p._3), ListBuffer[Int]() )
-    val prNormals = for(p <- m.normals) yield ( Vector3(p._1, p._2, p._3), ListBuffer[Int]() )
-    
-    for(p <- m.points) yield ( Vector3(p._1, p._2, p._3), ListBuffer[Int]() )
-        
-    def vtx(sel: Mod.vtn){
-      val ind = s.indexOf(sel)
-      if(ind == -1){
-        val v = m.points(sel._1)
-        prPoint(sel._1)._2 += a.size
-        a += v._1 += v._2 += v._3
-        
-        val t = m.uvCoord(sel._2)
-        a += t._1 += t._2
 
-        val n = m.normals(sel._3)
-        prNormals(sel._3)._2 += a.size
-        a += n._1 += n._2 += n._3
+    def vtx(f: Mod.Face){
+      val x = (f._1, m.points(f._1), f._2, f._3)
+      val ind = s.indexOf(x)
+
+      if(ind == -1){
+        a += x._2._1 += x._2._2 += x._2._3
+        a += x._3._1 += x._3._2
+        a += x._4._1 += x._4._2 += x._4._3
 
         i += s.size
-        s += sel
+        s += x
       }else i += ind
     }
 
-    for(f <- m.faces){
-      vtx(f._1)
-      vtx(f._2)
-      vtx(f._3)
+    for(f <- m.faces) vtx(f)
+
+    val prPoint = ListBuffer[(Vector3, Vector3)]()
+    val prNormals = ListBuffer[(Vector3, Vector3)]()
+
+    val coord = a.toArray
+
+    for(i <- m.points.indices){
+      val t = s.zipWithIndex.filter(_._1._1 == i)
+      val ind = t.map(_._2).toArray
+
+      prPoint += ((Vector3(t.head._1._2), Vector3(coord, ind)))
+      prNormals += ((Vector3(t.head._1._4), Vector3(coord, ind.map(_ + 5))))
     }
 
-    val c = a.toArray
-    
-    (c, i.toArray, 
-      prPoint.map{it => (it._1, Vector3(c, it._2.toArray))}.toArray, 
-      prNormals.map{it => (it._1, Vector3(c, it._2.toArray))}.toArray
-    )
+    (coord, i.toArray, prPoint.toArray, prNormals.toArray)
   }
   
   var vao : Int = _

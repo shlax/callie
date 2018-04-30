@@ -12,8 +12,7 @@ abstract class Node(ind:List[Int]){
   
   def apply(ev:GlEventListener, m:Mod) = {
     val o = new MorfingObject(ev, m)
-    (o, join(ind.map(o.projPoint(_)).toArray,
-        ind.map(o.projNormals(_)).toArray) )
+    (o, join(ind.map(o.projPoint(_)).toArray, ind.map(o.projNormals(_)).toArray) )
   }
   
   type Mapping = Array[(Vector3, Vector3)]
@@ -32,14 +31,13 @@ class IntNode(name:String, v:Vector3, ind:List[Int], childs:List[Node]) extends 
       val j = new IntrTravJoint(name, m, ax, ay, az, ch, coord, normals)
       val sj = Some(j)
       //childs.zipWithIndex.foreach{ i => ch(i._2) = i._1.join(coord, normals, sj) }
-      for(i <- 0 until ch.length) ch(i) = childs(i).join(coord, normals, sj)
+      for(i <- ch.indices) ch(i) = childs(i).join(coord, normals, sj)
       j
     }
   }
 }
 
-class LinNode(name:String,
-              ix:AxisValue, iy:AxisValue, iz:AxisValue, ind:List[Int])  extends Node(ind){
+class LinNode(name:String, ix:AxisValue, iy:AxisValue, iz:AxisValue, ind:List[Int])  extends Node(ind){
   override def join(coord : Mapping, normals: Mapping, parent:Option[IntrTravJoint]) = new LinearJoint(name, parent.get, ix, iy, iz, coord, normals)
 }
 
