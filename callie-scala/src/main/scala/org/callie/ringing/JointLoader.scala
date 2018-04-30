@@ -8,11 +8,17 @@ import org.callie.model.{Mod, MorfingObject}
 import org.callie.math.Axis
 import Axis.AxisValue
 
-abstract class Node(ind:List[Int]){
-  
-  def apply(ev:GlEventListener, m:Mod) = {
-    val o = new MorfingObject(ev, m)
-    (o, join(ind.map(o.projPoint(_)).toArray, ind.map(o.projNormals(_)).toArray) )
+import scala.collection.mutable
+
+abstract class Node(ind:Map[String,List[Int]]){
+
+  def apply(ev:GlEventListener, m:Map[String,Mod]) = {
+    val o = m.mapValues(i => new MorfingObject(ev, i))
+    val pn = ind.map{ i =>
+      val obj = o(i._1)
+      i._2.map(j => (obj.projPoint(j), obj.projNormals(j)) )
+    }.flatten
+    (o.values.toArray, join(pn.map(_._1).toArray, pn.map(_._2).toArray) )
   }
   
   type Mapping = Array[(Vector3, Vector3)]
@@ -20,7 +26,7 @@ abstract class Node(ind:List[Int]){
   def join(coord : Mapping, normals: Mapping, parent:Option[IntrTravJoint] = None) : Joint
 }
 
-class IntNode(name:String, v:Vector3, ind:List[Int], childs:List[Node]) extends Node(ind){
+class IntNode(name:String, v:Vector3, ind:Map[String,List[Int]], childs:List[Node]) extends Node(ind){
   override def join(coord : Mapping, normals: Mapping, parent:Option[IntrTravJoint]) = {
     val ax = new Accl; val ay = new Accl; val az = new Accl
     val m = Matrix4(v)
@@ -30,62 +36,70 @@ class IntNode(name:String, v:Vector3, ind:List[Int], childs:List[Node]) extends 
       val ch = new Array[Joint](childs.size)
       val j = new IntrTravJoint(name, m, ax, ay, az, ch, coord, normals)
       val sj = Some(j)
-      //childs.zipWithIndex.foreach{ i => ch(i._2) = i._1.join(coord, normals, sj) }
       for(i <- ch.indices) ch(i) = childs(i).join(coord, normals, sj)
       j
     }
   }
 }
 
-class LinNode(name:String, ix:AxisValue, iy:AxisValue, iz:AxisValue, ind:List[Int])  extends Node(ind){
+class LinNode(name:String, ix:AxisValue, iy:AxisValue, iz:AxisValue, ind:Map[String,List[Int]])  extends Node(ind){
   override def join(coord : Mapping, normals: Mapping, parent:Option[IntrTravJoint]) = new LinearJoint(name, parent.get, ix, iy, iz, coord, normals)
 }
 
 object Node extends RegexParsers {
- 
+  type F3 = (Float,Float,Float)
+  type LinMap = (String, String)
+
   def index: Parser[Int] = """\d+""".r ^^ (_.toInt)
 
   def float: Parser[Float] = """[+-]?(\d+(\.\d*)?|\d*\.\d+)([eE][+-]?\d+)?""".r ^^ (_.toFloat)
-  
+
+  def vector: Parser[F3] = "(" ~> repsep(float, ",") <~ ")" ^^ { l =>
+    assert(l.size == 3)
+    ( l(0), l(1), l(2) )
+  }
+
   def name: Parser[String] = "[a-zA-Z0-9_]+".r
-  
-  def normal : Parser[(Float, Float, Float)] = "normal" ~> ":" ~> repsep(float, ",") ^^ { a =>
-    assert(a.size == 3)
-    (a(0), a(1), a(2)) 
+
+  def group: Parser[(String, List[Int])] = (name <~ ":(") ~ repsep(index, ",") <~ ")" ^^ { i => (i._1, i._2) }
+
+  def groupMap: Parser[Map[String, List[Int]]] = "{" ~> repsep(group, ",") <~ "}" ^^ { v =>
+    val m = mutable.Map[String, mutable.Set[Int]]()
+    for(i <- v) m.getOrElseUpdate(i._1, mutable.Set[Int]()) ++= i._2
+    m.mapValues(_.toList).toMap
   }
-  
-  type LinMapTp = (String, String, Float)
-  
-  def linMap : Parser[LinMapTp] = ( ("x" | "y" | "z") <~ "=" ) ~ ( ("x" | "y" | "z") <~ ":" ) ~ float ^^ { a => (a._1._1, a._1._2, a._2) }
-  
-  def linear : Parser[List[LinMapTp]] = "linear" ~> ":" ~> repsep(linMap, ",")
-    
-  def node : Parser[Node] = name ~ ("(" ~> ( normal | linear ) <~ ")" ) ~ ("[" ~> repsep(index, ",") <~ "]" ) ~ ( "{" ~> rep(node) <~ "}" ).? ^^ { case nm ~ tp ~ pt ~ ch =>    
-    tp match{
-      case (x:Float, y:Float, z:Float) =>
-        new IntNode(nm, Vector3(x, y, z), pt, ch.getOrElse(Nil))
-      case m:List[_] =>
-        assert(ch.isEmpty)
-        
-        var ix = AxisValue(Axis.X, 0f)
-        var iy = AxisValue(Axis.Y, 0f)
-        var iz = AxisValue(Axis.Z, 0f)
-        
-        for(i <- m.asInstanceOf[List[LinMapTp]]){
-          val to = Axis(i._2)
-          
-          i._1 match {
-            case "x" => 
-              ix = AxisValue(to, i._3)
-            case "y" =>
-              iy = AxisValue(to, i._3)
-            case "z" =>
-              iz = AxisValue(to, i._3)
-          }
-        }
-        
-        new LinNode(nm, ix, iy, iz, pt)
-    }    
+
+  def node : Parser[Node] = "[" ~> ( normal | linear ) <~ "]"
+
+  def normal : Parser[IntNode] = (name <~ ":" ) ~ vector ~ ( ":" ~> groupMap ) ~ rep(node) ^^ { q =>
+    new IntNode(q._1._1._1, Vector3(q._1._1._2), q._1._2, q._2)
   }
-  
+
+  def linMap : Parser[LinMap] = "|" ~> ( "x" | "y" | "z")  ~ ("x" | "y" | "z")  ^^ { a => (a._1, a._2) }
+
+  def linear : Parser[LinNode] = (name <~ "|" ) ~ vector ~ rep(linMap) ~ ( ":" ~> groupMap ) ^^ { q =>
+    var ix = AxisValue(Axis.X, q._1._1._2._1)
+    var iy = AxisValue(Axis.Y, q._1._1._2._2)
+    var iz = AxisValue(Axis.Z, q._1._1._2._3)
+
+    for(w <- q._1._2){
+      val to = Axis(w._2)
+      w._1 match {
+        case "x" =>
+          ix = AxisValue(to, ix.value)
+        case "y" =>
+          iy = AxisValue(to, iy.value)
+        case "z" =>
+          iz = AxisValue(to, iz.value)
+      }
+    }
+
+    new LinNode(q._1._1._1, ix, iy, iz, q._2)
+  }
+
+  def apply(ev:GlEventListener, m:Map[String,Mod], r:CharSequence) = {
+    val n = parseAll(node, r).get
+    n(ev, m)
+  }
+
 }

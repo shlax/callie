@@ -64,7 +64,7 @@ object Vector3{
   def apply() : Vector3 = new VectorVar(0, 0, 0)
   def apply(v : (Float, Float, Float)) : Vector3 = new VectorVar(v._1, v._2, v._3)
   def apply(x : Float, y : Float, z : Float) : Vector3 = new VectorVar(x, y, z)
-  def apply(v : Array[Float], i: Array[Int]) : Vector3 = new VectorProjection(v, i)
+  def apply(v : Array[Float], i: Array[Int]) : Vector3 = if(i.length == 1) new VectorProjection(v, i(0)) else new VectorProjectionN(v, i)
     
   def cross(v1:Vector3, v2:Vector3) = new VectorVar(v1.y * v2.z - v1.z * v2.y, 
 		  										                          v1.z * v2.x - v1.x * v2.z,
@@ -94,7 +94,19 @@ class VectorVar(override var x : Float, override var y : Float, override var z :
   
 }
 
-class VectorProjection(val v : Array[Float], val i: Array[Int]) extends Vector3 {
+class VectorProjection(val v : Array[Float], val i: Int) extends Vector3 {
+
+  override def x = v(i) /*+0*/
+  override def y = v(i + 1)
+  override def z = v(i + 2)
+
+  override def x_=(nv:Float) = v(i) = nv /*+0*/
+  override def y_=(nv:Float) = v(i + 1) = nv
+  override def z_=(nv:Float) = v(i + 2) = nv
+
+}
+
+class VectorProjectionN(val v : Array[Float], val i: Array[Int]) extends Vector3 {
     
   override def x = v(i(0)) /*+0*/
   override def y = v(i(0) + 1)

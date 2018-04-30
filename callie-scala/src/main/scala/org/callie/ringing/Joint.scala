@@ -57,10 +57,10 @@ class IntrTravJoint(name:String,
                     points:Array[(Vector3, Vector3)], normals:Array[(Vector3, Vector3)] ) extends IntrJoint(name, offset, ax, ay, az, points, normals) with JointTrav{
 
   override def apply(trans : Matrix4, normalTrans : Matrix4, time:Float){
-    val n = Matrix4() 
+    val n = Matrix4()
     val m = Matrix4()
     transform(trans, normalTrans, time, n, m)
-    for(j <- childs) j.apply(n, m, time) 
+    for(j <- childs) j.apply(n, m, time)
   }
 }
 
