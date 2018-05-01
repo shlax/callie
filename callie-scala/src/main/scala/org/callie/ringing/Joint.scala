@@ -19,6 +19,16 @@ trait JointIntr extends Joint{
   val az: Intr
 }
 
+/** join hierarchy offset */
+class OffsetJoint(override val ax: Intr, override val  ay:Intr, override val az : Intr, child:Joint) extends JointIntr{
+  override def name = ""
+
+  override def apply(trans: Matrix4, normalTrans: Matrix4, time: Float){
+    val m = Matrix4(ax(time), ay(time), az(time)).mul(trans)
+    child.apply(m, normalTrans, time)
+  }
+}
+
 trait JointTrav extends Joint{
   val childs:Array[Joint]
 }

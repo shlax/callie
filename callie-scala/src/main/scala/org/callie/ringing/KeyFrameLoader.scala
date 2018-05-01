@@ -1,5 +1,7 @@
 package org.callie.ringing
 
+import org.callie.math.Vector3
+
 import scala.util.parsing.combinator.RegexParsers
 import scala.collection.mutable
 
@@ -20,15 +22,18 @@ object KeyFrameLoader extends RegexParsers {
       }
     }
 
-    def apply(j:Joint): KeyFrame = {
+  }
+
+  class MainNodeKeys(nm:String, offset:F3, angles:F3, childs:List[NodeKeys]) extends NodeKeys(nm, angles, childs){
+    def apply(j:Joint) : (Vector3, KeyFrame) = {
       val l = mutable.MutableList[KeyValue]()
       apply(j, l)
-      new KeyFrame(l.toArray)
+      (Vector3(offset), new KeyFrame(l.toArray))
     }
   }
 
   def apply(j:Joint, r:CharSequence) = {
-    val n = parseAll(node, r).get
+    val n = parseAll(mainNode, r).get
     n(j)
   }
 
@@ -43,6 +48,10 @@ object KeyFrameLoader extends RegexParsers {
 
   def node:Parser[NodeKeys] = ("[" ~> name <~ ":") ~ vector ~ (rep(node) <~ "]") ^^ { n =>
     new NodeKeys(n._1._1, n._1._2, n._2)
+  }
+
+  def mainNode:Parser[MainNodeKeys] = ("[" ~> name <~ ":") ~ (vector <~ ":" )~ vector ~ (rep(node) <~ "]") ^^ { n =>
+    new MainNodeKeys(n._1._1._1, n._1._1._2, n._1._2, n._2)
   }
 
 }
