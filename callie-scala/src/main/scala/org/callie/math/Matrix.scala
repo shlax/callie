@@ -121,6 +121,15 @@ class Matrix4(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  /
     this
   }
 
+  def set(vx: Float, vy: Float, vz: Float) = {
+    m00 = 1f; m01 = 0f; m02 = 0f; m03 = vx
+    m10 = 0f; m11 = 1f; m12 = 0f; m13 = vy
+    m20 = 0f; m21 = 0f; m22 = 1f; m23 = vz
+    m30 = 0f; m31 = 0f; m32 = 0f; m33 = 1f
+
+    this
+  }
+
   def rotX(angle: Float) = {
     val s = Math.sin(angle).asInstanceOf[Float]
     val c = Math.cos(angle).asInstanceOf[Float]

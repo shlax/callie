@@ -3,9 +3,9 @@ package org.callie.ai
 import org.callie.map.{Map25, Triangle25}
 import org.callie.math.Vector3
 
-class Map[T](map:Map25[T]){
+class Map(map:Map25){
   /** precomputed values */
-  class Node(val triangle:Triangle25[T]){
+  class Node(val triangle:Triangle25){
     val center = Vector3((triangle.a.x + triangle.b.x + triangle.c.x)/3f,
       (triangle.a.y + triangle.b.y + triangle.c.y)/3f,
       (triangle.a.z + triangle.b.z + triangle.c.z)/3f)
@@ -21,7 +21,7 @@ class Map[T](map:Map25[T]){
     // http://html5tutorial.com/how-to-draw-n-grade-bezier-curve-with-canvas-api/
   }
 
-  def path(from:Triangle25[T], to:Triangle25[T]) : Option[Path] = {
+  def path(from:Triangle25, to:Triangle25) : Option[Path] = {
     class PathNode(val node:Node){
       var len = Float.MaxValue
       var back: Option[PathNode] = None
@@ -43,7 +43,7 @@ class Map[T](map:Map25[T]){
     while(act.back.isDefined){
       act = act.back.get
       pth = act.node :: pth
-      if(pth.size > nds.size) return None
+      if(pth.size > nds.length) return None
     }
 
     Some(new Path(pth.reverse))

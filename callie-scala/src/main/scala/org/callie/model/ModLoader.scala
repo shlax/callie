@@ -1,12 +1,8 @@
 package org.callie.model
 
 import scala.util.parsing.combinator.RegexParsers
-import java.io.Reader
 
-class Mod{
-  var points : List[Mod.F3] = _
-  var faces : List[Mod.Face] = _
-}
+class Mod(val points : List[Mod.F3], val faces : List[Mod.Face])
 
 object Mod extends RegexParsers {
   type F2 = (Float,Float)
@@ -31,28 +27,25 @@ object Mod extends RegexParsers {
   // v
   def points : Parser[List[F3]] = "[" ~> repsep(vector3, ",") <~ "]"
 
-  def triangle : Parser[Face] = "[" ~> ((index <~ ":") ~ (vector3 <~ ":") ~ vector2) <~ "]" ^^ { i =>
+  def face : Parser[Face] = (index <~ ":") ~ (vector3 <~ ":") ~ vector2 ^^ { i =>
     (i._1._1, i._2, i._1._2 )
   }
 
-  // f
-  def faces : Parser[List[Face]] = "{" ~> rep(triangle) <~ "}"
-
-  def value(m:Mod) = repN(4,
-        points ^^ (m.points = _)
-      | faces ^^ (m.faces = _)
-    )
-
-  def apply(r:CharSequence) = {
-    val m = new Mod()
-    parseAll(value(m), r)
-    m
+  def face3 : Parser[List[Face]] = "[" ~> repsep(face, ",") <~ "]" ^^ { x =>
+    assert(x.size == 3)
+    x
   }
 
-  def apply(r:Reader) = try{
-    val m = new Mod()
-    parseAll(value(m), r)
-    m
-  }finally { r.close() }
+  // f
+  def faces : Parser[List[Face]] = "{" ~> rep(face3) <~ "}" ^^ (_.flatten)
+
+  def value: Parser[(List[F3], List[Face])] = (points ~ faces) ^^ { i =>
+    (i._1, i._2)
+  }
+
+  def apply(r:CharSequence) = {
+    val t = parseAll(value, r).get
+    new Mod(t._1, t._2)
+  }
 
 }

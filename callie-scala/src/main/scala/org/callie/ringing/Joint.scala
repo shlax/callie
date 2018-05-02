@@ -23,8 +23,9 @@ trait JointIntr extends Joint{
 class OffsetJoint(override val ax: Intr, override val  ay:Intr, override val az : Intr, child:Joint) extends JointIntr{
   override def name = ""
 
+  val m = Matrix4()
   override def apply(trans: Matrix4, normalTrans: Matrix4, time: Float){
-    val m = Matrix4(ax(time), ay(time), az(time)).mul(trans)
+    m.set(ax(time), ay(time), az(time)).mul(trans)
     child.apply(m, normalTrans, time)
   }
 }
@@ -40,8 +41,9 @@ class IntrJoint(override val name:String,
   var rotX : Float = _
   var rotY : Float = _
   var rotZ : Float = _
-  
-  def transform(trans : Matrix4, normalTrans : Matrix4, time:Float, n:Matrix4, m:Matrix4){
+
+  val n = Matrix4(); val m = Matrix4()
+  def apply(trans : Matrix4, normalTrans : Matrix4, time:Float){
     //val n = Matrix4()
     rotX = ax(time); rotY = ay(time); rotZ = az(time)
     m.rotZ(rotZ).mul(n.rotY(rotY)).mul(n.rotX(rotX))
@@ -53,12 +55,7 @@ class IntrJoint(override val name:String,
     for(v <- points) n(v._1, v._2)
     for(v <- normals) m(v._1, v._2)
   }
-  
-  def apply(trans : Matrix4, normalTrans : Matrix4, time:Float){
-    val n = Matrix4() 
-    val m = Matrix4()
-    transform(trans, normalTrans, time, n, m)
-  }
+
 }
 
 /** join hierarchy */
@@ -67,9 +64,7 @@ class IntrTravJoint(name:String,
                     points:Array[(Vector3, Vector3)], normals:Array[(Vector3, Vector3)] ) extends IntrJoint(name, offset, ax, ay, az, points, normals) with JointTrav{
 
   override def apply(trans : Matrix4, normalTrans : Matrix4, time:Float){
-    val n = Matrix4()
-    val m = Matrix4()
-    transform(trans, normalTrans, time, n, m)
+    super.apply(trans, normalTrans, time)
     for(j <- childs) j.apply(n, m, time)
   }
 }
@@ -85,10 +80,10 @@ class LinearJoint(override val name:String,
     case Y => parent.rotY
     case Z => parent.rotZ
   }
-  
+
+  val n = Matrix4(); val m = Matrix4()
   override def apply(trans:Matrix4, normalTrans:Matrix4, time:Float){
-    val n = Matrix4() 
-    val m = Matrix4()
+
     m.rotZ(iz.value * value(iz.axis)).mul(n.rotY(iy.value * value(iy.axis))).mul(n.rotX(ix.value * value(ix.axis)))
     
     n.mul(trans, m) // next trans

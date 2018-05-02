@@ -1,8 +1,11 @@
 package org.callie.map
 
-import org.callie.math.{Vector3, Vector2}
+import org.callie.math.{Vector2, Vector3}
 
-class Triangle25[T](val a : Vector3, val b : Vector3, val c : Vector3, val near: Array[Triangle25[T]], val far: Array[Triangle25[T]], val data:T) {
+import scala.collection.mutable
+import scala.util.parsing.combinator.RegexParsers
+
+class Triangle25(val a : Vector3, val b : Vector3, val c : Vector3, val near: Array[Triangle25], val far: Array[Triangle25]) {
 
   val ab = Vector2(b.x-a.x, b.z-a.z)
   val bc = Vector2(c.x-b.x, c.z-b.z)
@@ -22,32 +25,27 @@ class Triangle25[T](val a : Vector3, val b : Vector3, val c : Vector3, val near:
   }
 }
 
-object Map25{
-  def find[T](v: Vector2, triangles : Array[Triangle25[T]])(check: T => Boolean = { _:T => true}) : Option[(Float,Triangle25[T])] = {
-    for(t <- triangles if check(t.data) ){
+class Map25(val triangles : Array[Triangle25], var last:Triangle25){
+
+  def find[T](v: Vector2) : Option[(Float,Triangle25)] = {
+    for(t <- triangles){
       val tmp = t(v)
       if(tmp.isDefined) return Some(tmp.get, t)
     }
     None
   }
-}
 
-class Map25[T](val triangles : Array[Triangle25[T]], var last:Triangle25[T]){
-  
-  /** if(true) set y to v */
-  def fast(v: Vector2)(check: T => Boolean = { _ => true}) : Option[Float] = {
-    if(check(last.data)){
-      val tmp = last(v)
-      if(tmp.isDefined)return tmp
-    }
-    for(t <- last.near if check(t.data)){
+  def fast(v: Vector2): Option[Float] = {
+    val tmp = last(v)
+    if(tmp.isDefined)return tmp
+    for(t <- last.near){
       val tmp = t(v)
       if(tmp.isDefined) {
         last = t
         return tmp
       }
     }
-    for(t <- last.far if check(t.data)){
+    for(t <- last.far){
       val tmp = t(v)
       if(tmp.isDefined) {
         last = t
@@ -57,15 +55,66 @@ class Map25[T](val triangles : Array[Triangle25[T]], var last:Triangle25[T]){
     None
   }
 
-  def apply(v: Vector2)(check: T => Boolean = { _ => true}) : Option[Float] = {
-    val f = fast(v)(check)
+  def apply(v: Vector2): Option[Float] = {
+    val f = fast(v)
     if(f.isDefined) return f
-    val s = Map25.find(v, triangles)(check)
+    val s = find(v)
     if(s.isDefined){
       val v = s.get
       last = v._2
       Some(v._1)
     }else None
+  }
+
+}
+
+object Map25 extends RegexParsers {
+  type F3 = (Float,Float,Float)
+  type I3 = (Int, Int, Int)
+
+  def index: Parser[Int] = """\d+""".r ^^ (_.toInt)
+
+  def float: Parser[Float] = """[+-]?(\d+(\.\d*)?|\d*\.\d+)([eE][+-]?\d+)?""".r ^^ (_.toFloat)
+
+  def float3 : Parser[F3] = "(" ~> repsep(float, ",") <~ ")" ^^ { l =>
+    assert(l.size == 3)
+    ( l(0), l(1), l(2) )
+  }
+
+  def index3 : Parser[I3] = "(" ~> repsep(index, ",") <~ ")" ^^ { l =>
+    assert(l.size == 3)
+    ( l(0), l(1), l(2) )
+  }
+
+  def pointInd: Parser[(List[F3], List[I3])] = ("[" ~> repsep(float3, ",") <~ "]") ~ ("{" ~> repsep(index3, ",") <~ "}") ^^ { i =>
+    (i._1, i._2)
+  }
+
+  def apply(r:CharSequence) = {
+    val pi = parseAll(pointInd, r).get
+
+    val inds = pi._2.map(i => (i, new mutable.ListBuffer[Int], new mutable.ListBuffer[Int])).zipWithIndex
+    for(i <- inds; j <- inds if i._2 != j._2){
+      var k = 0
+      for(a <- i._1._1.productIterator; b <- j._1._1.productIterator if a == b) k += 1
+      if(k == 2) i._1._2 += j._2
+      else if(k == 1) i._1._3 += j._2
+    }
+
+    val pts = pi._1.map(Vector3(_))
+
+    val trgs = inds.map{ i =>
+      val ind = i._1._1
+      new Triangle25(pts(ind._1), pts(ind._2), pts(ind._3), new Array[Triangle25](i._1._2.size), new Array[Triangle25](i._1._3.size))
+    }
+
+    for(i <- inds){ // connect map
+      val t = trgs(i._2)
+      for(j <- i._1._2.zipWithIndex) t.near(j._2) = trgs(j._1)
+      for(j <- i._1._3.zipWithIndex) t.far(j._2) = trgs(j._1)
+    }
+
+    new Map25(trgs.toArray, trgs.head)
   }
 
 }
