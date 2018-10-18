@@ -3,6 +3,7 @@ package org.callie.map
 import org.callie.math.{Vector2, Vector3}
 
 import scala.collection.mutable
+import scala.io.Source
 import scala.util.parsing.combinator.RegexParsers
 
 class Triangle25(val a : Vector3, val b : Vector3, val c : Vector3, val near: Array[Triangle25], val far: Array[Triangle25]) {
@@ -88,6 +89,13 @@ object Map25 extends RegexParsers {
 
   def pointInd: Parser[(List[F3], List[I3])] = ("[" ~> repsep(float3, ",") <~ "]") ~ ("{" ~> repsep(index3, ",") <~ "}") ^^ { i =>
     (i._1, i._2)
+  }
+
+  def load(nm:String) = {
+    import org.callie._
+    Source.fromInputStream(getClass.getResourceAsStream(nm), "UTF-8")|{ s =>
+      apply(s.mkString)
+    }
   }
 
   def apply(r:CharSequence) = {

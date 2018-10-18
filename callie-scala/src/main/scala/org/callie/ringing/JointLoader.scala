@@ -9,11 +9,12 @@ import org.callie.math.Axis
 import Axis.AxisValue
 
 import scala.collection.mutable
+import scala.io.Source
 
 abstract class Node(ind:Map[String,List[Int]]){
 
   def apply(ev:GlEventListener, m:Map[String,Mod]) = {
-    val o = m.mapValues(i => new MorfingObject(ev, i))
+    val o = m.map(kv => (kv._1, new MorfingObject(ev, kv._2)))
     val pn = ind.map{ i =>
       val obj = o(i._1)
       i._2.map(j => (obj.projPoint(j), obj.projNormals(j)) )
@@ -69,10 +70,10 @@ object Node extends RegexParsers {
     m.mapValues(_.toList).toMap
   }
 
-  def node : Parser[Node] = "[" ~> ( normal | linear ) <~ "]"
+  def node(scale:Float) : Parser[Node] = "[" ~> ( normal(scale) | linear ) <~ "]"
 
-  def normal : Parser[IntNode] = (name <~ ":" ) ~ vector ~ ( ":" ~> groupMap ) ~ rep(node) ^^ { q =>
-    new IntNode(q._1._1._1, Vector3(q._1._1._2), q._1._2, q._2)
+  def normal(scale:Float) : Parser[IntNode] = (name <~ ":" ) ~ vector ~ ( ":" ~> groupMap ) ~ rep(node(scale)) ^^ { q =>
+    new IntNode(q._1._1._1, Vector3(q._1._1._2).mul(scale), q._1._2, q._2)
   }
 
   def linMap : Parser[LinMap] = "|" ~> ( "x" | "y" | "z")  ~ ("x" | "y" | "z")  ^^ { a => (a._1, a._2) }
@@ -97,8 +98,15 @@ object Node extends RegexParsers {
     new LinNode(q._1._1._1, ix, iy, iz, q._2)
   }
 
-  def apply(ev:GlEventListener, m:Map[String,Mod], r:CharSequence) = {
-    val n = parseAll(node, r).get
+  def load(ev:GlEventListener, m:Map[String,Mod], nm:String, scale:Float = 1f) = {
+    import org.callie._
+    Source.fromInputStream(getClass.getResourceAsStream(nm), "UTF-8")|{ s =>
+      apply(ev, m, s.mkString, scale)
+    }
+  }
+
+  def apply(ev:GlEventListener, m:Map[String,Mod], r:CharSequence, scale:Float = 1f) = {
+    val n = parseAll(node(scale), r).get
     n(ev, m)
   }
 

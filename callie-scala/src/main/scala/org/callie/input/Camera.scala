@@ -1,6 +1,6 @@
 package org.callie.input
 
-import com.jogamp.opengl.GL4
+import com.jogamp.opengl.GL3ES3
 import org.callie.math.{Angle, Matrix4, Vector3}
 
 // http://www.gamedev.net/topic/617711-glulookat-replacement/
@@ -19,7 +19,7 @@ object Camera {
   var viewMatrix: Int = _
   var normalMatrix: Int = _
 
-  def program(id:Int, view:String="viewMatrix", normal:String="normalMatrix")(implicit gl:GL4){
+  def program(id:Int, view:String="viewMatrix", normal:String="normalMatrix")(implicit gl:GL3ES3){
     viewMatrix = gl.glGetUniformLocation(id, view)
     normalMatrix = gl.glGetUniformLocation(id, normal)
     display
@@ -91,7 +91,7 @@ object Camera {
   //val normAr = new Array[Float](16)
 
   // mat4 normalMatrix = transpose(inverse(modelView));
-  def display(implicit gl:GL4){
+  def display(implicit gl:GL3ES3){
     off.z += Inputs.zDiff() * 0.25f
     angX() += Inputs.yDiff() * 0.025f
     angY() += Inputs.xDiff() * 0.025f

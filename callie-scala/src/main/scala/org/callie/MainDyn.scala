@@ -1,14 +1,14 @@
 //package org.callie
 //
-//import org.callie.jogl.{buffers, Gl, GlEventListener, JoglFrame}
-//import com.jogamp.opengl.GL4
+//import org.callie.jogl.{Gl, GlEventListener, JoglFrame, buffers}
+//import com.jogamp.opengl.GL3ES3
 //import buffers._
 //
 //object MainDyn extends App{
 //
 //  val vertex =
 //    """
-//      |#version 400
+//      |#version 300 es
 //      |
 //      |layout(location = 0) in vec4 position;
 //      |void main(){
@@ -18,9 +18,9 @@
 //
 //  val fragment =
 //    """
-//      |#version 400
+//      |#version 300 es
 //      |
-//      |out vec4 outputColor;
+//      |out highp vec4 outputColor;
 //      |void main(){
 //      |   outputColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 //      |}
@@ -49,7 +49,7 @@
 //
 //  JoglFrame(new GlEventListener(){
 //
-//    override def initGL4(implicit gl: GL4) {
+//    override def initGL4(implicit gl: GL3ES3) {
 //      val p = createProgram(createShader(Gl.VERTEX_SHADER, vertex),
 //                            createShader(Gl.FRAGMENT_SHADER, fragment))
 //
@@ -83,15 +83,22 @@
 //    // Vertex Buffer Object
 //    var vbo : Int = _
 //
-//    override def displayGL4(implicit gl: GL4) {
+//    override def displayGL4(implicit gl: GL3ES3) {
 //      gl.glClear(Gl.COLOR_BUFFER_BIT)
 //
 //      // > code
 //
 //      bindVertexArray(vao){
 //
+//
 //        bindBuffer(Gl.ARRAY_BUFFER, vbo){
-//          positions2.asBuffer(gl.glBufferData(Gl.ARRAY_BUFFER, _, _, Gl.DYNAMIC_DRAW))
+//          if(Math.random() < 0.1){
+//            positions1.asBuffer(gl.glBufferData(Gl.ARRAY_BUFFER, _, _, Gl.DYNAMIC_DRAW))
+//          }else{
+//            positions2.asBuffer(gl.glBufferData(Gl.ARRAY_BUFFER, _, _, Gl.DYNAMIC_DRAW))
+//          }
+//
+//
 //        }
 //
 //        bindBuffer(Gl.ELEMENT_ARRAY_BUFFER, vbi){

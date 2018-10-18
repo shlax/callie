@@ -4,6 +4,7 @@ import org.callie.math.Vector3
 
 import scala.util.parsing.combinator.RegexParsers
 import scala.collection.mutable
+import scala.io.Source
 
 object KeyFrameLoader extends RegexParsers {
   type F3 = (Float, Float, Float)
@@ -12,9 +13,11 @@ object KeyFrameLoader extends RegexParsers {
     def apply(j:Joint, l:mutable.MutableList[KeyValue]){
       val ji = j.asInstanceOf[JointIntr]
 
-      l += new KeyValue(ji.ax, angles._1)
-      l += new KeyValue(ji.ay, angles._2)
-      l += new KeyValue(ji.az, angles._3)
+      val conv = (Math.PI/180d).asInstanceOf[Float]
+
+      l += new KeyValue(ji.ax, conv * angles._1)
+      l += new KeyValue(ji.ay, conv * angles._2)
+      l += new KeyValue(ji.az, conv * angles._3)
 
       for(c <- childs){
         val pj = j.asInstanceOf[JointTrav]
@@ -24,16 +27,23 @@ object KeyFrameLoader extends RegexParsers {
 
   }
 
-  class MainNodeKeys(nm:String, offset:F3, angles:F3, childs:List[NodeKeys]) extends NodeKeys(nm, angles, childs){
+  class MainNodeKeys(nm:String, offset:Vector3, angles:F3, childs:List[NodeKeys]) extends NodeKeys(nm, angles, childs){
     def apply(j:Joint) : (Vector3, KeyFrame) = {
       val l = mutable.MutableList[KeyValue]()
       apply(j, l)
-      (Vector3(offset), new KeyFrame(l.toArray))
+      (offset, new KeyFrame(l.toArray))
     }
   }
 
-  def apply(j:Joint, r:CharSequence) = {
-    val n = parseAll(mainNode, r).get
+  def load(j:Joint, nm:String, scale:Float = 1f) = {
+    import org.callie._
+    Source.fromInputStream(getClass.getResourceAsStream(nm), "UTF-8")|{ s =>
+      apply(j, s.mkString, scale)
+    }
+  }
+
+  def apply(j:Joint, r:CharSequence, scale:Float = 1f) = {
+    val n = parseAll(mainNode(scale), r).get
     n(j)
   }
 
@@ -50,8 +60,8 @@ object KeyFrameLoader extends RegexParsers {
     new NodeKeys(n._1._1, n._1._2, n._2)
   }
 
-  def mainNode:Parser[MainNodeKeys] = ("[" ~> name <~ ":") ~ (vector <~ ":" )~ vector ~ (rep(node) <~ "]") ^^ { n =>
-    new MainNodeKeys(n._1._1._1, n._1._1._2, n._1._2, n._2)
+  def mainNode(scale:Float):Parser[MainNodeKeys] = ("[" ~> name <~ ":") ~ (vector <~ ":" )~ vector ~ (rep(node) <~ "]") ^^ { n =>
+    new MainNodeKeys(n._1._1._1, Vector3(n._1._1._2).mul(scale), n._1._2, n._2)
   }
 
 }

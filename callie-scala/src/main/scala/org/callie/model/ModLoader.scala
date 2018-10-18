@@ -1,8 +1,11 @@
 package org.callie.model
 
+import scala.io.Source
 import scala.util.parsing.combinator.RegexParsers
 
-class Mod(val points : List[Mod.F3], val faces : List[Mod.Face])
+class Mod(val points : List[Mod.F3], val faces : List[Mod.Face]){
+  def scale(s:Float) = new Mod(points.map(p => (p._1 * s, p._2 * s, p._3 * s) ), faces)
+}
 
 object Mod extends RegexParsers {
   type F2 = (Float,Float)
@@ -41,6 +44,13 @@ object Mod extends RegexParsers {
 
   def value: Parser[(List[F3], List[Face])] = (points ~ faces) ^^ { i =>
     (i._1, i._2)
+  }
+
+  def load(nm:String) = {
+    import org.callie._
+    Source.fromInputStream(getClass.getResourceAsStream(nm), "UTF-8")|{s =>
+      apply(s.mkString)
+    }
   }
 
   def apply(r:CharSequence) = {

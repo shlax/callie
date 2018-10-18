@@ -1,6 +1,7 @@
 package org.callie
 
-import com.jogamp.opengl.GL4
+import com.jogamp.opengl.GL3ES3
+
 import scala.collection.mutable
 
 object GenSgl extends App{
@@ -21,7 +22,7 @@ object GenSgl extends App{
       }
     }
   }
-  prc(classOf[GL4])
+  prc(classOf[GL3ES3])
 
   out ++= "\n}"
 
