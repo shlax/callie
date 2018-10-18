@@ -1,21 +1,20 @@
 package org.callie.model
 
 import scala.collection.mutable.ListBuffer
-import com.jogamp.opengl.GL3ES3
 import com.jogamp.common.nio.Buffers
 import com.jogamp.opengl.util.texture.TextureIO
-import org.callie.jogl.{buffers, Gl, GlEventListener}
+import org.callie.jogl.{Gl, GlEventListener, GlType, buffers}
 import org.callie.math.Vector3
 import buffers._
 
 object Graphics{
   var parts:Array[GlObject] = Array()
 
-  def init(gl:GL3ES3){
+  def init(gl:GlType){
     for(o <- parts)o.init(gl)
   }
 
-  def display(gl:GL3ES3){
+  def display(gl:GlType){
     for(o <- parts)o.display(gl)
   }
 
@@ -23,19 +22,19 @@ object Graphics{
 
 trait GlObject{
 
-  def init(implicit gl:GL3ES3)
+  def init(implicit gl:GlType)
   
-  def display(implicit gl:GL3ES3)
+  def display(implicit gl:GlType)
     
 }
 
 class ObjectGroup(objs:GlObject*) extends GlObject{
   
-  override def init(implicit gl:GL3ES3){
+  override def init(implicit gl:GlType){
     for(o <- objs) o.init
   }
   
-  override def display(implicit gl:GL3ES3){
+  override def display(implicit gl:GlType){
     for(o <- objs) o.display
   }
   
@@ -45,7 +44,7 @@ class TextureGroup(ev: GlEventListener, image:String, objs:GlObject*) extends Ob
   
   var texId : Int = _
     
-  override def init(implicit gl:GL3ES3){
+  override def init(implicit gl:GlType){
     val texture = TextureIO.newTextureData(gl.getGLProfile, getClass.getResourceAsStream(image), false, TextureIO.PNG)
     
     texId = ev.createTexture{
@@ -65,7 +64,7 @@ class TextureGroup(ev: GlEventListener, image:String, objs:GlObject*) extends Ob
     texture.destroy()    
   }
   
-  override def display(implicit gl:GL3ES3){
+  override def display(implicit gl:GlType){
     ev.bindTexture(texId){    
       super.display
     }
@@ -103,7 +102,7 @@ class StaticObject(ev:GlEventListener, m:Mod) extends GlObject{
   var vao : Int = _
   var vbi : Int = _
   
-  override def init(implicit gl:GL3ES3){
+  override def init(implicit gl:GlType){
     vao = ev.createVertexArray{
       gl.glEnableVertexAttribArray(0)
       gl.glEnableVertexAttribArray(1)
@@ -123,7 +122,7 @@ class StaticObject(ev:GlEventListener, m:Mod) extends GlObject{
     }
   }
   
-  override def display(implicit gl:GL3ES3){
+  override def display(implicit gl:GlType){
     ev.bindVertexArray(vao){
       ev.bindBuffer(Gl.ELEMENT_ARRAY_BUFFER, vbi){
         gl.glDrawElements(Gl.TRIANGLES, indices.length, Gl.UNSIGNED_INT, 0)
@@ -188,7 +187,7 @@ class MorfingObject(ev:GlEventListener, m:Mod) extends GlObject{
   var vbi : Int = _
   var vbo : Int = _
   
-  override def init(implicit gl:GL3ES3){
+  override def init(implicit gl:GlType){
     vao = ev.createVertexArray{
       gl.glEnableVertexAttribArray(0)
       gl.glEnableVertexAttribArray(1)
@@ -208,7 +207,7 @@ class MorfingObject(ev:GlEventListener, m:Mod) extends GlObject{
     }
   }
   
-  override def display(implicit gl:GL3ES3){
+  override def display(implicit gl:GlType){
     ev.bindVertexArray(vao){
       ev.bindBuffer(Gl.ARRAY_BUFFER, vbo){
         coords.asBuffer(gl.glBufferData(Gl.ARRAY_BUFFER, _, _, Gl.DYNAMIC_DRAW))

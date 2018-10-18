@@ -15,36 +15,43 @@ abstract class Node(ind:Map[String,List[Int]]){
 
   def apply(ev:GlEventListener, m:Map[String,Mod]) = {
     val o = m.map(kv => (kv._1, new MorfingObject(ev, kv._2)))
-    val pn = ind.map{ i =>
-      val obj = o(i._1)
+    (o.values.toArray, join(o) )
+  }
+
+  def cordsNormals(m:Map[String, MorfingObject]) = {
+    val t = ind.map{ i =>
+      val obj = m(i._1)
       i._2.map(j => (obj.projPoint(j), obj.projNormals(j)) )
     }.flatten
-    (o.values.toArray, join(pn.map(_._1).toArray, pn.map(_._2).toArray) )
+    (t.map(_._1).toArray, t.map(_._2).toArray)
   }
-  
+
   type Mapping = Array[(Vector3, Vector3)]
   
-  def join(coord : Mapping, normals: Mapping, parent:Option[IntrTravJoint] = None) : Joint
+  def join(m:Map[String, MorfingObject], parent:Option[IntrTravJoint] = None) : Joint
 }
 
 class IntNode(name:String, v:Vector3, ind:Map[String,List[Int]], childs:List[Node]) extends Node(ind){
-  override def join(coord : Mapping, normals: Mapping, parent:Option[IntrTravJoint]) = {
+  override def join(ojbs:Map[String, MorfingObject], parent:Option[IntrTravJoint]) = {
     val ax = new Accl; val ay = new Accl; val az = new Accl
     val m = Matrix4(v)
-    
+
+    val (coord, normals) = cordsNormals(ojbs)
     if(childs.isEmpty) new IntrJoint(name, m, ax, ay, az, coord, normals)
     else{
       val ch = new Array[Joint](childs.size)
-      val j = new IntrTravJoint(name, m, ax, ay, az, ch, coord, normals)
-      val sj = Some(j)
-      for(i <- ch.indices) ch(i) = childs(i).join(coord, normals, sj)
-      j
+      val sj = Some(new IntrTravJoint(name, m, ax, ay, az, ch, coord, normals))
+      for(i <- ch.indices) ch(i) = childs(i).join(ojbs, sj)
+      sj.get
     }
   }
 }
 
 class LinNode(name:String, ix:AxisValue, iy:AxisValue, iz:AxisValue, ind:Map[String,List[Int]])  extends Node(ind){
-  override def join(coord : Mapping, normals: Mapping, parent:Option[IntrTravJoint]) = new LinearJoint(name, parent.get, ix, iy, iz, coord, normals)
+  override def join(ojbs:Map[String, MorfingObject], parent:Option[IntrTravJoint]) = {
+    val (coord, normals) = cordsNormals(ojbs)
+    new LinearJoint(name, parent.get, ix, iy, iz, coord, normals)
+  }
 }
 
 object Node extends RegexParsers {

@@ -21,7 +21,8 @@ object JoglFrame {
 
   //println(GLProfile.glAvailabilityToString)
 
-  val profile = GLProfile.get(GLProfile.GLES3)
+  //val profile = GLProfile.get(GLProfile.GLES3)
+  val profile = GLProfile.get(glProfile)
   val capabilities = new GLCapabilities(profile)
   capabilities.setSampleBuffers(true) // FSAA
   capabilities.setNumSamples(4)

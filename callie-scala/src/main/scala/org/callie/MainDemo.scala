@@ -1,8 +1,7 @@
 package org.callie
 
-import com.jogamp.opengl.GL3ES3
 import org.callie.input.Camera
-import org.callie.jogl.{Gl, GlEventListener, JoglFrame}
+import org.callie.jogl.{Gl, GlEventListener, GlType, JoglFrame}
 import org.callie.map.Map25
 import org.callie.math.Matrix4
 import org.callie.model.{Mod, StaticObject, TextureGroup}
@@ -11,7 +10,8 @@ import org.callie.ringing.{KeyFrameLoader, Node}
 object MainDemo extends App{
 
   val vertex = """
-        |#version 300 es
+        |#version 400
+        |//#version 300 es
         |
         |layout(location = 0) in vec3 inPosition;
         |layout(location = 1) in vec2 inTextureCoord;
@@ -44,7 +44,8 @@ object MainDemo extends App{
       """.stripMargin
 
     val fragment = """
-        |#version 300 es
+        |#version 400
+        |//#version 300 es
         |
         |uniform sampler2D textureDiffuse;
         |
@@ -80,7 +81,7 @@ object MainDemo extends App{
       new StaticObject(this, Mod.load("/demo/map/floor.mod"))
     )
 
-    override def initGL4(implicit gl: GL3ES3){
+    override def initGL4(implicit gl: GlType){
       gl.glEnable(Gl.DEPTH_TEST)
       gl.glDepthMask(true)
 
@@ -95,7 +96,7 @@ object MainDemo extends App{
 
       gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
 
-      stand.apply()
+      run1.apply()
     }
 
     val zero1 = Matrix4()
@@ -103,7 +104,7 @@ object MainDemo extends App{
 
     var t = System.currentTimeMillis()
 
-    override def displayGL4(implicit gl: GL3ES3){
+    override def displayGL4(implicit gl: GlType){
       gl.glClear(Gl.COLOR_BUFFER_BIT | Gl.DEPTH_BUFFER_BIT)
       Camera.display
 
@@ -114,7 +115,7 @@ object MainDemo extends App{
 
       if(x > 1f) {
         x = 1; t = q
-        stand.apply()
+        run1.apply()
       }
 
       joint.apply(zero1, zero2, x)

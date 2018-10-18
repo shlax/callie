@@ -50,7 +50,7 @@ class IntrJoint(override val name:String,
     
     n.mul(trans, offset).mul(m) // next trans
     m.mul(normalTrans, m) // next normalTrans
-    
+
     //cluster(n, m)
     for(v <- points) n(v._1, v._2)
     for(v <- normals) m(v._1, v._2)
