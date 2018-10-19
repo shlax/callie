@@ -6,7 +6,7 @@ import scala.collection.mutable
 
 object GenSgl extends App{
 
-  val out = new StringBuilder("@inline\nobject Gl {")
+  val out = new StringBuilder("object Gl {")
   val done = mutable.Set[Class[_]]()
 
   def prc(cls:Class[_]){
@@ -14,7 +14,7 @@ object GenSgl extends App{
       if(cls != null && classOf[Object] != cls){
 
         for(f <- cls.getDeclaredFields){
-          out ++= "\n  @inline def " + f.getName.substring(3) + " = " + cls.getName + "." + f.getName
+          out ++= "\n  @inline final def " + f.getName.substring(3) + " = " + cls.getName + "." + f.getName
         }
 
         prc(cls.getSuperclass)

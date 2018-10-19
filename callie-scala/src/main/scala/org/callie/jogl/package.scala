@@ -8,10 +8,10 @@ package object jogl {
 
   @inline
   //def glProfile = GLProfile.GLES3
-  def glProfile = GLProfile.GL4
+  final def glProfile = GLProfile.GL4
 
   @inline
   //def glProfile (drawable: GLAutoDrawable) = drawable.getGL.getGLES3
-  def glProfile (drawable: GLAutoDrawable) : GlType = drawable.getGL.getGL4
+  final def glProfile (drawable: GLAutoDrawable) : GlType = drawable.getGL.getGL4
 
 }
