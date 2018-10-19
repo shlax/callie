@@ -121,8 +121,8 @@ object MainDemo extends App{
       var x:Float = q - t
       x = x / 2500f
 
-      if(x > 1f) {
-        x = 1; t = q
+      if(x > 1) {
+        x -= 1; t = q
         run1.apply()
       }
 
