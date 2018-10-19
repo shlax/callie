@@ -15,41 +15,43 @@ abstract class Node(ind:Map[String,List[Int]]){
 
   def apply(ev:GlEventListener, m:Map[String,Mod]) = {
     val o = m.map(kv => (kv._1, new MorfingObject(ev, kv._2)))
-    (o.values.toArray, join(o) )
+    (o.values.toArray, join(o, Vector3()) )
   }
 
-  def cordsNormals(m:Map[String, MorfingObject]) = {
+  def cordsNormals(m:Map[String, MorfingObject], offset:Vector3) = {
     val t = ind.map{ i =>
       val obj = m(i._1)
       i._2.map(j => (obj.projPoint(j), obj.projNormals(j)) )
     }.flatten
-    (t.map(_._1).toArray, t.map(_._2).toArray)
+    (t.map(_._1).map(x => (x._1.sub(offset), x._2)).toArray, t.map(_._2).toArray.flatten)
   }
 
   type Mapping = Array[(Vector3, Vector3)]
   
-  def join(m:Map[String, MorfingObject], parent:Option[IntrTravJoint] = None) : Joint
+  def join(m:Map[String, MorfingObject], offset:Vector3, parent:Option[IntrTravJoint] = None) : Joint
 }
 
 class IntNode(name:String, v:Vector3, ind:Map[String,List[Int]], childs:List[Node]) extends Node(ind){
-  override def join(ojbs:Map[String, MorfingObject], parent:Option[IntrTravJoint]) = {
+  override def join(ojbs:Map[String, MorfingObject], offset:Vector3, parent:Option[IntrTravJoint]) = {
     val ax = new Accl; val ay = new Accl; val az = new Accl
     val m = Matrix4(v)
 
-    val (coord, normals) = cordsNormals(ojbs)
+    val off = Vector3.add(offset, v)
+
+    val (coord, normals) = cordsNormals(ojbs, off)
     if(childs.isEmpty) new IntrJoint(name, m, ax, ay, az, coord, normals)
     else{
       val ch = new Array[Joint](childs.size)
       val sj = Some(new IntrTravJoint(name, m, ax, ay, az, ch, coord, normals))
-      for(i <- ch.indices) ch(i) = childs(i).join(ojbs, sj)
+      for(i <- ch.indices) ch(i) = childs(i).join(ojbs, off, sj)
       sj.get
     }
   }
 }
 
 class LinNode(name:String, ix:AxisValue, iy:AxisValue, iz:AxisValue, ind:Map[String,List[Int]])  extends Node(ind){
-  override def join(ojbs:Map[String, MorfingObject], parent:Option[IntrTravJoint]) = {
-    val (coord, normals) = cordsNormals(ojbs)
+  override def join(ojbs:Map[String, MorfingObject], offset:Vector3, parent:Option[IntrTravJoint]) = {
+    val (coord, normals) = cordsNormals(ojbs, offset)
     new LinearJoint(name, parent.get, ix, iy, iz, coord, normals)
   }
 }
@@ -86,9 +88,9 @@ object Node extends RegexParsers {
   def linMap : Parser[LinMap] = "|" ~> ( "x" | "y" | "z")  ~ ("x" | "y" | "z")  ^^ { a => (a._1, a._2) }
 
   def linear : Parser[LinNode] = (name <~ "|" ) ~ vector ~ rep(linMap) ~ ( ":" ~> groupMap ) ^^ { q =>
-    var ix = AxisValue(Axis.X, q._1._1._2._1)
-    var iy = AxisValue(Axis.Y, q._1._1._2._2)
-    var iz = AxisValue(Axis.Z, q._1._1._2._3)
+    var ix = AxisValue(Axis.X, - q._1._1._2._1)
+    var iy = AxisValue(Axis.Y, - q._1._1._2._2)
+    var iz = AxisValue(Axis.Z, - q._1._1._2._3)
 
     for(w <- q._1._2){
       val to = Axis(w._2)

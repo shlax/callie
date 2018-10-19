@@ -2,21 +2,14 @@
 apply plugin: 'scala'
 
 repositories {
-    mavenCentral()
+    maven {
+        url('http://central.maven.org/maven2/')
+    }
 }
 
 tasks.withType(ScalaCompile) {
     targetCompatibility = 1.8
 }
-
-/* repositories {
-    maven {
-        url 'http://mr01.hq.gratex.com/nexus/content/groups/public'
-    }
-    maven {
-        url 'http://mr01.hq.gratex.com/nexus/content/repositories/releases'
-    }
-} */
 
 dependencies {
     compile 'org.scala-lang:scala-library:2.12.7'
@@ -29,6 +22,5 @@ dependencies {
 
     testCompile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.6'
     testCompile group: 'commons-io', name: 'commons-io', version: '2.6'
-
 
 }

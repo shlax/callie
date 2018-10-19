@@ -91,6 +91,6 @@ class LinearJoint(override val name:String,
     
     //cluster(n, m)
     for(v <- points) n(v._1, v._2)
-    for(v <- normals) m(v._1, v._2)    
+    for(v <- normals) m(v._1, v._2)
   }
 }

@@ -1,17 +1,19 @@
 package org.callie
 
-import org.callie.input.Camera
+import org.callie.input.{Camera, TrackingObject}
 import org.callie.jogl.{Gl, GlEventListener, GlType, JoglFrame}
 import org.callie.map.Map25
-import org.callie.math.Matrix4
+import org.callie.math.{Matrix4, Vector3}
 import org.callie.model.{Mod, StaticObject, TextureGroup}
 import org.callie.ringing.{KeyFrameLoader, Node}
 
 object MainDemo extends App{
 
+  // https://stackoverflow.com/questions/18510701/glsl-how-to-show-normals-with-geometry-shader
   val vertex = """
-        |#version 400
-        |//#version 300 es
+        |//#version 330 core
+        |#version 300 es
+        |//#version 400
         |
         |layout(location = 0) in vec3 inPosition;
         |layout(location = 1) in vec2 inTextureCoord;
@@ -41,11 +43,12 @@ object MainDemo extends App{
         |  lightIntensity = 0.2 + (max(dot((normalMatrix * vec4(inNormal,1)).xyz, lightDirection), 0.0) * 0.8);
         |  texCoord = inTextureCoord;
         |}
-      """.stripMargin
+      """.stripMargin.trim
 
     val fragment = """
-        |#version 400
-        |//#version 300 es
+        |//#version 330 core
+        |#version 300 es
+        |//#version 400
         |
         |uniform sampler2D textureDiffuse;
         |
@@ -59,7 +62,7 @@ object MainDemo extends App{
         |  if (c.w < 0.5) discard;
         |  fragColor = c * lightIntensity; // vec4(lightIntensity,lightIntensity, lightIntensity, 1);
         |}
-      """.stripMargin
+      """.stripMargin.trim
 
   val map = Map25.load("/demo/map/floor.map")
 
@@ -93,10 +96,15 @@ object MainDemo extends App{
 
       gl.glUseProgram(p)
       Camera.program(p)
+      Camera.lookAt(new TrackingObject {
+        override def position: Vector3 = Vector3(0, -1.5f, 0)
+      })
 
       gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
 
-      run1.apply()
+      //gl.glPolygonMode(Gl.FRONT_AND_BACK, Gl.LINE)
+
+      stand.apply()
     }
 
     val zero1 = Matrix4()
@@ -111,11 +119,11 @@ object MainDemo extends App{
       val q = System.currentTimeMillis()
 
       var x:Float = q - t
-      x = x / 5000f
+      x = x / 2500f
 
       if(x > 1f) {
         x = 1; t = q
-        run1.apply()
+        stand.apply()
       }
 
       joint.apply(zero1, zero2, x)

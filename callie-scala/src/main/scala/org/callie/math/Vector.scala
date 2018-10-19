@@ -33,6 +33,20 @@ trait Vector3{
     this
   }
 
+  def add(b:Vector3) = {
+    x += b.x
+    y += b.y
+    z += b.z
+    this
+  }
+
+  def sub(b:Vector3) = {
+    x -= b.x
+    y -= b.y
+    z -= b.z
+    this
+  }
+
   def sub(a:Vector3, b:Vector3) = {
     x = a.x - b.x
     y = a.y - b.y

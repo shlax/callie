@@ -72,16 +72,20 @@ class TextureGroup(ev: GlEventListener, image:String, objs:GlObject*) extends Ob
   
 }
 
-class StaticObject(ev:GlEventListener, m:Mod) extends GlObject{
-  
-  val (coords, indices) = {
+class StaticObject(ev:GlEventListener) extends GlObject{
+
+  var coords:Array[Float] = _
+  var indices:Array[Int] = _
+
+  def this(ev:GlEventListener, m:Mod){
+    this(ev)
     // stack
     val s = ListBuffer[(Mod.F3, Mod.F2, Mod.F3)]()
 
     val a = ListBuffer[Float]()
     val i = ListBuffer[Int]()
 
-    def vtx(f: Mod.Face){
+    for(f <- m.faces){
       val x = (m.points(f._1), f._2, f._3)
       val ind = s.indexOf(x)
       if(ind == -1){
@@ -94,9 +98,8 @@ class StaticObject(ev:GlEventListener, m:Mod) extends GlObject{
       }else i += ind
     }
 
-    for(f <- m.faces) vtx(f)
-
-    (a.toArray, i.toArray)
+    coords = a.toArray
+    indices = i.toArray
   }
     
   var vao : Int = _
@@ -132,55 +135,52 @@ class StaticObject(ev:GlEventListener, m:Mod) extends GlObject{
   
 }
 
-class MorfingObject(ev:GlEventListener, m:Mod) extends GlObject{
-  val (coords, indices, projPoint, projNormals) = {
+class MorfingObject(ev:GlEventListener) extends GlObject{
+
+  var coords:Array[Float] = _
+  var indices:Array[Int] = _
+  var projPoint:Array[(Vector3, Vector3)] = _
+  var projNormals:Array[Array[(Vector3, Vector3)]] = _
+
+  def this(ev:GlEventListener, m:Mod){
+    this(ev)
     // stack
-//    val s = ListBuffer[(Int, Mod.F3, Mod.F2, Mod.F3)]()
+    val s = ListBuffer[(Int, Mod.F3, Mod.F2, Mod.F3)]()
 
     val a = ListBuffer[Float]()
     val i = ListBuffer[Int]()
 
-//    def vtx(f: Mod.Face){
-//      val x = (f._1, m.points(f._1), f._2, f._3)
-//      val ind = s.indexOf(x)
-//
-//      if(ind == -1){
-//        a += x._2._1 += x._2._2 += x._2._3
-//        a += x._3._1 += x._3._2
-//        a += x._4._1 += x._4._2 += x._4._3
-//
-//        i += s.size
-//        s += x
-//      }else i += ind
-//    }
-
     for(f <- m.faces){
-      val p = m.points(f._1)
-      a += p._1 += p._2 += p._3
-      a += f._2._1 += f._2._2
-      a += f._3._1 += f._3._2 += f._3._3
+      val x = (f._1, m.points(f._1), f._2, f._3)
+      val ind = s.indexOf(x)
 
-      i += i.size
+      if(ind == -1){
+        a += x._2._1 += x._2._2 += x._2._3
+        a += x._3._1 += x._3._2
+        a += x._4._1 += x._4._2 += x._4._3
+
+        i += s.size
+        s += x
+      }else i += ind
     }
 
     val prPoint = ListBuffer[(Vector3, Vector3)]()
-    val prNormals = ListBuffer[(Vector3, Vector3)]()
+    val prNormals = ListBuffer[Array[(Vector3, Vector3)]]()
 
-    val coord = a.toArray
+    coords = a.toArray
 
-    val fi = m.faces.zipWithIndex
+    val fi = s.zipWithIndex
 
     for(i <- m.points.zipWithIndex){
       val t = fi.filter(_._1._1 == i._2)
 
-      prPoint += ((Vector3(i._1), Vector3(coord, t.map(_._2 * (3+2+3)).toArray)))
-      //((Vector3(t.head._1._4), Vector3(coord, ind.map(_ + 5))))
-      prNormals ++= t.map{f =>
-        (Vector3(f._1._3), Vector3(coord, ((3+2+3) * f._2) + 5))
-      }
+      prPoint += ( (Vector3(i._1), Vector3(coords, t.map(_._2 * (3+2+3)).toArray )) )
+      prNormals += t.map(j => ( Vector3(j._1._4), Vector3(coords, (j._2 * (3+2+3) ) + 5 ) ) ).toArray
     }
 
-    (coord, i.toArray, prPoint.toArray, prNormals.toArray)
+    indices = i.toArray
+    projPoint = prPoint.toArray
+    projNormals = prNormals.toArray
   }
   
   var vao : Int = _
