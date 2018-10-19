@@ -175,7 +175,11 @@ class MorfingObject(ev:GlEventListener) extends GlObject{
       val t = fi.filter(_._1._1 == i._2)
 
       prPoint += ( (Vector3(i._1), Vector3(coords, t.map(_._2 * (3+2+3)).toArray )) )
-      prNormals += t.map(j => ( Vector3(j._1._4), Vector3(coords, (j._2 * (3+2+3) ) + 5 ) ) ).toArray
+      prNormals += t.map{j =>
+          ( j._1._4, (j._2 * (3+2+3) ) + 5 )
+        }.groupBy(_._1).map{ e =>
+          (Vector3(e._1), Vector3(coords,  e._2.map(_._2).toArray))
+        }.toArray
     }
 
     indices = i.toArray

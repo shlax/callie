@@ -72,6 +72,12 @@ trait Vector3{
 
   override def toString = "{"+x+", "+y+", "+z+"}"
 
+  override def hashCode() = x.hashCode() + y.hashCode() + z.hashCode()
+
+  override def equals(obj: Any) = obj match {
+    case v: Vector3 => v.x == x && v.y == y && v.z == z
+    case _ => false
+  }
 }
 
 object Vector3{

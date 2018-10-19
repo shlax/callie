@@ -97,7 +97,7 @@ object MainDemo extends App{
       gl.glUseProgram(p)
       Camera.program(p)
       Camera.lookAt(new TrackingObject {
-        override def position: Vector3 = Vector3(0, -1.5f, 0)
+        override def position: Vector3 = Vector3(0, -1f, 0)
       })
 
       gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
@@ -123,7 +123,7 @@ object MainDemo extends App{
 
       if(x > 1f) {
         x = 1; t = q
-        stand.apply()
+        run1.apply()
       }
 
       joint.apply(zero1, zero2, x)
