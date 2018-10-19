@@ -110,15 +110,15 @@ object MainDemo extends App{
     val zero1 = Matrix4()
     val zero2 = Matrix4()
 
-    var t = System.currentTimeMillis()
+    var t = System.nanoTime()
 
     override def displayGL4(implicit gl: GlType){
       gl.glClear(Gl.COLOR_BUFFER_BIT | Gl.DEPTH_BUFFER_BIT)
       Camera.display
 
-      val q = System.currentTimeMillis()
+      val q = System.nanoTime()
 
-      var x:Float = q - t
+      var x:Float = (q - t)/1000000f
       x = x / 2500f
 
       if(x > 1) {
