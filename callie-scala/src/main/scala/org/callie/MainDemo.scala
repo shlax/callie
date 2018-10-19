@@ -12,8 +12,8 @@ object MainDemo extends App{
   // https://stackoverflow.com/questions/18510701/glsl-how-to-show-normals-with-geometry-shader
   val vertex = """
         |//#version 330 core
-        |#version 300 es
-        |//#version 400
+        |//#version 300 es
+        |#version 400
         |
         |layout(location = 0) in vec3 inPosition;
         |layout(location = 1) in vec2 inTextureCoord;
@@ -47,8 +47,8 @@ object MainDemo extends App{
 
     val fragment = """
         |//#version 330 core
-        |#version 300 es
-        |//#version 400
+        |//#version 300 es
+        |#version 400
         |
         |uniform sampler2D textureDiffuse;
         |
