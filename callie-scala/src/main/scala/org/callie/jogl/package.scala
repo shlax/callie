@@ -4,8 +4,7 @@ import com.jogamp.opengl._
 
 package object jogl {
 
-  //type GlType = GLES3
-  type GlType = GL4
+  type GlType = GL4ES3
 
   @inline
   //def glProfile = GLProfile.GLES3
@@ -13,6 +12,6 @@ package object jogl {
 
   @inline
   //def glProfile (drawable: GLAutoDrawable) = drawable.getGL.getGLES3
-  def glProfile (drawable: GLAutoDrawable) = drawable.getGL.getGL4
+  def glProfile (drawable: GLAutoDrawable) : GlType = drawable.getGL.getGL4
 
 }
