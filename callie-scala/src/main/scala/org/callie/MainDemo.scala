@@ -97,7 +97,7 @@ object MainDemo extends App{
       gl.glUseProgram(p)
       Camera.program(p)
       Camera.lookAt(new TrackingObject {
-        override def position: Vector3 = Vector3(0, -1f, 0)
+        override val position = Vector3(0, -1f, 0)
       })
 
       gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
