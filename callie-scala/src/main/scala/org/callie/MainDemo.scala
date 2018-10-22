@@ -82,6 +82,8 @@ object MainDemo extends App{
       new StaticObject(this, Mod.load("/demo/map/floor.mod"))
     )
 
+    var t: Long = 0
+
     override def initGL4(implicit gl: GlType){
       gl.glEnable(Gl.DEPTH_TEST)
       gl.glDepthMask(true)
@@ -104,8 +106,6 @@ object MainDemo extends App{
 
       t = System.nanoTime()
     }
-
-    var t: Long = 0
 
     override def displayGL4(implicit gl: GlType){
       gl.glClear(Gl.COLOR_BUFFER_BIT | Gl.DEPTH_BUFFER_BIT)
