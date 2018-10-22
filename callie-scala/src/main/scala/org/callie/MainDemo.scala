@@ -101,9 +101,11 @@ object MainDemo extends App{
       //gl.glPolygonMode(Gl.FRONT_AND_BACK, Gl.LINE)
 
       stand.apply()
+
+      t = System.nanoTime()
     }
 
-    var t = System.nanoTime()
+    var t: Long = 0
 
     override def displayGL4(implicit gl: GlType){
       gl.glClear(Gl.COLOR_BUFFER_BIT | Gl.DEPTH_BUFFER_BIT)
