@@ -6,11 +6,20 @@ import org.callie.math.Vector3
 import org.callie.math.Axis
 import Axis.AxisValue
 
+trait Transformation{
+  def transformation: Matrix4
+  def normalTransformation: Matrix4
+}
+
 trait Joint {
   def name:String
 
   /** time s intervalu <0,1>  */
-  def apply(trans : Matrix4, normalTrans : Matrix4, time:Float)// : (Matrix4, Matrix4)
+  def apply(trans: Matrix4, normalTrans: Matrix4, time:Float)// : (Matrix4, Matrix4)
+
+  def apply(trans: Transformation, time:Float){
+    apply(trans.transformation, trans.normalTransformation, time)
+  }
 }
 
 trait JointIntr extends Joint{

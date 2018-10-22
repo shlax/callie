@@ -115,7 +115,7 @@ object MainDemo extends App{
       camCtrl(dt)
       Camera.display
 
-      joint(camCtrl.location, camCtrl.rotation, 1f)
+      joint(camCtrl, 1f)
 
       mapa.display
       char.display
