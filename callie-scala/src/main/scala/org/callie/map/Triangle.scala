@@ -18,9 +18,9 @@ class Triangle25(val a : Vector3, val b : Vector3, val c : Vector3, val near: Ar
   }
   
   def apply(p : Vector2) = {
-    val na = ((p.x-a.x)*ab.y)-(ab.x*(p.y-a.y))
-	  val nb = ((p.x-b.x)*bc.y)-(bc.x*(p.y-b.y))
-	  val nc = ((p.x-c.x)*ca.y)-(ca.x*(p.y-c.y))
+    val na = ((p.x-a.x)*ab.y)-(ab.x*(p.y-a.z))
+	  val nb = ((p.x-b.x)*bc.y)-(bc.x*(p.y-b.z))
+	  val nc = ((p.x-c.x)*ca.y)-(ca.x*(p.y-c.z))
 	  if( ( na > 0 && nb > 0 && nc > 0 ) || ( na < 0 && nb < 0 && nc < 0 ) ) Some(-(((ta*p.x)+(tc*p.y)+td)/tb))
 	  else None
   }

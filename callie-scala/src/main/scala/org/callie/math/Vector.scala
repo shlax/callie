@@ -1,6 +1,17 @@
 package org.callie.math
 
-case class Vector2(x : Float, y : Float)
+object Vector2{
+  def apply(): Vector2 = new Vector2(0f, 0f)
+  def apply(x: Float, y: Float): Vector2 = new Vector2(x, y)
+}
+
+class Vector2(var x : Float, var y : Float){
+
+  def len2 = x*x + y*y
+  def len = Math.sqrt(len2).asInstanceOf[Float]
+
+  override def toString = "Vector2("+x+", "+y+")"
+}
 
 trait Vector3{
 
@@ -82,6 +93,8 @@ trait Vector3{
 
 object Vector3{
   def apply() : Vector3 = new VectorVar(0, 0, 0)
+  def apply(v:Vector3) : Vector3 = new VectorVar(v.x, v.y, v.z)
+
   def apply(v : (Float, Float, Float)) : Vector3 = new VectorVar(v._1, v._2, v._3)
   def apply(x : Float, y : Float, z : Float) : Vector3 = new VectorVar(x, y, z)
 

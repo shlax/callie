@@ -1,9 +1,9 @@
 package org.callie
 
-import org.callie.input.{Camera, TrackingObject}
+import org.callie.control.MovingObject
+import org.callie.input.Camera
 import org.callie.jogl.{Gl, GlEventListener, GlType, JoglFrame}
 import org.callie.map.Map25
-import org.callie.math.{Matrix4, Vector3}
 import org.callie.model.{Mod, StaticObject, TextureGroup}
 import org.callie.ringing.{KeyFrameLoader, Node}
 
@@ -11,9 +11,8 @@ object MainDemo extends App{
 
   // https://stackoverflow.com/questions/18510701/glsl-how-to-show-normals-with-geometry-shader
   val vertex = """
-        |//#version 330 core
-        |//#version 300 es
-        |#version 400
+        |#version 300 es
+        |//#version 400
         |
         |layout(location = 0) in vec3 inPosition;
         |layout(location = 1) in vec2 inTextureCoord;
@@ -46,9 +45,8 @@ object MainDemo extends App{
       """.stripMargin.trim
 
     val fragment = """
-        |//#version 330 core
-        |//#version 300 es
-        |#version 400
+        |#version 300 es
+        |//#version 400
         |
         |uniform sampler2D textureDiffuse;
         |
@@ -64,7 +62,7 @@ object MainDemo extends App{
         |}
       """.stripMargin.trim
 
-  val map = Map25.load("/demo/map/floor.map")
+  val camCtrl = new MovingObject(Map25.load("/demo/map/floor.map"), 1.5f)
 
   JoglFrame(new GlEventListener {
     val (charObj, joint) = Node.load(this, Map("pSphere5" -> Mod.load("/demo/char/base.mod").scale(0.1f),
@@ -96,9 +94,7 @@ object MainDemo extends App{
 
       gl.glUseProgram(p)
       Camera.program(p)
-      Camera.lookAt(new TrackingObject {
-        override val position = Vector3(0, -1f, 0)
-      })
+      Camera.lookAt(camCtrl)
 
       gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
 
@@ -107,26 +103,19 @@ object MainDemo extends App{
       stand.apply()
     }
 
-    val zero1 = Matrix4()
-    val zero2 = Matrix4()
-
     var t = System.nanoTime()
 
     override def displayGL4(implicit gl: GlType){
       gl.glClear(Gl.COLOR_BUFFER_BIT | Gl.DEPTH_BUFFER_BIT)
-      Camera.display
 
       val q = System.nanoTime()
+      val dt:Float = ((q - t)/1e9d).asInstanceOf[Float]
+      t = q
 
-      var x:Float = (q - t)/1000000f
-      x = x / 2500f
+      camCtrl() = dt
+      Camera.display
 
-      if(x > 1) {
-        x -= 1; t = q
-        run1.apply()
-      }
-
-      joint.apply(zero1, zero2, x)
+      joint(camCtrl.location, camCtrl.rotation, 1f)
 
       mapa.display
       char.display
