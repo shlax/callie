@@ -112,7 +112,7 @@ object MainDemo extends App{
       val dt:Float = ((q - t)/1e9d).asInstanceOf[Float]
       t = q
 
-      camCtrl() = dt
+      camCtrl(dt)
       Camera.display
 
       joint(camCtrl.location, camCtrl.rotation, 1f)
