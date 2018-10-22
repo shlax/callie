@@ -36,10 +36,8 @@ object JoglFrame {
   frame.pack()
 
   val robot = new Robot()
-  glCanvas.addMouseWheelListener(new MouseWheelListener {
-    override def mouseWheelMoved(e: MouseWheelEvent){
-      Inputs.mouseZ += e.getWheelRotation
-    }
+  glCanvas.addMouseWheelListener((e: MouseWheelEvent) => {
+    Inputs.mouseZ += e.getWheelRotation
   })
 
   glCanvas.addMouseMotionListener(new MouseMotionAdapter {
@@ -60,15 +58,15 @@ object JoglFrame {
   glCanvas.addKeyListener(new KeyAdapter {
     override def keyPressed(e: KeyEvent){
       if(e.getKeyCode == KeyEvent.VK_W) Inputs.w = true
-      else if(e.getKeyCode == KeyEvent.VK_A) Inputs.a = true
-      else if(e.getKeyCode == KeyEvent.VK_S) Inputs.s = true
-      else if(e.getKeyCode == KeyEvent.VK_D) Inputs.d = true
+//      else if(e.getKeyCode == KeyEvent.VK_A) Inputs.a = true
+//      else if(e.getKeyCode == KeyEvent.VK_S) Inputs.s = true
+//      else if(e.getKeyCode == KeyEvent.VK_D) Inputs.d = true
     }
     override def keyReleased(e: KeyEvent){
       if(e.getKeyCode == KeyEvent.VK_W) Inputs.w = false
-      else if(e.getKeyCode == KeyEvent.VK_A) Inputs.a = false
-      else if(e.getKeyCode == KeyEvent.VK_S) Inputs.s = false
-      else if(e.getKeyCode == KeyEvent.VK_D) Inputs.d = false
+//      else if(e.getKeyCode == KeyEvent.VK_A) Inputs.a = false
+//      else if(e.getKeyCode == KeyEvent.VK_S) Inputs.s = false
+//      else if(e.getKeyCode == KeyEvent.VK_D) Inputs.d = false
     }
   })
 
