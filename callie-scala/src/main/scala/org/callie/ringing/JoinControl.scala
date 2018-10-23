@@ -8,7 +8,6 @@ trait JoinState extends Transformation{
   def apply(delta:Float)
 
   def state(): AnimState
-
 }
 
 object JoinControl{
@@ -79,7 +78,7 @@ class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame
           case AnimState.RUN => // RUN -> RUN
             if(next){
               runInd += 1
-              if(runInd > run.length) runInd = 0
+              if(runInd >= run.length) runInd = 0
 
               run(runInd).apply()
               acc = delta
