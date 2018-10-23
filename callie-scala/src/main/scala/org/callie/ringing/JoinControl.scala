@@ -42,6 +42,7 @@ object JoinControl{
 /** animacia nad JoinState */
 class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame]) {
   val interval = 0.2f
+  val invInter = 1f/interval
 
   var act = AnimState.STAND
   var acc = 0f
@@ -78,7 +79,7 @@ class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame
           case AnimState.RUN => // RUN -> RUN
             if(next){
               runInd += 1
-              if(runInd > run.size) runInd = 0
+              if(runInd > run.length) runInd = 0
 
               run(runInd).apply()
               acc = delta
@@ -86,7 +87,7 @@ class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame
         }
     }
 
-    j.apply(cntrl, acc)
+    j.apply(cntrl, acc * invInter)
     act = ns
 
   }
