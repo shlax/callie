@@ -5,7 +5,7 @@ import org.callie.input.Camera
 import org.callie.jogl.{Gl, GlEventListener, GlType, JoglFrame}
 import org.callie.map.Map25
 import org.callie.model.{Mod, StaticObject, TextureGroup}
-import org.callie.ringing.{KeyFrameLoader, Node}
+import org.callie.ringing.{JoinControl, KeyFrameLoader, Node}
 
 object MainDemo extends App{
 
@@ -65,22 +65,25 @@ object MainDemo extends App{
   val camCtrl = new MovingObject(Map25.load("/demo/map/floor.map"), 1.5f)
 
   JoglFrame(new GlEventListener {
+
     val (charObj, joint) = Node.load(this, Map("pSphere5" -> Mod.load("/demo/char/base.mod").scale(0.1f),
                                                "polySurface115" -> Mod.load("/demo/char/hair.mod").scale(0.1f)),
                                   "/demo/char/joints.mod", 0.1f)
 
-    val (standOff, stand) = KeyFrameLoader.load(joint, "/demo/char/stand.mod", 0.1f)
+    val stand = KeyFrameLoader.load(joint, "/demo/char/stand.mod", 0.1f)
 
-    val (run1Off, run1) = KeyFrameLoader.load(joint, "/demo/char/run1.mod", 0.1f)
-    val (run2Off, run2) = KeyFrameLoader.load(joint, "/demo/char/run2.mod", 0.1f)
-    val (run3Off, run3) = KeyFrameLoader.load(joint, "/demo/char/run3.mod", 0.1f)
-    val (run4Off, run4) = KeyFrameLoader.load(joint, "/demo/char/run4.mod", 0.1f)
+    val run1 = KeyFrameLoader.load(joint, "/demo/char/run1.mod", 0.1f)
+    val run2 = KeyFrameLoader.load(joint, "/demo/char/run2.mod", 0.1f)
+    val run3 = KeyFrameLoader.load(joint, "/demo/char/run3.mod", 0.1f)
+    val run4 = KeyFrameLoader.load(joint, "/demo/char/run4.mod", 0.1f)
 
     val char = new TextureGroup(this, "/demo/char/texture.png", charObj:_* )
 
     val mapa = new TextureGroup(this, "/demo/t.png",
       new StaticObject(this, Mod.load("/demo/map/floor.mod"))
     )
+
+    val anim = JoinControl(camCtrl, joint, stand, run1, run2, run3, run4)
 
     var t: Long = 0
 
@@ -102,8 +105,6 @@ object MainDemo extends App{
 
       //gl.glPolygonMode(Gl.FRONT_AND_BACK, Gl.LINE)
 
-      stand.apply()
-
       t = System.nanoTime()
     }
 
@@ -114,10 +115,8 @@ object MainDemo extends App{
       val dt:Float = ((q - t)/1e9d).asInstanceOf[Float]
       t = q
 
-      camCtrl(dt)
+      anim.apply(dt)
       Camera.display(gl)
-
-      joint(camCtrl, 1f)
 
       mapa.display(gl)
       char.display(gl)

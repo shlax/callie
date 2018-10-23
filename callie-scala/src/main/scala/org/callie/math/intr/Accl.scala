@@ -1,33 +1,70 @@
 package org.callie.math.intr
 
+/*
+    v1 = v0 + a1/2
+    v2 = v1 + a2/2
+
+    s1 = v0/2 + a1/8
+    s2 = s1 + v1/2 + a2/8
+*/
 class Accl extends Intr{
-  val epsilon = 0.000001f
+  var lastS = 0f
+  var lastV = 0f
+
+  var v0 = 0f
+  var v1 = 0f
+
+  var a1 = 0f
+  var a2 = 0f
+
+  var s0 = 0f
+  var s1 = 0f
 
   var active = false
-//
-  var start = 0f
-  var end = 0f
 
-  var lastValue = 0f
+  override def update(value: Float, outV:Boolean = true, rescale:Float = 1f){
+    s0 += lastS
 
-  override def update(value: Float, rescale:Float) {
-    //  koncim kde som zacinal                &  nemam ziadnu pociatocnu rychlost
-    if (Math.abs(value - lastValue) < epsilon) { // && v0 < epsilon
+    val s2 = value - s0
+
+    if(Math.abs(s2) < 1e-5f && Math.abs(lastV) < 1e-5f ){
       active = false
 
-      lastValue = value; // reset value
-    } else {
+      s0 = value
+
+      lastS = 0f
+      lastV = 0f
+    }else {
       active = true
-      start = lastValue
-      end = value - start
+
+      val v2 = if(outV) s2 else 0f
+
+      v0 = lastV * rescale
+
+      a1 = 4 * s2 - 3 * v0 - v2
+      v1 = v0 + a1 / 2
+
+      a2 = 2 * v2 - 2 * v1
+
+      s1 = v0 / 2 + a1 / 8
     }
   }
 
   override def apply(t: Float): Float = {
-    if (!active) return this.lastValue
+    if(!active) return s0
 
-    lastValue = start + (t * end)
-    lastValue
+    if(t <= 0.5f){
+      val at = a1 * t
+      lastV = v0 + at
+      lastS = v0 * t + (at * t)/2
+    }else{
+      val dt = t - 0.5f
+      val adt = a2 * dt
+      lastV = v1 + adt
+      lastS = v1 * dt + (adt * dt)/2 + s1
+    }
+
+    s0 + lastS
   }
   
 }

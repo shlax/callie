@@ -3,9 +3,19 @@ package org.callie.ringing
 import org.callie.math.intr.Intr
 
 class KeyValue(i:Intr, v:Float){
-  def apply(rescale:Float){ i.update(v, rescale) }
+
+  def apply(outV:Boolean, rescale:Float){
+    i.update(v, outV, rescale)
+  }
+
 }
 
 class KeyFrame(intrs:Array[KeyValue]) {
-  def apply(rescale:Float = 1f){ for (j <- intrs) j(rescale) }
+
+  def add(v:KeyValue*) = new KeyFrame(v ++: intrs)
+
+  def apply(outV:Boolean = true, rescale:Float = 1f){
+    for (j <- intrs) j(outV, rescale)
+  }
+
 }

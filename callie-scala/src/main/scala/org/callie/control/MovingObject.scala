@@ -3,9 +3,9 @@ package org.callie.control
 import org.callie.input.{Camera, Inputs, TrackingObject}
 import org.callie.map.Map25
 import org.callie.math.{Angle, Matrix4, Vector2, Vector3}
-import org.callie.ringing.Transformation
+import org.callie.ringing.{AnimState, JoinState}
 
-class MovingObject(val map:Map25, height:Float, val pos2D: Vector2 = Vector2(), lookFrom:Float = 0f) extends TrackingObject with Transformation {
+class MovingObject(val map:Map25, height:Float, val pos2D: Vector2 = Vector2(), lookFrom:Float = 0f) extends TrackingObject with JoinState{
   val epsilon = 10f
   val angle = Angle(lookFrom)
 
@@ -36,7 +36,7 @@ class MovingObject(val map:Map25, height:Float, val pos2D: Vector2 = Vector2(), 
     position.z *= -1f
   }
 
-  def apply(delta:Float){
+  override def apply(delta:Float){
     if(Inputs.w){ // accelerate
       if(angle.rotateTo(Camera.angY, delta * epsilon)){
         normalTransformation.rotY(Angle.PI1 - angle())
@@ -69,4 +69,8 @@ class MovingObject(val map:Map25, height:Float, val pos2D: Vector2 = Vector2(), 
     }
 
   }
+
+  // JoinState
+  override def state() = if(speed > 0f) AnimState.RUN else AnimState.STAND
+
 }
