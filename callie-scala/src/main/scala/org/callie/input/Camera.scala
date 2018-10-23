@@ -19,10 +19,10 @@ object Camera {
   var viewMatrix: Int = _
   var normalMatrix: Int = _
 
-  def program(id:Int, view:String="viewMatrix", normal:String="normalMatrix")(implicit gl:GlType){
+  def program(gl:GlType, id:Int, view:String="viewMatrix", normal:String="normalMatrix"){
     viewMatrix = gl.glGetUniformLocation(id, view)
     normalMatrix = gl.glGetUniformLocation(id, normal)
-    display
+    display(gl)
   }
 
   // http://gamedev.stackexchange.com/questions/56609/how-to-create-a-projection-matrix-in-opengl-es-2-0
@@ -91,7 +91,7 @@ object Camera {
   //val normAr = new Array[Float](16)
 
   // mat4 normalMatrix = transpose(inverse(modelView));
-  def display(implicit gl:GlType){
+  def display(gl:GlType){
     off.z += Inputs.zDiff() * 0.25f
     angX() += Inputs.yDiff() * 0.025f
     angY() += Inputs.xDiff() * 0.025f

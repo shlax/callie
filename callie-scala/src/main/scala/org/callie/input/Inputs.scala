@@ -2,10 +2,11 @@ package org.callie.input
 
 object Inputs{
 
-  @volatile var w = false
-//  @volatile var a = false
-//  @volatile var s = false
-//  @volatile var d = false
+  var w = false
+
+  var mouseX = 0
+  var mouseY = 0
+  var mouseZ = 0
 
   def xDiff() = {
     val x = mouseX
@@ -26,7 +27,4 @@ object Inputs{
     z
   }
 
-  @volatile var mouseX = 0
-  @volatile var mouseY = 0
-  @volatile var mouseZ = 0
 }

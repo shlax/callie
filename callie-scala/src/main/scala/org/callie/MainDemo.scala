@@ -84,18 +84,18 @@ object MainDemo extends App{
 
     var t: Long = 0
 
-    override def initGL4(implicit gl: GlType){
+    override def initGL4(gl: GlType){
       gl.glEnable(Gl.DEPTH_TEST)
       gl.glDepthMask(true)
 
-      val vertexSchader = createShader(Gl.VERTEX_SHADER, vertex)
-      val p = createProgram(vertexSchader, createShader(Gl.FRAGMENT_SHADER, fragment))
+      val vertexSchader = createShader(gl, Gl.VERTEX_SHADER, vertex)
+      val p = createProgram(gl, vertexSchader, createShader(gl, Gl.FRAGMENT_SHADER, fragment))
 
-      mapa.init
-      char.init
+      mapa.init(gl)
+      char.init(gl)
 
       gl.glUseProgram(p)
-      Camera.program(p)
+      Camera.program(gl, p)
       Camera.lookAt(camCtrl)
 
       gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
@@ -107,7 +107,7 @@ object MainDemo extends App{
       t = System.nanoTime()
     }
 
-    override def displayGL4(implicit gl: GlType){
+    override def displayGL4(gl: GlType){
       gl.glClear(Gl.COLOR_BUFFER_BIT | Gl.DEPTH_BUFFER_BIT)
 
       val q = System.nanoTime()
@@ -115,12 +115,12 @@ object MainDemo extends App{
       t = q
 
       camCtrl(dt)
-      Camera.display
+      Camera.display(gl)
 
       joint(camCtrl, 1f)
 
-      mapa.display
-      char.display
+      mapa.display(gl)
+      char.display(gl)
     }
 
   })

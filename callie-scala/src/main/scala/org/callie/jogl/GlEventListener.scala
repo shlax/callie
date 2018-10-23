@@ -10,13 +10,13 @@ trait GlEventListener extends GLEventListener{
     initGL4(glProfile(drawable))
   }
 
-  def initGL4(implicit gl:GlType)
+  def initGL4(gl:GlType)
 
   override def display(drawable: GLAutoDrawable) {
     displayGL4(glProfile(drawable))
   }
 
-  def displayGL4(implicit gl:GlType)
+  def displayGL4(gl:GlType)
 
   override def reshape(drawable: GLAutoDrawable, x: Int, y: Int, width: Int, height: Int) {
     val gl = glProfile(drawable)
@@ -41,7 +41,7 @@ trait GlEventListener extends GLEventListener{
   // ********************************************************************************
 
   /** get pointer */
-  def &(f:(Array[Int]) => Unit ) = {
+  def &(f:(Array[Int]) => Unit) = {
     val tmp = new Array[Int](1)
     f(tmp)
     tmp(0)
@@ -49,40 +49,40 @@ trait GlEventListener extends GLEventListener{
 
   // implicit Gl
 
-  def createTexture(f: =>Unit)(implicit gl : GlType) = {
+  def createTexture(gl : GlType)(f: => Unit) = {
     val texId = &(gl.glGenTextures(1, _, 0))
-    bindTexture(texId)(f)
+    bindTexture(gl, texId)(f)
     texId
   }
   
-  def bindTexture(tex:Int, ind:Int = Gl.TEXTURE0)(f: =>Unit)(implicit gl : GlType){
+  def bindTexture(gl : GlType, tex:Int, ind:Int = Gl.TEXTURE0)(f: =>Unit){
     gl.glActiveTexture(ind)
     gl.glBindTexture(Gl.TEXTURE_2D, tex)
     f
     gl.glBindTexture(Gl.TEXTURE_2D, 0)
   }
   
-  def createVertexArray(f: =>Unit)(implicit gl : GlType) = {
+  def createVertexArray(gl : GlType)(f: =>Unit) = {
     val vao = &(gl.glGenVertexArrays(1, _, 0))
     disposeVao = vao :: disposeVao
-    bindVertexArray(vao)(f)
+    bindVertexArray(gl, vao)(f)
     vao
   }
 
-  def bindVertexArray(array:Int)(f: =>Unit)(implicit gl : GlType){
+  def bindVertexArray(gl : GlType, array:Int)(f: => Unit){
     gl.glBindVertexArray(array)
     f
     gl.glBindVertexArray(0)
   }
 
-  def createBuffer(target:Int)(f: =>Unit)(implicit gl : GlType) = {
+  def createBuffer(gl : GlType, target:Int)(f: => Unit) = {
     val vbo = &(gl.glGenBuffers(1, _, 0))
     disposeVbo = vbo :: disposeVbo
-    bindBuffer(target, vbo)(f)
+    bindBuffer(gl, target, vbo)(f)
     vbo
   }
 
-  def bindBuffer(target:Int, buffer:Int)(f: =>Unit)(implicit gl : GlType){
+  def bindBuffer(gl : GlType, target:Int, buffer:Int)(f: => Unit){
     gl.glBindBuffer(target, buffer)
     f
     gl.glBindBuffer(target, 0)
@@ -90,7 +90,7 @@ trait GlEventListener extends GLEventListener{
 
   // --------------------------------------------------------------------------------
 
-  def createShader(tpe:Int, source:String)(implicit gl:GlType) = {
+  def createShader(gl:GlType, tpe:Int, source:String) = {
     val tmp = Array(0)
     val s = gl.glCreateShader(tpe) // VERTEX/FRAGMENT/GEOMETRY_SHADER
     gl.glShaderSource(s, 1, Array(source), null)
@@ -107,7 +107,7 @@ trait GlEventListener extends GLEventListener{
     s
   }
 
-  def createProgram(shaders:Int*)(implicit gl:GlType) = {
+  def createProgram(gl:GlType, shaders:Int*) = {
     val p = gl.glCreateProgram()
     disposeProgram = p :: disposeProgram
 

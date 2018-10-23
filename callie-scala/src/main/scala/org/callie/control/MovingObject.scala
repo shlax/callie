@@ -9,8 +9,8 @@ class MovingObject(val map:Map25, height:Float, val pos2D: Vector2 = Vector2(), 
   val epsilon = 10f
   val angle = Angle(lookFrom)
 
-  val acceleration = 0.3f
-  val deAcceleration = 0.7f
+  val acceleration = 5f
+  val deAcceleration = 10f
 
   val vMax = 3f
   var speed = 0f
@@ -53,8 +53,9 @@ class MovingObject(val map:Map25, height:Float, val pos2D: Vector2 = Vector2(), 
     if(speed > 0f) {
       val rot = angle()
 
-      pos2D.x += speed * Math.sin(rot).asInstanceOf[Float]
-      pos2D.y -= speed * Math.cos(rot).asInstanceOf[Float]
+      val sd = speed * delta
+      pos2D.x += sd * Math.sin(rot).asInstanceOf[Float]
+      pos2D.y -= sd * Math.cos(rot).asInstanceOf[Float]
 
       val z = map.apply(pos2D)
 
