@@ -1,56 +1,16 @@
 package org.callie
 
-import com.jogamp.common.nio.Buffers
 import org.callie.control.MovingObject
 import org.callie.input.Camera
-import org.callie.jogl.{Gl, GlEventListener, GlType, JoglFrame}
+import org.callie.jogl.{Gl, GlEventListener, GlType, JoglFrame, glslVersion}
 import org.callie.map.Map25
 import org.callie.model.{Mod, StaticObject, TextureGroup}
 import org.callie.ringing.{JoinControl, KeyFrameLoader, Node}
 
 object MainDemo extends App{
 
-  val indices = Array(0, 1, 2,
-                      2, 3, 0)
-
-  //                       Positions           Texture
-  val quadVertices = Array(-1f,  1f, 0.0f, 0.0f, 1.0f,
-                           -1f, -1f, 0.0f, 0.0f, 0.0f,
-                            1f, -1f, 0.0f, 1.0f, 0.0f,
-                            1f,  1f, 0.0f, 1.0f, 1.0f)
-
-  val passVertex = """
-      |#version 300 es
-      |
-      |layout(location = 0) in vec3 inPosition;
-      |layout(location = 1) in vec2 inTextureCoord;
-      |
-      |out vec2 texCoord;
-      |
-      |void main() {
-      |    texCoord = inTextureCoord;
-      |    gl_Position = vec4(inPosition, 1.0);
-      |}
-    """.stripMargin.trim
-
-  val passFragment = """
-      |#version 300 es
-      |
-      |uniform sampler2D inTexture;
-      |
-      |in highp vec2 texCoord;
-      |
-      |out highp vec4 fragColor;
-      |
-      |void main(){
-      |    fragColor = texture(inTexture, texCoord);
-      |}
-    """.stripMargin.trim
-
   // https://stackoverflow.com/questions/18510701/glsl-how-to-show-normals-with-geometry-shader
-  val vertex = """
-        |#version 300 es
-        |//#version 400
+  val vertex = s""" #version $glslVersion
         |
         |layout(location = 0) in vec3 inPosition;
         |layout(location = 1) in vec2 inTextureCoord;
@@ -79,12 +39,10 @@ object MainDemo extends App{
         |
         |  lightIntensity = 0.2 + (max(dot((normalMatrix * vec4(inNormal,1)).xyz, lightDirection), 0.0) * 0.8);
         |  texCoord = inTextureCoord;
-        |}
-      """.stripMargin.trim
+        |
+        |} """.stripMargin.trim
 
-    val fragment = """
-        |#version 300 es
-        |//#version 400
+    val fragment = s""" #version $glslVersion
         |
         |uniform sampler2D textureDiffuse;
         |
@@ -97,8 +55,8 @@ object MainDemo extends App{
         |  highp vec4 c = texture(textureDiffuse, texCoord);
         |  if (c.w < 0.5) discard;
         |  fragColor = c * lightIntensity; // vec4(lightIntensity,lightIntensity, lightIntensity, 1);
-        |}
-      """.stripMargin.trim
+        |
+        |} """.stripMargin.trim
 
   val camCtrl = new MovingObject(Map25.load("/demo/map/floor.map"), 1.5f)
 
@@ -125,64 +83,11 @@ object MainDemo extends App{
 
     var t: Long = 0
 
-    var prog:Int = _
-
-    var fbo: Int = _
-    var fboTex: Int = _
-
-    var progQuad:Int = _
-    var dataQuad:Int = _
-    var dataQuadInd:Int = _
-
     override def initGL4(gl: GlType){
-      fbo = createFrameBuffer(gl){
-
-        fboTex = createTexture(gl){
-          gl.glTexImage2D(Gl.TEXTURE_2D, 0, Gl.RGB, 1280, 720, 0, Gl.RGB, Gl.UNSIGNED_BYTE, null)
-
-          gl.glTexParameteri(Gl.TEXTURE_2D, Gl.TEXTURE_MAG_FILTER, Gl.NEAREST)
-          gl.glTexParameteri(Gl.TEXTURE_2D, Gl.TEXTURE_MIN_FILTER, Gl.NEAREST)
-        }
-
-        gl.glFramebufferTexture2D(Gl.FRAMEBUFFER, Gl.COLOR_ATTACHMENT0, Gl.TEXTURE_2D, fboTex, 0)
-
-        val rbo = createRenderbuffer(gl){
-          gl.glRenderbufferStorage(Gl.RENDERBUFFER, Gl.DEPTH_COMPONENT32F, 1280, 720)
-        }
-
-        gl.glFramebufferRenderbuffer(Gl.FRAMEBUFFER, Gl.DEPTH_ATTACHMENT, Gl.RENDERBUFFER, rbo)
-
-      }
 
       val vertexSchader = createShader(gl, Gl.VERTEX_SHADER, vertex)
       val fragmentSchader = createShader(gl, Gl.FRAGMENT_SHADER, fragment)
-      prog = createProgram(gl, vertexSchader, fragmentSchader)
-
-      // quad >>
-
-      val vertexSchaderQuad = createShader(gl, Gl.VERTEX_SHADER, passVertex)
-      val fragmentSchaderQuad = createShader(gl, Gl.FRAGMENT_SHADER, passFragment)
-      progQuad = createProgram(gl, vertexSchaderQuad, fragmentSchaderQuad)
-
-      dataQuad = createVertexArray(gl){
-        gl.glEnableVertexAttribArray(0)
-        gl.glEnableVertexAttribArray(1)
-
-        createBuffer(gl, Gl.ARRAY_BUFFER){
-          import org.callie.jogl.buffers._
-          quadVertices.asBuffer(gl.glBufferData(Gl.ARRAY_BUFFER, _, _, Gl.STATIC_DRAW))
-
-          gl.glVertexAttribPointer(0, 3, Gl.FLOAT, false, (3+2)*Buffers.SIZEOF_FLOAT, 0*Buffers.SIZEOF_FLOAT)
-          gl.glVertexAttribPointer(1, 2, Gl.FLOAT, false, (3+2)*Buffers.SIZEOF_FLOAT, 3*Buffers.SIZEOF_FLOAT)
-        }
-      }
-
-      dataQuadInd = createBuffer(gl, Gl.ELEMENT_ARRAY_BUFFER){
-        import org.callie.jogl.buffers._
-        indices.asBuffer(gl.glBufferData(Gl.ELEMENT_ARRAY_BUFFER, _, _, Gl.STATIC_DRAW))
-      }
-
-      // << quad
+      val prog = createProgram(gl, vertexSchader, fragmentSchader)
 
       mapa.init(gl)
       char.init(gl)
@@ -190,6 +95,7 @@ object MainDemo extends App{
       Camera.program(gl, prog)
       Camera.lookAt(camCtrl)
 
+      gl.glUseProgram(prog)
       gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
       gl.glEnable(Gl.DEPTH_TEST)
 
@@ -199,34 +105,17 @@ object MainDemo extends App{
     }
 
     override def displayGL4(gl: GlType){
+      gl.glClear(Gl.COLOR_BUFFER_BIT | Gl.DEPTH_BUFFER_BIT)
+
       val tmp = System.nanoTime()
       val dt: Float = ((tmp - t) / 1e9d).asInstanceOf[Float]
       t = tmp
 
-      bindFrameBuffer(gl, fbo) {
-        gl.glClear(Gl.COLOR_BUFFER_BIT | Gl.DEPTH_BUFFER_BIT)
+      anim.apply(dt)
+      Camera.display(gl)
 
-        gl.glUseProgram(prog)
-
-        anim.apply(dt)
-        Camera.display(gl)
-
-        mapa.display(gl)
-        char.display(gl)
-      }
-
-      gl.glClear(Gl.COLOR_BUFFER_BIT | Gl.DEPTH_BUFFER_BIT)
-
-      gl.glUseProgram(progQuad)
-      gl.glActiveTexture(Gl.TEXTURE0)
-      bindTexture(gl, fboTex){
-        bindVertexArray(gl, dataQuad){
-          bindBuffer(gl, Gl.ELEMENT_ARRAY_BUFFER, dataQuadInd) {
-            gl.glDrawElements(Gl.TRIANGLES, indices.length, Gl.UNSIGNED_INT, 0)
-          }
-        }
-      }
-
+      mapa.display(gl)
+      char.display(gl)
     }
 
   })

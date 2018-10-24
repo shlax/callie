@@ -4,7 +4,6 @@ import org.callie.math.Matrix4
 import org.callie.math.intr.Intr
 import org.callie.math.Vector3
 import org.callie.math.Axis
-import Axis.AxisValue
 
 trait Transformation{
   def transformation: Matrix4
@@ -84,7 +83,7 @@ class LinearJoint(override val name:String,
 
   import Axis._
 
-  def value(m:Axis.Value) = m match {
+  def value(m:Axis) = m match {
     case X => parent.rotX
     case Y => parent.rotY
     case Z => parent.rotZ

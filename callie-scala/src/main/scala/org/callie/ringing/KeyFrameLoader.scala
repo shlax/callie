@@ -1,6 +1,6 @@
 package org.callie.ringing
 
-import org.callie.math.Vector3
+import org.callie.math.{Axis, Vector3}
 
 import scala.util.parsing.combinator.RegexParsers
 import scala.collection.mutable
@@ -15,9 +15,9 @@ object KeyFrameLoader extends RegexParsers {
 
       val conv = (Math.PI/180d).asInstanceOf[Float]
 
-      l += new KeyValue(ji.ax, conv * angles._1)
-      l += new KeyValue(ji.ay, conv * angles._2)
-      l += new KeyValue(ji.az, conv * angles._3)
+      l += new KeyValue(nm, Axis.X, ji.ax, conv * angles._1)
+      l += new KeyValue(nm, Axis.Y, ji.ay, conv * angles._2)
+      l += new KeyValue(nm, Axis.Z, ji.az, conv * angles._3)
 
       for(c <- childs){
         val pj = j.asInstanceOf[JointTrav]

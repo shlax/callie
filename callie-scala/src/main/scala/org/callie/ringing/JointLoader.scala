@@ -6,10 +6,11 @@ import org.callie.math.intr.Accl
 import org.callie.jogl.GlEventListener
 import org.callie.model.{Mod, MorfingObject}
 import org.callie.math.Axis
-import Axis.AxisValue
 
 import scala.collection.mutable
 import scala.io.Source
+
+case class AxisValue(axis:Axis, value:Float)
 
 abstract class Node(ind:Map[String,List[Int]]){
 
@@ -93,7 +94,7 @@ object Node extends RegexParsers {
     var iz = AxisValue(Axis.Z, - q._1._1._2._3)
 
     for(w <- q._1._2){
-      val to = Axis(w._2)
+      val to = Axis.apply(w._2)
       w._1 match {
         case "x" =>
           ix = AxisValue(to, ix.value)

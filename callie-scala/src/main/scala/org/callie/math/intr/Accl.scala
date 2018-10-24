@@ -20,38 +20,38 @@ class Accl extends Intr{
   var s0 = 0f
   var s1 = 0f
 
-  var active = false
+  //var active = false
 
-  override def update(value: Float, outV:Boolean = true, rescale:Float = 1f){
+  override def update(value: Float, nextValue:Float, rescale:Float = 1f){
     s0 += lastS
 
     val s2 = value - s0
 
-    if(Math.abs(s2) < 1e-4f && Math.abs(lastV) < 1e-4f ){
+    /* if(Math.abs(s2) < 1e-4f && Math.abs(lastV) < 1e-4f ){
       active = false
 
       s0 = value
 
       lastS = 0f
       lastV = 0f
-    }else {
-      active = true
+    }else { */
+      // active = true
 
-      val v2 = if(outV) s2 else 0f
+    val v2 = if(nextValue - value != 0f && Math.signum(s2) == Math.signum(nextValue - s0)) nextValue - s0 else 0f
 
-      v0 = lastV * rescale
+    v0 = lastV * rescale
 
-      a1 = 4 * s2 - 3 * v0 - v2
-      v1 = v0 + a1 / 2
+    a1 = 4 * s2 - 3 * v0 - v2
+    v1 = v0 + a1 / 2
 
-      a2 = 2 * v2 - 2 * v1
+    a2 = 2 * v2 - 2 * v1
 
-      s1 = v0 / 2 + a1 / 8
-    }
+    s1 = v0 / 2 + a1 / 8
+    // }
   }
 
   override def apply(t: Float): Float = {
-    if(!active) return s0
+    // if(!active) return s0
 
     if(t <= 0.5f){
       val at = a1 * t

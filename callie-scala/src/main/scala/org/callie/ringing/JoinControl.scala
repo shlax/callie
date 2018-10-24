@@ -1,6 +1,6 @@
 package org.callie.ringing
 
-import org.callie.math.Vector3
+import org.callie.math.{Axis, Vector3}
 import org.callie.math.intr.Accl
 
 trait JoinState extends Transformation{
@@ -20,22 +20,27 @@ object JoinControl{
     val ay = new Accl()
     val az = new Accl()
 
+    val name = "main"
     val zero = stand._1
     def remap(i: VecFrame) = {
       val off = i._1
-      val vx = new KeyValue(ax, off.x - zero.x)
-      val vy = new KeyValue(ay, off.y - zero.y)
-      val vz = new KeyValue(az, off.z - zero.z)
+      val vx = new KeyValue(name, Axis.X ,ax, off.x - zero.x)
+      val vy = new KeyValue(name, Axis.Y ,ay, off.y - zero.y)
+      val vz = new KeyValue(name, Axis.Z ,az, off.z - zero.z)
       i._2.add(vx, vy, vz)
     }
 
     val s = remap(stand)
-    s.apply(false)
+    s.apply()
 
     val oj = new OffsetJoint(ax, ay, az, j)
     oj.apply(cntrl, 1f)
 
-    new JoinControl(cntrl, oj, s, run.map(remap).toArray)
+    val runCycle = run.map(remap).toArray
+    for(i <- 0 until (runCycle.length - 1)) runCycle(i).next(runCycle(i+1))
+    runCycle.last.next(runCycle.head)
+
+    new JoinControl(cntrl, oj, s, runCycle)
   }
 
 }
@@ -62,7 +67,7 @@ class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame
         ns match {
           case AnimState.STAND => // STAND -> STAND
             if(next){
-              stand.apply(false)
+              stand.apply()
               acc = delta
             }
 
@@ -76,7 +81,7 @@ class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame
       case AnimState.RUN =>
         ns match {
           case AnimState.STAND => //  RUN -> STAND
-            stand.apply(false)
+            stand.apply()
             acc = delta
 
           case AnimState.RUN => // RUN -> RUN
