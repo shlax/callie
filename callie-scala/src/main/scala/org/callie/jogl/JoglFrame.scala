@@ -5,7 +5,7 @@ import java.awt.event._
 
 import com.jogamp.opengl.{GLCapabilities, GLProfile}
 import com.jogamp.opengl.awt.GLCanvas
-import com.jogamp.opengl.util.FPSAnimator
+import com.jogamp.opengl.util.Animator
 import org.callie.input.Inputs
 
 object JoglFrame {
@@ -31,7 +31,7 @@ object JoglFrame {
 //  capabilities.setSampleBuffers(true) // FSAA
 //  capabilities.setNumSamples(4)
   val glCanvas = new GLCanvas(capabilities)
-  val animator = new FPSAnimator(glCanvas, 60)
+  val animator = new Animator(glCanvas)
   
   glCanvas.setSize(1280, 720)
   frame.setLocation(100, 100)
