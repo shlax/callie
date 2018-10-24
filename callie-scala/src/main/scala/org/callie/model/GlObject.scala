@@ -40,7 +40,7 @@ class ObjectGroup(objs:GlObject*) extends GlObject{
   
 }
 
-class TextureGroup(ev: GlEventListener, image:String, objs:GlObject*) extends ObjectGroup(objs:_*){
+class TextureGroup(ev: GlEventListener, image:String, ind:Int, objs:GlObject*) extends ObjectGroup(objs:_*){
   
   var texId : Int = _
     
@@ -65,6 +65,7 @@ class TextureGroup(ev: GlEventListener, image:String, objs:GlObject*) extends Ob
   }
   
   override def display(gl:GlType){
+    gl.glActiveTexture(ind)
     ev.bindTexture(gl, texId){
       super.display(gl)
     }

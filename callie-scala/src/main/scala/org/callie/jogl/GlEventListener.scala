@@ -27,6 +27,8 @@ trait GlEventListener extends GLEventListener{
   var disposeVbo : List[Int] = Nil
   var disposeVao : List[Int] = Nil
   var disposeProgram : List[Int] = Nil
+  var disposeFbo : List[Int] = Nil
+  var disposeRbo : List[Int] = Nil
 
   override def dispose(drawable: GLAutoDrawable) {
     val gl = glProfile(drawable)
@@ -34,6 +36,8 @@ trait GlEventListener extends GLEventListener{
     if(disposeVbo.nonEmpty) gl.glDeleteBuffers(disposeVbo.size, disposeVbo.toArray, 0)
     if(disposeVao.nonEmpty) gl.glDeleteVertexArrays(disposeVao.size, disposeVao.toArray, 0)
     if(disposeTestures.nonEmpty) gl.glDeleteTextures(disposeTestures.size, disposeTestures.toArray, 0)
+    if(disposeFbo.nonEmpty) gl.glDeleteFramebuffers(disposeFbo.size, disposeFbo.toArray, 0)
+    if(disposeRbo.nonEmpty) gl.glDeleteRenderbuffers(disposeRbo.size, disposeRbo.toArray, 0)
 
     for(p <- disposeProgram) gl.glDeleteProgram(p)
   }
@@ -55,8 +59,7 @@ trait GlEventListener extends GLEventListener{
     texId
   }
   
-  def bindTexture(gl : GlType, tex:Int, ind:Int = Gl.TEXTURE0)(f: =>Unit){
-    gl.glActiveTexture(ind)
+  def bindTexture(gl : GlType, tex:Int)(f: =>Unit){
     gl.glBindTexture(Gl.TEXTURE_2D, tex)
     f
     gl.glBindTexture(Gl.TEXTURE_2D, 0)
@@ -86,6 +89,38 @@ trait GlEventListener extends GLEventListener{
     gl.glBindBuffer(target, buffer)
     f
     gl.glBindBuffer(target, 0)
+  }
+
+  // --------------------------------------------------------------------------------
+
+  def createFrameBuffer(gl : GlType)(f: => Unit)= {
+    val fbo = &(gl.glGenFramebuffers(1, _, 0))
+    disposeFbo = fbo :: disposeFbo
+    bindFrameBuffer(gl, fbo)(f)
+    val ok = gl.glCheckFramebufferStatus(Gl.FRAMEBUFFER)
+    if(ok != Gl.FRAMEBUFFER_COMPLETE){
+      throw new RuntimeException("createFrameBuffer: "+ok)
+    }
+    fbo
+  }
+
+  def bindFrameBuffer(gl : GlType, buffer:Int)(f: => Unit){
+    gl.glBindFramebuffer(Gl.FRAMEBUFFER, buffer)
+    f
+    gl.glBindFramebuffer(Gl.FRAMEBUFFER, 0)
+  }
+
+  def createRenderbuffer(gl : GlType)(f: => Unit)= {
+    val rbo = &(gl.glGenRenderbuffers(1, _, 0))
+    disposeRbo = rbo :: disposeRbo
+    bindRenderbuffer(gl, rbo)(f)
+    rbo
+  }
+
+  def bindRenderbuffer(gl : GlType, buffer:Int)(f: => Unit){
+    gl.glBindRenderbuffer(Gl.RENDERBUFFER, buffer)
+    f
+    gl.glBindRenderbuffer(Gl.RENDERBUFFER, 0)
   }
 
   // --------------------------------------------------------------------------------

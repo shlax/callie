@@ -1,8 +1,9 @@
 package org.callie.jogl
 
-import java.awt.{Robot, Frame, BorderLayout}
+import java.awt.{BorderLayout, Cursor, Frame, Robot}
 import java.awt.event._
-import com.jogamp.opengl.{GLProfile, GLCapabilities}
+
+import com.jogamp.opengl.{GLCapabilities, GLProfile}
 import com.jogamp.opengl.awt.GLCanvas
 import com.jogamp.opengl.util.FPSAnimator
 import org.callie.input.Inputs
@@ -10,7 +11,7 @@ import org.callie.input.Inputs
 object JoglFrame {
 
   val frame = new Frame()
-  frame.setCursor(Frame.CROSSHAIR_CURSOR)
+  frame.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR))
 
   frame.addWindowListener(new WindowAdapter(){
     override def windowClosing(e:WindowEvent){
@@ -26,8 +27,8 @@ object JoglFrame {
   //val profile = GLProfile.get(GLProfile.GLES3)
   val profile = GLProfile.get(glProfile)
   val capabilities = new GLCapabilities(profile)
-  capabilities.setSampleBuffers(true) // FSAA
-  capabilities.setNumSamples(4)
+//  capabilities.setSampleBuffers(true) // FSAA
+//  capabilities.setNumSamples(4)
   val glCanvas = new GLCanvas(capabilities)
   val animator = new FPSAnimator(glCanvas, 60)
   
