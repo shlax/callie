@@ -27,7 +27,7 @@ object JoglFrame {
   capabilities.setSampleBuffers(true) // FSAA
   capabilities.setNumSamples(4)
   val glCanvas = new GLCanvas(capabilities)
-  val animator = new FPSAnimator(glCanvas, 60, true)
+  val animator = new FPSAnimator(glCanvas, 60)
   
   glCanvas.setSize(1280, 720)
   frame.setLocation(100, 100)
