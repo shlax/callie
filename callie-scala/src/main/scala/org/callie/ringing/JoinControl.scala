@@ -55,24 +55,26 @@ class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame
     val next = acc > interval
 
     val ns = cntrl.state()
-    ns match {
-      case AnimState.STAND =>  // to stand
-        act match {
+    act match {
+      case AnimState.STAND =>
+        ns match {
           case AnimState.STAND => // STAND -> STAND
             if(next){
               stand.apply()
               acc = delta
             }
 
-          case AnimState.RUN => // RUN -> STAND
-            stand.apply()
-            acc = delta
-        }
-      case AnimState.RUN => // to run
-        act match {
-          case AnimState.STAND => // STAND -> RUN
+          case AnimState.RUN => // STAND -> RUN
             runInd = 0
             run(runInd).apply()
+            acc = delta
+
+        }
+
+      case AnimState.RUN =>
+        ns match {
+          case AnimState.STAND => //  RUN -> STAND
+            stand.apply()
             acc = delta
 
           case AnimState.RUN => // RUN -> RUN

@@ -71,6 +71,6 @@ class MovingObject(val map:Map25, height:Float, val pos2D: Vector2 = Vector2(), 
   }
 
   // JoinState
-  override def state() = if(speed > 0f) AnimState.RUN else AnimState.STAND
+  override def state() = if(Inputs.w && speed > 0f) AnimState.RUN else AnimState.STAND
 
 }
