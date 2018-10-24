@@ -96,6 +96,7 @@ object Camera {
     angX() += Inputs.yDiff() * 0.025f
     angY() += Inputs.xDiff() * 0.025f
 
+    //modMat.rotX(angX()).mul(tmp.rotY((Math.PI/2d).asInstanceOf[Float] + angY()))
     modMat.rotX(angX()).mul(tmp.rotY(angY()))
     gl.glUniformMatrix4fv(normalMatrix, 1, true, modMat.toArray(viewAr), 0)
 

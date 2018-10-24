@@ -27,7 +27,7 @@ class Accl extends Intr{
 
     val s2 = value - s0
 
-    if(Math.abs(s2) < 1e-5f && Math.abs(lastV) < 1e-5f ){
+    if(Math.abs(s2) < 1e-4f && Math.abs(lastV) < 1e-4f ){
       active = false
 
       s0 = value

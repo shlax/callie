@@ -5,6 +5,8 @@ import org.callie.math.intr.Accl
 
 trait JoinState extends Transformation{
 
+  def maxRunSpeed:Float
+
   def apply(delta:Float)
 
   def state(): AnimState
@@ -40,7 +42,7 @@ object JoinControl{
 
 /** animacia nad JoinState */
 class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame]) {
-  val interval = 0.2f
+  val interval = 0.85f / cntrl.maxRunSpeed
   val invInter = 1f/interval
 
   var act = AnimState.STAND
@@ -60,7 +62,7 @@ class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame
         ns match {
           case AnimState.STAND => // STAND -> STAND
             if(next){
-              stand.apply()
+              stand.apply(false)
               acc = delta
             }
 
@@ -74,7 +76,7 @@ class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame
       case AnimState.RUN =>
         ns match {
           case AnimState.STAND => //  RUN -> STAND
-            stand.apply()
+            stand.apply(false)
             acc = delta
 
           case AnimState.RUN => // RUN -> RUN

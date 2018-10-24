@@ -9,10 +9,10 @@ class MovingObject(val map:Map25, height:Float, val pos2D: Vector2 = Vector2(), 
   val epsilon = 10f
   val angle = Angle(lookFrom)
 
-  val acceleration = 5f
-  val deAcceleration = 10f
+  val acceleration = 15f
+  val deAcceleration = acceleration * 2f
 
-  val vMax = 3f
+  override val maxRunSpeed = 4f
   var speed = 0f
 
   override val position = Vector3()
@@ -43,7 +43,7 @@ class MovingObject(val map:Map25, height:Float, val pos2D: Vector2 = Vector2(), 
       }
 
       speed += delta * acceleration
-      if(speed > vMax) speed = vMax
+      if(speed > maxRunSpeed) speed = maxRunSpeed
 
     }else if(speed > 0f){  // stop
       speed -= delta * deAcceleration
