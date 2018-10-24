@@ -10,6 +10,8 @@ import org.callie.input.Inputs
 object JoglFrame {
 
   val frame = new Frame()
+  frame.setCursor(Frame.CROSSHAIR_CURSOR)
+
   frame.addWindowListener(new WindowAdapter(){
     override def windowClosing(e:WindowEvent){
       animator.stop()
