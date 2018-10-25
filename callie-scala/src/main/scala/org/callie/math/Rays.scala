@@ -79,5 +79,5 @@ case class Ray(point: Vector3, dir:Vector3)
 case class Sphere(center:Vector3, radius:Float)
 case class Triangle(a:Vector3, b:Vector3, c:Vector3)
 
-case class Box(center:Vector3, rotX:Float, rotY:Float, rotZ:Float, xSize:Float, ySize:Float, zSize:Float)
-case class Cylinder(center:Vector3, rotX:Float, rotY:Float, rotZ:Float, radius:Float, height:Float)
+case class Box(center:Vector3, xSize:Float, ySize:Float, zSize:Float, rotX:Float = 0f, rotY:Float = 0f, rotZ:Float = 0f)
+case class Cylinder(center:Vector3, radius:Float, height:Float, rotX:Float = 0f, rotY:Float = 0f, rotZ:Float = 0f)
