@@ -1,6 +1,10 @@
 package org.callie.math
 
-class Intersect{
+case class Ray(point: Vector3, dir:Vector3)
+
+case class Triangle(a:Vector3, b:Vector3, c:Vector3)
+
+class TriangleIntersect{
 
   val e1 = Vector3()
   val e2 = Vector3()
@@ -35,49 +39,40 @@ class Intersect{
     }
   }
 
-  def intersect(r:Ray, s:Sphere) = {
+}
+
+object Sphere{
+  def apply(center: Vector3, radius: Float) = new Sphere(center, radius)
+}
+
+class Sphere(center:Vector3, radius:Float){
+  val radius2 = radius * radius
+
+  def intersect(r:Ray) = {
     val a = r.dir.len
     if(a == 0) false
     else{
-      val b = 2f * ( r.point.dot(r.dir) - r.dir.dot(s.center) )
-      val c = vq.sub(s.center, r.point).len - s.radius * s.radius
+      val b = 2f * ( r.point.dot(r.dir) - r.dir.dot(center) )
+      val dx = center.x - r.point.x
+      val dy = center.y - r.point.y
+      val dz = center.z - r.point.z
+      val c =  Math.sqrt(dx*dx + dy*dy + dz*dz) - radius2
+      //val c = vq.sub(s.center, r.point).len - s.radius * s.radius
       b*b - 4f*a*c >= 0
     }
   }
 
-  // http://woo4.me/wootracer/cylinder-intersection/
-  def intersect(r:Ray, s:Cylinder) = {
-
-  }
-
-  def intersect(r:Ray, b:Box) = {
-    // rotate
-
-    val dfx = 1f/r.dir.x
-    val dfy = 1f/r.dir.y
-    val dfz = 1f/r.dir.z
-
-    val t1 = (b.center.x - b.xSize - r.point.x) * dfx
-    val t2 = (b.center.x + b.xSize - r.point.x) * dfx
-    val t3 = (b.center.y - b.ySize - r.point.y) * dfy
-    val t4 = (b.center.y + b.ySize - r.point.y) * dfy
-    val t5 = (b.center.z - b.zSize - r.point.z) * dfz
-    val t6 = (b.center.z + b.zSize - r.point.z) * dfz
-
-    val tmin = Math.max(Math.max(Math.min(t1, t2), Math.min(t3, t4)), Math.min(t5, t6))
-    val tmax = Math.min(Math.min(Math.max(t1, t2), Math.max(t3, t4)), Math.max(t5, t6))
-
-    if (tmax < 0) false // if tmax < 0, ray (line) is intersecting AABB, but the whole AABB is behind us
-    else if (tmin > tmax) false // if tmin > tmax, ray doesn't intersect AABB
-    else true
-  }
-
 }
 
-case class Ray(point: Vector3, dir:Vector3)
+object Box{
+  def apply(xSize: Float, ySize: Float, zSize: Float, trans: Matrix4) = new Box(xSize, ySize, zSize, trans)
+}
 
-case class Sphere(center:Vector3, radius:Float)
-case class Triangle(a:Vector3, b:Vector3, c:Vector3)
+class Box(xSize:Float, ySize:Float, zSize:Float, trans:Matrix4){
 
-case class Box(center:Vector3, xSize:Float, ySize:Float, zSize:Float, rotX:Float = 0f, rotY:Float = 0f, rotZ:Float = 0f)
-case class Cylinder(center:Vector3, radius:Float, height:Float, rotX:Float = 0f, rotY:Float = 0f, rotZ:Float = 0f)
+  def intersect(r:Ray) = {
+
+  }
+  
+}
+
