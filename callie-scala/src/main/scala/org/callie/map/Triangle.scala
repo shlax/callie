@@ -31,7 +31,7 @@ class Map25(val triangles : Array[Triangle25], var last:Triangle25){
   def find[T](v: Vector2) : Option[(Float,Triangle25)] = {
     for(t <- triangles){
       val tmp = t(v)
-      if(tmp != Float.NaN) return Some((tmp, t))
+      if(tmp != Float.NaN) return Some(tmp, t)
     }
     None
   }
