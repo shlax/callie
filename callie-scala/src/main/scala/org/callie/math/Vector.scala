@@ -1,5 +1,11 @@
 package org.callie.math
 
+trait Translation{
+  def x:Float
+  def y:Float
+  def z:Float
+}
+
 object Vector2{
   def apply(): Vector2 = new Vector2(0f, 0f)
   def apply(x: Float, y: Float): Vector2 = new Vector2(x, y)
@@ -13,11 +19,11 @@ class Vector2(var x : Float, var y : Float){
   override def toString = "Vector2("+x+", "+y+")"
 }
 
-trait Vector3{
+trait Vector3 extends Translation{
 
-  def x:Float; def x_=(v:Float)
-  def y:Float; def y_=(v:Float)
-  def z:Float; def z_=(v:Float)
+  def x_=(v:Float)
+  def y_=(v:Float)
+  def z_=(v:Float)
 
   def len2 = x*x + y*y + z*z
   def len = Math.sqrt(len2).asInstanceOf[Float]
