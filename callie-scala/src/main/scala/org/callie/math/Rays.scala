@@ -21,20 +21,20 @@ class TriangleIntersect{
     vp.cross(r.dir, e2)
 
     val det = e1.dot(vp)
-    if(det == 0) None
+    if(det == 0) Float.NaN
     else{
       val iDet = 1f/det
 
       vt.sub(r.point, t.a)
 
       val u = vt.dot(vp) * iDet
-      if(u < 0 || u > 1) None
+      if(u < 0 || u > 1) Float.NaN
       else{
         vq.cross(vt, e1)
 
         val v = r.dir.dot(vq) * iDet
-        if(v < 0 || u + v > 1) None
-        else Some(e2.dot(vq) * iDet)
+        if(v < 0 || u + v > 1) Float.NaN
+        else e2.dot(vq) * iDet
       }
     }
   }
@@ -42,7 +42,7 @@ class TriangleIntersect{
 }
 
 trait Intersection{
-  def intersect(r:Ray): Option[Float]
+  def intersect(r:Ray): Float
 }
 
 object Sphere{
@@ -63,16 +63,16 @@ class Sphere(center:Translation, radius:Float) extends Intersection{
 
     val d = b*b - 4f*a*c
 
-    if(d < 0f) None
+    if(d < 0f) Float.NaN
     else{
       val sq = Math.sqrt(d).asInstanceOf[Float]
       val t1 = -b + sq
       val t2 = -b - sq
 
-      if (t1 >= 0f && t2 <= 0f) Some(t1 / (2f * a))
-      else if (t2 >= 0f && t1 <= 0f) Some(t2 / (2f * a))
-      else if(t1 >= 0f && t2 >= 0f) Some(Math.min(t1, t2) / (2f * a))
-      else None // je za
+      if (t1 >= 0f && t2 <= 0f) t1 / (2f * a)
+      else if (t2 >= 0f && t1 <= 0f) t2 / (2f * a)
+      else if(t1 >= 0f && t2 >= 0f) Math.min(t1, t2) / (2f * a)
+      else Float.NaN // je za
     }
   }
 
@@ -85,7 +85,7 @@ object Box{
 // https://github.com/opengl-tutorials/ogl/blob/master/misc05_picking/misc05_picking_custom.cpp
 class Box(trans:Matrix4, xSize:Float, ySize:Float, zSize:Float) extends Intersection{
 
-  override def intersect(r:Ray): Option[Float] = {
+  override def intersect(r:Ray): Float = {
     val dx = trans.x - r.point.x
     val dy = trans.y - r.point.y
     val dz = trans.z - r.point.z
@@ -114,9 +114,9 @@ class Box(trans:Matrix4, xSize:Float, ySize:Float, zSize:Float) extends Intersec
         if (t2 < tMax) tMax = t2
         if (t1 > tMin) tMin = t1
 
-        if (tMax < tMin) return None
+        if (tMax < tMin) return Float.NaN
       } else {
-        if (-e - xSize > 0f || -e + xSize < 0f) return None
+        if (-e - xSize > 0f || -e + xSize < 0f) return Float.NaN
       }
     } // << x
     { // y >>
@@ -140,9 +140,9 @@ class Box(trans:Matrix4, xSize:Float, ySize:Float, zSize:Float) extends Intersec
         if (t2 < tMax) tMax = t2
         if (t1 > tMin) tMin = t1
 
-        if (tMax < tMin) return None
+        if (tMax < tMin) return Float.NaN
       } else {
-        if (-e - ySize > 0f || -e + ySize < 0f) return None
+        if (-e - ySize > 0f || -e + ySize < 0f) return Float.NaN
       }
     } // << y
     { // z >>
@@ -166,13 +166,13 @@ class Box(trans:Matrix4, xSize:Float, ySize:Float, zSize:Float) extends Intersec
         if (t2 < tMax) tMax = t2
         if (t1 > tMin) tMin = t1
 
-        if (tMax < tMin) return None
+        if (tMax < tMin) return Float.NaN
       } else {
-        if (-e - zSize > 0f || -e + zSize < 0f) return None
+        if (-e - zSize > 0f || -e + zSize < 0f) return Float.NaN
       }
     } // << z
 
-    Some(tMin)
+    tMin
   }
   
 }

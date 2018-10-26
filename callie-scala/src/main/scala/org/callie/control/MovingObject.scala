@@ -21,7 +21,7 @@ class MovingObject(val map:Map25, height:Float, val pos2D: Vector2 = Vector2(), 
   override val normalTransformation = Matrix4()
 
   normalTransformation.rotY(Angle.PI1 - angle())
-  calculate(map.apply(pos2D).get)
+  calculate(map.apply(pos2D))
 
   def calculate(z:Float){
     position.x = pos2D.x
@@ -59,7 +59,7 @@ class MovingObject(val map:Map25, height:Float, val pos2D: Vector2 = Vector2(), 
 
       val z = map.apply(pos2D)
 
-      if (z.isDefined) calculate(z.get)
+      if (z != Float.NaN) calculate(z)
       else { // collision
         pos2D.x = -1f * position.x
         pos2D.y = -1f * position.z

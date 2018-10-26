@@ -21,8 +21,8 @@ class Triangle25(val a : Vector3, val b : Vector3, val c : Vector3, val near: Ar
     val na = ((p.x-a.x)*ab.y)-(ab.x*(p.y-a.z))
 	  val nb = ((p.x-b.x)*bc.y)-(bc.x*(p.y-b.z))
 	  val nc = ((p.x-c.x)*ca.y)-(ca.x*(p.y-c.z))
-	  if( ( na > 0 && nb > 0 && nc > 0 ) || ( na < 0 && nb < 0 && nc < 0 ) ) Some(-(((ta*p.x)+(tc*p.y)+td)/tb))
-	  else None
+	  if( ( na > 0 && nb > 0 && nc > 0 ) || ( na < 0 && nb < 0 && nc < 0 ) ) -(((ta*p.x)+(tc*p.y)+td)/tb)
+	  else Float.NaN
   }
 }
 
@@ -31,40 +31,40 @@ class Map25(val triangles : Array[Triangle25], var last:Triangle25){
   def find[T](v: Vector2) : Option[(Float,Triangle25)] = {
     for(t <- triangles){
       val tmp = t(v)
-      if(tmp.isDefined) return Some(tmp.get, t)
+      if(tmp != Float.NaN) return Some((tmp, t))
     }
     None
   }
 
-  def fast(v: Vector2): Option[Float] = {
+  def fast(v: Vector2): Float = {
     val tmp = last(v)
-    if(tmp.isDefined)return tmp
+    if(tmp != Float.NaN) return tmp
     for(t <- last.near){
       val tmp = t(v)
-      if(tmp.isDefined) {
+      if(tmp != Float.NaN) {
         last = t
         return tmp
       }
     }
     for(t <- last.far){
       val tmp = t(v)
-      if(tmp.isDefined) {
+      if(tmp != Float.NaN) {
         last = t
         return tmp
       }
     }
-    None
+    Float.NaN
   }
 
-  def apply(v: Vector2): Option[Float] = {
+  def apply(v: Vector2): Float = {
     val f = fast(v)
-    if(f.isDefined) return f
+    if(f != Float.NaN) return f
     val s = find(v)
     if(s.isDefined){
       val v = s.get
       last = v._2
-      Some(v._1)
-    }else None
+      v._1
+    }else Float.NaN
   }
 
 }
