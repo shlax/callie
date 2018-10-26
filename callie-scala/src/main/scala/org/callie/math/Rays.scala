@@ -79,11 +79,12 @@ class Sphere(center:Translation, radius:Float) extends Intersection{
 }
 
 object Box{
-  def apply(trans: Matrix4, xSize: Float, ySize: Float, zSize: Float ) = new Box(trans, xSize, ySize, zSize)
+  def apply(trans: Matrix4, xSize: Float, ySize: Float, zSize: Float ) = new Box(trans, -xSize, xSize, -ySize, ySize, -zSize, zSize)
+  def apply(trans: Matrix4, xMin: Float, xMax: Float, yMin: Float, yMax: Float, zMin: Float, zMax: Float) = new Box(trans, xMin, xMax, yMin, yMax, zMin, zMax)
 }
 
 // https://github.com/opengl-tutorials/ogl/blob/master/misc05_picking/misc05_picking_custom.cpp
-class Box(trans:Matrix4, xSize:Float, ySize:Float, zSize:Float) extends Intersection{
+class Box(trans:Matrix4, xMin:Float, xMax:Float, yMin:Float, yMax:Float, zMin:Float, zMax:Float) extends Intersection{
 
   override def intersect(r:Ray): Float = {
     val dx = trans.x - r.point.x
@@ -102,8 +103,8 @@ class Box(trans:Matrix4, xSize:Float, ySize:Float, zSize:Float) extends Intersec
       val f = r.dir.x * ax + r.dir.y * ay + r.dir.z * az
 
       if (Math.abs(f) > 0f) {
-        var t1 = (e - xSize) / f
-        var t2 = (e + xSize) / f
+        var t1 = (e + xMin) / f
+        var t2 = (e + xMax) / f
 
         if (t1 > t2) {
           val w = t1
@@ -116,7 +117,7 @@ class Box(trans:Matrix4, xSize:Float, ySize:Float, zSize:Float) extends Intersec
 
         if (tMax < tMin) return Float.NaN
       } else {
-        if (-e - xSize > 0f || -e + xSize < 0f) return Float.NaN
+        if (-e + xMin > 0f || -e + xMax < 0f) return Float.NaN
       }
     } // << x
     { // y >>
@@ -128,8 +129,8 @@ class Box(trans:Matrix4, xSize:Float, ySize:Float, zSize:Float) extends Intersec
       val f = r.dir.x * ax + r.dir.y * ay + r.dir.z * az
 
       if (Math.abs(f) > 0f) {
-        var t1 = (e - ySize) / f
-        var t2 = (e + ySize) / f
+        var t1 = (e + yMin) / f
+        var t2 = (e + yMax) / f
 
         if (t1 > t2) {
           val w = t1
@@ -142,7 +143,7 @@ class Box(trans:Matrix4, xSize:Float, ySize:Float, zSize:Float) extends Intersec
 
         if (tMax < tMin) return Float.NaN
       } else {
-        if (-e - ySize > 0f || -e + ySize < 0f) return Float.NaN
+        if (-e + yMin > 0f || -e + yMax < 0f) return Float.NaN
       }
     } // << y
     { // z >>
@@ -154,8 +155,8 @@ class Box(trans:Matrix4, xSize:Float, ySize:Float, zSize:Float) extends Intersec
       val f = r.dir.x * ax + r.dir.y * ay + r.dir.z * az
 
       if (Math.abs(f) > 0f) {
-        var t1 = (e - zSize) / f
-        var t2 = (e + zSize) / f
+        var t1 = (e + zMin) / f
+        var t2 = (e + zMax) / f
 
         if (t1 > t2) {
           val w = t1
@@ -168,7 +169,7 @@ class Box(trans:Matrix4, xSize:Float, ySize:Float, zSize:Float) extends Intersec
 
         if (tMax < tMin) return Float.NaN
       } else {
-        if (-e - zSize > 0f || -e + zSize < 0f) return Float.NaN
+        if (-e + zMin > 0f || -e + zMax < 0f) return Float.NaN
       }
     } // << z
 
