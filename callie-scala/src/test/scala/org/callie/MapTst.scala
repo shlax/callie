@@ -15,6 +15,6 @@ object MapTst extends App{
   val m = Map25(s.mkString)
   val t = m(Vector2(0, 0))
 
-  println(t.get) // 0
+  println(t) // 0
   println(m(Vector2(1000, -1000))) // None
 }
