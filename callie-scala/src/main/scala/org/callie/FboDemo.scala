@@ -7,6 +7,7 @@ import org.callie.jogl.{Gl, GlEventListener, GlType, JoglFrame}
 import org.callie.map.Map25
 import org.callie.model.{Mod, StaticObject, TextureGroup}
 import org.callie.ringing.{JoinControl, KeyFrameLoader, Node}
+import org.callie.jogl.glslVersion
 
 object FboDemo extends App{
 
@@ -19,8 +20,8 @@ object FboDemo extends App{
     1f, -1f, 0.0f, 1.0f, 0.0f,
     1f,  1f, 0.0f, 1.0f, 1.0f)
 
-  val passVertex = """
-                     |#version 300 es
+  val passVertex = s"""
+                     |#version $glslVersion
                      |
                      |layout(location = 0) in vec3 inPosition;
                      |layout(location = 1) in vec2 inTextureCoord;
@@ -33,8 +34,8 @@ object FboDemo extends App{
                      |}
                    """.stripMargin.trim
 
-  val passFragment = """
-                       |#version 300 es
+  val passFragment = s"""
+                       |#version $glslVersion
                        |
                        |uniform sampler2D inTexture;
                        |
@@ -48,8 +49,8 @@ object FboDemo extends App{
                      """.stripMargin.trim
 
   // https://stackoverflow.com/questions/18510701/glsl-how-to-show-normals-with-geometry-shader
-  val vertex = """
-                 |#version 300 es
+  val vertex = s"""
+                 |#version $glslVersion
                  |//#version 400
                  |
                  |layout(location = 0) in vec3 inPosition;
@@ -82,8 +83,8 @@ object FboDemo extends App{
                  |}
                """.stripMargin.trim
 
-  val fragment = """
-                   |#version 300 es
+  val fragment = s"""
+                   |#version $glslVersion
                    |//#version 400
                    |
                    |uniform sampler2D textureDiffuse;
@@ -130,6 +131,8 @@ object FboDemo extends App{
     var fbo: Int = _
     var fboTex: Int = _
 
+    var fboDepth: Int = _
+
     var progQuad:Int = _
     var dataQuad:Int = _
     var dataQuadInd:Int = _
@@ -146,11 +149,20 @@ object FboDemo extends App{
 
         gl.glFramebufferTexture2D(Gl.FRAMEBUFFER, Gl.COLOR_ATTACHMENT0, Gl.TEXTURE_2D, fboTex, 0)
 
-        val rbo = createRenderbuffer(gl){
-          gl.glRenderbufferStorage(Gl.RENDERBUFFER, Gl.DEPTH_COMPONENT32F, 1280, 720)
+        fboDepth = createTexture(gl){
+          gl.glTexImage2D(Gl.TEXTURE_2D, 0, Gl.DEPTH_COMPONENT, 1280, 720, 0, Gl.DEPTH_COMPONENT, Gl.FLOAT, null)
+
+          gl.glTexParameteri(Gl.TEXTURE_2D, Gl.TEXTURE_MAG_FILTER, Gl.NEAREST)
+          gl.glTexParameteri(Gl.TEXTURE_2D, Gl.TEXTURE_MIN_FILTER, Gl.NEAREST)
         }
 
-        gl.glFramebufferRenderbuffer(Gl.FRAMEBUFFER, Gl.DEPTH_ATTACHMENT, Gl.RENDERBUFFER, rbo)
+        gl.glFramebufferTexture2D(Gl.FRAMEBUFFER, Gl.DEPTH_ATTACHMENT, Gl.TEXTURE_2D, fboDepth, 0)
+
+        //val rbo = createRenderbuffer(gl){
+        //  gl.glRenderbufferStorage(Gl.RENDERBUFFER, Gl.DEPTH_COMPONENT32F, 1280, 720)
+        //}
+
+        //gl.glFramebufferRenderbuffer(Gl.FRAMEBUFFER, Gl.DEPTH_ATTACHMENT, Gl.RENDERBUFFER, rbo)
 
       }
 
@@ -219,6 +231,7 @@ object FboDemo extends App{
 
       gl.glUseProgram(progQuad)
       gl.glActiveTexture(Gl.TEXTURE0)
+      //bindTexture(gl, fboDepth){
       bindTexture(gl, fboTex){
         bindVertexArray(gl, dataQuad){
           bindBuffer(gl, Gl.ELEMENT_ARRAY_BUFFER, dataQuadInd) {
