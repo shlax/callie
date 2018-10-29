@@ -20,7 +20,7 @@ class Accl extends Intr{
   var lastS = 0f
   var lastV = 0f
 
-  var t1 = 0.5f
+  val t1 = 0.5f
 
   var v0 = 0f
   var v1 = 0f
@@ -49,10 +49,10 @@ class Accl extends Intr{
       // active = true
     val s3 = nextValue - value
     val v2 = if(s3 != 0f && Math.signum(s2) == Math.signum(s3)){
-      t1 = 0.5f
+      //t1 = 0.5f
       nextValue - s0
     } else{
-      t1 = 0.5f
+      //t1 = 0.5f
       0f
     }
 
