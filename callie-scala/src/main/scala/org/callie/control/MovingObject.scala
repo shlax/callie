@@ -4,6 +4,7 @@ import org.callie.input.{Camera, Inputs, TrackingObject}
 import org.callie.map.Map25
 import org.callie.math.{Angle, Matrix4, Vector2, Vector3}
 import org.callie.ringing.{AnimState, JoinState}
+import java.lang.{Float => jFloat}
 
 class MovingObject(val map:Map25, height:Float, val pos2D: Vector2 = Vector2(), lookFrom:Float = 0f) extends TrackingObject with JoinState{
   val epsilon = 10f
@@ -59,7 +60,7 @@ class MovingObject(val map:Map25, height:Float, val pos2D: Vector2 = Vector2(), 
 
       val z = map.apply(pos2D)
 
-      if (z != Float.NaN) calculate(z)
+      if (!jFloat.isNaN(z)) calculate(z)
       else { // collision
         pos2D.x = -1f * position.x
         pos2D.y = -1f * position.z

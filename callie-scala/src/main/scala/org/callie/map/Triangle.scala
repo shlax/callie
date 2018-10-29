@@ -5,6 +5,7 @@ import org.callie.math.{Vector2, Vector3}
 import scala.collection.mutable
 import scala.io.Source
 import scala.util.parsing.combinator.RegexParsers
+import java.lang.{Float => jFloat}
 
 class Triangle25(val a : Vector3, val b : Vector3, val c : Vector3, val near: Array[Triangle25], val far: Array[Triangle25]) {
 
@@ -31,24 +32,24 @@ class Map25(val triangles : Array[Triangle25], var last:Triangle25){
   def find[T](v: Vector2) : Option[(Float,Triangle25)] = {
     for(t <- triangles){
       val tmp = t(v)
-      if(tmp != Float.NaN) return Some(tmp, t)
+      if(!jFloat.isNaN(tmp)) return Some(tmp, t)
     }
     None
   }
 
   def fast(v: Vector2): Float = {
     val tmp = last(v)
-    if(tmp != Float.NaN) return tmp
+    if(!jFloat.isNaN(tmp)) return tmp
     for(t <- last.near){
       val tmp = t(v)
-      if(tmp != Float.NaN) {
+      if(!jFloat.isNaN(tmp)) {
         last = t
         return tmp
       }
     }
     for(t <- last.far){
       val tmp = t(v)
-      if(tmp != Float.NaN) {
+      if(!jFloat.isNaN(tmp)) {
         last = t
         return tmp
       }
@@ -58,7 +59,7 @@ class Map25(val triangles : Array[Triangle25], var last:Triangle25){
 
   def apply(v: Vector2): Float = {
     val f = fast(v)
-    if(f != Float.NaN) return f
+    if(!jFloat.isNaN(f)) return f
     val s = find(v)
     if(s.isDefined){
       val v = s.get

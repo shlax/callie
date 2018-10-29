@@ -10,7 +10,7 @@ import org.callie.ringing.{JoinControl, KeyFrameLoader, Node}
 object MainDemo extends App{
 
   // https://stackoverflow.com/questions/18510701/glsl-how-to-show-normals-with-geometry-shader
-  val vertex = s""" #version $glslVersion
+  val vertex = s"""#version $glslVersion
         |
         |layout(location = 0) in vec3 inPosition;
         |layout(location = 1) in vec2 inTextureCoord;
@@ -42,7 +42,7 @@ object MainDemo extends App{
         |
         |} """.stripMargin.trim
 
-    val fragment = s""" #version $glslVersion
+    val fragment = s"""#version $glslVersion
         |
         |uniform sampler2D textureDiffuse;
         |
