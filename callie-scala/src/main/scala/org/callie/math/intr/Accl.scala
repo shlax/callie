@@ -37,7 +37,7 @@ class Accl extends Intr{
     }else { */
     // active = true
     val s3 = nextValue - value
-    val v2 = if(s3 != 0f && Math.signum(s2) == Math.signum(s3)) nextValue - s0 else 0f
+    val v2 = if(s3 != 0f && Math.signum(s2) == Math.signum(s3)) nextValue - s0 else 0f  // (nextValue - s0)*2f/3f ?
 
     v0 = lastV * rescale
 
