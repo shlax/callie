@@ -22,7 +22,7 @@ class Accl extends Intr{
 
   //var active = false
 
-  override def update(value: Float, nextValue:Float, rescale:Float = 1f){
+  override def update(value: Float, nextValue:Float){
     s0 += lastS
 
     val s2 = value - s0
@@ -39,7 +39,7 @@ class Accl extends Intr{
     val s3 = nextValue - value
     val v2 = if(s3 != 0f && Math.signum(s2) == Math.signum(s3)) nextValue - s0 else 0f  // (nextValue - s0)*2f/3f ?
 
-    v0 = lastV * rescale
+    v0 = lastV
 
     a1 = 4 * s2 - 3 * v0 - v2
     v1 = v0 + a1 / 2

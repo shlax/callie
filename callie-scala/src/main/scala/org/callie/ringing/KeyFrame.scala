@@ -6,8 +6,8 @@ import org.callie.math.intr.Intr
 class KeyValue(val joint:String, val axis: Axis, i:Intr, val value:Float){
   var next = this
 
-  def apply(rescale:Float){
-    i.update(value, next.value , rescale)
+  def apply(){
+    i.update(value, next.value)
   }
 }
 
@@ -19,8 +19,8 @@ class KeyFrame(val intrs:Array[KeyValue]) {
     for(i <- intrs; j <- n.intrs if i.joint == j.joint && i.axis == j.axis) i.next = j
   }
 
-  def apply(rescale:Float = 1f){
-    for (j <- intrs) j(rescale)
+  def apply(){
+    for (j <- intrs) j()
   }
 
 }
