@@ -57,7 +57,7 @@ proc export( string $mesh, string $filename ){
 			
 			float $uvs[] = `getAttr ($mesh + ".uv[" +($buffer[1])+"]")`;			
 		
-			fprint $file ( ":("+$uvs[0]+","+$uvs[1]+")" );
+			fprint $file ( ":[("+$uvs[0]+","+$uvs[1]+")]" );
 
 			if( $j+1 < size($split)-2 ){
 			    fprint $file (",");

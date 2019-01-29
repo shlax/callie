@@ -3,35 +3,40 @@ package org.callie.model
 import scala.io.Source
 import scala.util.parsing.combinator.RegexParsers
 
-class Mod(val points : List[Mod.F3], val faces : List[Mod.Face]){
-  def scale(s:Float) = new Mod(points.map(p => (p._1 * s, p._2 * s, p._3 * s) ), faces)
+case class Point2(x:Float, y:Float)
+
+case class Point3(x:Float, y:Float, z:Float){
+  def scale(s:Float) = Point3(x*s, y*s, z*s)
+}
+
+case class Face(point:Int, normal:Point3, uv:List[Point2])
+
+case class Mod(points : List[Point3], faces : List[Face]){
+  def scale(s:Float) = Mod(points.map(_.scale(s)), faces)
 }
 
 object Mod extends RegexParsers {
-  type F2 = (Float,Float)
-  type F3 = (Float,Float,Float)
-
-  type Face = (Int,F2, F3)
-
   def index: Parser[Int] = """\d+""".r ^^ (_.toInt)
 
   def float: Parser[Float] = """[+-]?(\d+(\.\d*)?|\d*\.\d+)([eE][+-]?\d+)?""".r ^^ (_.toFloat)
 
-  def vector2 : Parser[F2] = "(" ~> repsep(float, ",") <~ ")" ^^ { l =>
+  def vector2 : Parser[Point2] = "(" ~> repsep(float, ",") <~ ")" ^^ { l =>
     assert(l.size == 2)
-    ( l(0), l(1) )
+    Point2( l(0), l(1) )
   }
 
-  def vector3 : Parser[F3] = "(" ~> repsep(float, ",") <~ ")" ^^ { l =>
+  def vector3 : Parser[Point3] = "(" ~> repsep(float, ",") <~ ")" ^^ { l =>
     assert(l.size == 3)
-    ( l(0), l(1), l(2) )
+    Point3( l(0), l(1), l(2) )
   }
 
   // v
-  def points : Parser[List[F3]] = "[" ~> repsep(vector3, ",") <~ "]"
+  def points : Parser[List[Point3]] = "[" ~> repsep(vector3, ",") <~ "]"
 
-  def face : Parser[Face] = (index <~ ":") ~ (vector3 <~ ":") ~ vector2 ^^ { i =>
-    (i._1._1, i._2, i._1._2 )
+  def uvs : Parser[List[Point2]] = "[" ~> repsep(vector2, ",") <~ "]"
+
+  def face : Parser[Face] = (index <~ ":") ~ (vector3 <~ ":") ~ uvs ^^ { i =>
+    Face(i._1._1, i._1._2, i._2)
   }
 
   def face3 : Parser[List[Face]] = "[" ~> repsep(face, ",") <~ "]" ^^ { x =>
@@ -42,8 +47,8 @@ object Mod extends RegexParsers {
   // f
   def faces : Parser[List[Face]] = "{" ~> rep(face3) <~ "}" ^^ (_.flatten)
 
-  def value: Parser[(List[F3], List[Face])] = (points ~ faces) ^^ { i =>
-    (i._1, i._2)
+  def value: Parser[Mod] = (points ~ faces) ^^ { i =>
+    Mod(i._1, i._2)
   }
 
   def load(nm:String) = {
@@ -53,9 +58,6 @@ object Mod extends RegexParsers {
     }
   }
 
-  def apply(r:CharSequence) = {
-    val t = parseAll(value, r).get
-    new Mod(t._1, t._2)
-  }
+  def apply(r:CharSequence) = parseAll(value, r).get
 
 }

@@ -75,24 +75,31 @@ class TextureGroup(ev: GlEventListener, image:String, ind:Int, objs:GlObject*) e
 
 class StaticObject(ev:GlEventListener) extends GlObject{
 
+  case class PointFace(point:Point3, normal:Point3, uv:List[Point2])
+
   var coords:Array[Float] = _
   var indices:Array[Int] = _
 
+  var uvCount:Int = _
+
   def this(ev:GlEventListener, m:Mod){
     this(ev)
+
+    uvCount = m.faces.head.uv.size
+
     // stack
-    val s = ListBuffer[(Mod.F3, Mod.F2, Mod.F3)]()
+    val s = ListBuffer[PointFace]()
 
     val a = ListBuffer[Float]()
     val i = ListBuffer[Int]()
 
     for(f <- m.faces){
-      val x = (m.points(f._1), f._2, f._3)
+      val x = PointFace(m.points(f.point), f.normal, f.uv)
       val ind = s.indexOf(x)
       if(ind == -1){
-        a += x._1._1 += x._1._2 += x._1._3
-        a += x._2._1 += x._2._2
-        a += x._3._1 += x._3._2 += x._3._3
+        a += x.point.x += x.point.y += x.point.z
+        a += x.normal.x += x.normal.y += x.normal.z
+        for(j <- x.uv) a += j.x += j.y
 
         i += s.size
         s += x
@@ -115,9 +122,13 @@ class StaticObject(ev:GlEventListener) extends GlObject{
       ev.createBuffer(gl, Gl.ARRAY_BUFFER){
         coords.asBuffer(gl.glBufferData(Gl.ARRAY_BUFFER, _, _, Gl.STATIC_DRAW))
 
-        gl.glVertexAttribPointer(0, 3, Gl.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT, 0*Buffers.SIZEOF_FLOAT)
-        gl.glVertexAttribPointer(1, 2, Gl.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT, 3*Buffers.SIZEOF_FLOAT)
-        gl.glVertexAttribPointer(2, 3, Gl.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT, 5*Buffers.SIZEOF_FLOAT)
+        val stride = (6 + uvCount * 2)*Buffers.SIZEOF_FLOAT
+
+        gl.glVertexAttribPointer(0, 3, Gl.FLOAT, false, stride, 0*Buffers.SIZEOF_FLOAT)
+        gl.glVertexAttribPointer(1, 2, Gl.FLOAT, false, stride, 3*Buffers.SIZEOF_FLOAT)
+        for(i <- 0 until uvCount) {
+          gl.glVertexAttribPointer(2 + i, 2, Gl.FLOAT, false, stride, (6 + i * 2) * Buffers.SIZEOF_FLOAT)
+        }
       }
     }
     
@@ -138,6 +149,10 @@ class StaticObject(ev:GlEventListener) extends GlObject{
 
 class MorfingObject(ev:GlEventListener) extends GlObject{
 
+  case class PointFace(point:Int, normal:Point3, uv:List[Point2])
+
+  var uvCount:Int = _
+
   var coords:Array[Float] = _
   var indices:Array[Int] = _
   var projPoint:Array[(Vector3, Vector3)] = _
@@ -145,20 +160,25 @@ class MorfingObject(ev:GlEventListener) extends GlObject{
 
   def this(ev:GlEventListener, m:Mod){
     this(ev)
+
+    uvCount = m.faces.head.uv.size
+
     // stack
-    val s = ListBuffer[(Int, Mod.F3, Mod.F2, Mod.F3)]()
+    val s = ListBuffer[PointFace]()
 
     val a = ListBuffer[Float]()
     val i = ListBuffer[Int]()
 
     for(f <- m.faces){
-      val x = (f._1, m.points(f._1), f._2, f._3)
+      val x = PointFace(f.point, f.normal, f.uv)
       val ind = s.indexOf(x)
 
       if(ind == -1){
-        a += x._2._1 += x._2._2 += x._2._3
-        a += x._3._1 += x._3._2
-        a += x._4._1 += x._4._2 += x._4._3
+        val p = m.points(f.point)
+
+        a += p.x += p.y += p.z
+        a += x.normal.x += x.normal.y += x.normal.z
+        for(j <- x.uv) a += j.x += j.y
 
         i += s.size
         s += x
@@ -172,14 +192,16 @@ class MorfingObject(ev:GlEventListener) extends GlObject{
 
     val fi = s.zipWithIndex
 
-    for(i <- m.points.zipWithIndex){
-      val t = fi.filter(_._1._1 == i._2)
+    val size = 6 + uvCount * 2
 
-      prPoint += ( (Vector3(i._1), Vector3(coords, t.map(_._2 * (3+2+3)).toArray )) )
+    for(i <- m.points.zipWithIndex){
+      val t = fi.filter(_._1.point == i._2)
+
+      prPoint += ( (Vector3(i._1.x, i._1.y, i._1.z), Vector3(coords, t.map(_._2 * size).toArray )) )
       prNormals += t.map{j =>
-          ( j._1._4, (j._2 * (3+2+3) ) + 5 )
+          ( j._1.normal, j._2 * size + 3)
         }.groupBy(_._1).map{ e =>
-          (Vector3(e._1), Vector3(coords,  e._2.map(_._2).toArray))
+          (Vector3(e._1.x, e._1.y, e._1.z), Vector3(coords,  e._2.map(_._2).toArray))
         }.toArray
     }
 
@@ -201,9 +223,13 @@ class MorfingObject(ev:GlEventListener) extends GlObject{
       vbo = ev.createBuffer(gl, Gl.ARRAY_BUFFER){
         coords.asBuffer(gl.glBufferData(Gl.ARRAY_BUFFER, _, _, Gl.DYNAMIC_DRAW))
 
-        gl.glVertexAttribPointer(0, 3, Gl.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT, 0*Buffers.SIZEOF_FLOAT)
-        gl.glVertexAttribPointer(1, 2, Gl.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT, 3*Buffers.SIZEOF_FLOAT)
-        gl.glVertexAttribPointer(2, 3, Gl.FLOAT, false, (3+2+3)*Buffers.SIZEOF_FLOAT, 5*Buffers.SIZEOF_FLOAT)
+        val stride = (6 + uvCount * 2)*Buffers.SIZEOF_FLOAT
+
+        gl.glVertexAttribPointer(0, 3, Gl.FLOAT, false, stride, 0*Buffers.SIZEOF_FLOAT)
+        gl.glVertexAttribPointer(1, 3, Gl.FLOAT, false, stride, 3*Buffers.SIZEOF_FLOAT)
+        for(i <- 0 until uvCount) {
+          gl.glVertexAttribPointer(2 + i, 2, Gl.FLOAT, false, stride, (6 + i * 2) * Buffers.SIZEOF_FLOAT)
+        }
       }
     }
     
