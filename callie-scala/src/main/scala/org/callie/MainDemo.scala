@@ -9,55 +9,6 @@ import org.callie.ringing.{JoinControl, KeyFrameLoader, Node}
 
 object MainDemo extends App{
 
-  // https://stackoverflow.com/questions/18510701/glsl-how-to-show-normals-with-geometry-shader
-  val vertex = s"""#version $glslVersion
-        |
-        |layout(location = 0) in vec3 inPosition;
-        |layout(location = 1) in vec3 inNormal;
-        |layout(location = 2) in vec2 inTextureCoord;
-        |
-        |uniform mat4 viewMatrix;
-        |uniform mat4 normalMatrix;
-        |
-        |/* const mat4 projection = mat4( // 1 : 10 X 0.5
-        | vec4(2, 0, 0, 0),
-        | vec4(0, 2, 0, 0),
-        | vec4(0, 0, -1.2222222, -2.2222222),
-        | vec4(0, 0, -1, 0)
-        |); */
-        |
-        |const vec3 lightDirection = normalize(vec3(1, 1, 2));
-        |
-        |out vec2 texCoord;
-        |out float lightIntensity;
-        |
-        |void main(){
-        |  gl_Position = viewMatrix * vec4(inPosition, 1); // (projection * viewMatrix) * vec4(inPosition, 1); //vec4(inPosition, 1);
-        |
-        |  //vec4 tmp = viewMatrix * vec4(inPosition, 1);
-        |  //gl_Position = vec4(tmp.x / tmp.w, tmp.y / tmp.w, tmp.z / tmp.w, 1);
-        |
-        |  lightIntensity = 0.2 + (max(dot((normalMatrix * vec4(inNormal,1)).xyz, lightDirection), 0.0) * 0.8);
-        |  texCoord = inTextureCoord;
-        |
-        |} """.stripMargin.trim
-
-    val fragment = s"""#version $glslVersion
-        |
-        |uniform sampler2D textureDiffuse;
-        |
-        |in highp vec2 texCoord;
-        |in highp float lightIntensity;
-        |
-        |out highp vec4 fragColor;
-        |
-        |void main(){
-        |  highp vec4 c = texture(textureDiffuse, texCoord);
-        |  if (c.w < 0.5) discard;
-        |  fragColor = c * lightIntensity; // vec4(lightIntensity,lightIntensity, lightIntensity, 1);
-        |
-        |} """.stripMargin.trim
-
   val camCtrl = new MovingObject(Map25.load("/demo/map/floor.map"), 1.5f)
 
   JoglFrame(new GlEventListener {
@@ -84,9 +35,10 @@ object MainDemo extends App{
     var t: Long = 0
 
     override def initGL4(gl: GlType){
+      val vf = GlPrograms(false)
 
-      val vertexSchader = createShader(gl, Gl.VERTEX_SHADER, vertex)
-      val fragmentSchader = createShader(gl, Gl.FRAGMENT_SHADER, fragment)
+      val vertexSchader = createShader(gl, Gl.VERTEX_SHADER, vf.vertex)
+      val fragmentSchader = createShader(gl, Gl.FRAGMENT_SHADER, vf.fragment)
       val prog = createProgram(gl, vertexSchader, fragmentSchader)
 
       mapa.init(gl)
