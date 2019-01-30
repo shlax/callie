@@ -2,6 +2,8 @@ proc export( string $mesh, string $filename ){
 
 	$file = `fopen $filename "w"`;
 
+	$uvNames = `polyUVSet -q -auv $mesh`;
+
 	// vertex
 	int $vertexCount[] = `polyEvaluate -v $mesh`;
 	//fprint $file ( "numVertices=" + $vertexCount[0] + "\n" );
@@ -30,17 +32,17 @@ proc export( string $mesh, string $filename ){
 	int $faceCount[] = `polyEvaluate -f`;
 	//fprint $file ( "numFaces=" + $faceCount[0]+"\n" );
 	fprint $file ( "{" );
-	
+
 	for( $i=0;$i<$faceCount[0];$i++){
 		int $vCount =0;
-		
+
 		select -r ( $mesh+".f["+$i+"]");
-		
+
 		string $vinds[] = `polyInfo -fv`;
-		
+
 		string $split[];
 		tokenize $vinds[0] $split;
-		
+
 		fprint $file "[";
 		for($j=0;$j<(size($split)-2);$j++){
 			fprint $file ( "\t\t"+$split[(2+$j)] ); // +","+$uvIndex+","+$nIndex+")"
@@ -50,14 +52,21 @@ proc export( string $mesh, string $filename ){
 
 			fprint $file ( ":("+$norm[0]+","+$norm[1]+","+$norm[2]+")" );
 
-			string $tinds[] = `polyListComponentConversion -fvf -tuv ($mesh+".vtxFace["+$split[($j+2)]+"]["+$i+"]")`;
-			
-			string $buffer[];
-			tokenize $tinds[0] "[]" $buffer;
-			
-			float $uvs[] = `getAttr ($mesh + ".uv[" +($buffer[1])+"]")`;			
-		
-			fprint $file ( ":[("+$uvs[0]+","+$uvs[1]+")]" );
+			fprint $file ( ":[" );
+			for($k=0;$k<size($uvNames);$k++){
+				polyUVSet -cuv -uvSet $uvNames[$k] $mesh;
+
+				string $tinds[] = `polyListComponentConversion -fvf -tuv ($mesh+".vtxFace["+$split[($j+2)]+"]["+$i+"]")`;
+
+				string $buffer[];
+				tokenize $tinds[0] "[]" $buffer;
+
+				float $uvs[] = `getAttr ($mesh + ".uv[" +($buffer[1])+"]")`;
+
+				if($k > 0) fprint $file ( "," );
+				fprint $file ( "("+$uvs[0]+","+$uvs[1]+")" );
+			}
+			fprint $file ( "]" );
 
 			if( $j+1 < size($split)-2 ){
 			    fprint $file (",");
@@ -67,10 +76,10 @@ proc export( string $mesh, string $filename ){
 		}
 		fprint $file "]";
 
-	}	
+	}
 	fprint $file "}\n";
 
-	
+
 	fclose $file;
 }
 
