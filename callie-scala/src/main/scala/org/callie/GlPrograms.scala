@@ -67,7 +67,11 @@ object GlPrograms {
 
   def apply(lightMap:Boolean) = {
     val l = if(lightMap) List("/*lightMap*/", "*base*") else List("*lightMap*", "/*base*/")
-    new GlPrograms(l.fold(vertex)((a, b) => a.replace(b, "")), l.fold(fragment)((a, b) => a.replace(b, "")))
+    new GlPrograms(l.fold(vertex){(a, b) =>
+      a.replace(b, "")
+    }, l.fold(fragment){(a, b) =>
+      a.replace(b, "")
+    })
   }
 
 }
