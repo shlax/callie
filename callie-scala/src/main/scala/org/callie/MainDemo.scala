@@ -2,7 +2,7 @@ package org.callie
 
 import org.callie.control.MovingObject
 import org.callie.input.Camera
-import org.callie.jogl.{Gl, GlEventListener, GlType, JoglFrame, glslVersion}
+import org.callie.jogl.{Gl, GlEventListener, GlType, JoglFrame}
 import org.callie.map.Map25
 import org.callie.model.{Mod, StaticObject, TextureGroup}
 import org.callie.ringing.{JoinControl, KeyFrameLoader, Node}
@@ -35,10 +35,8 @@ object MainDemo extends App{
     var t: Long = 0
 
     override def initGL4(gl: GlType){
-      val vf = GlPrograms(false)
-
-      val vertexSchader = createShader(gl, Gl.VERTEX_SHADER, vf.vertex)
-      val fragmentSchader = createShader(gl, Gl.FRAGMENT_SHADER, vf.fragment)
+      val vertexSchader = createShader(gl, Gl.VERTEX_SHADER, GlPrograms.vertex())
+      val fragmentSchader = createShader(gl, Gl.FRAGMENT_SHADER, GlPrograms.fragment(discard = true))
       val prog = createProgram(gl, vertexSchader, fragmentSchader)
 
       mapa.init(gl)

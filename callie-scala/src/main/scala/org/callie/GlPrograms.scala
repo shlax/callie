@@ -2,12 +2,10 @@ package org.callie
 
 import org.callie.jogl.glslVersion
 
-class GlPrograms(val vertex:String, val  fragment:String)
-
 // https://stackoverflow.com/questions/18510701/glsl-how-to-show-normals-with-geometry-shader
 object GlPrograms {
 
-  val vertex = s"""#version $glslVersion
+  val vertexCode = s"""#version $glslVersion
         |
         |layout(location = 0) in vec3 inPosition;
         |layout(location = 1) in vec3 inNormal;
@@ -42,7 +40,7 @@ object GlPrograms {
         |
         |} """.stripMargin.trim
 
-  val fragment = s"""#version $glslVersion
+  val fragmentCode = s"""#version $glslVersion
         |
         |uniform sampler2D textureDiffuse;
         |/*lightMap*/ uniform sampler2D textureLight;
@@ -55,23 +53,29 @@ object GlPrograms {
         |
         |void main(){
         |  highp vec4 c = texture(textureDiffuse, texCoord);
-        |  if (c.w < 0.5) discard;
+        |  /*discard*/ if (c.w < 0.5) discard;
         |
-        |  /*lightMap*/ highp float li = lightIntensity;
-        |  /*lightMap*/ highp vec4 l = texture(textureLight, texCoord2);
-        |  /*lightMap*/ li = l.x + li - l.x*li;
+        |  /*lightMap*/ highp float li = texture(textureLight, texCoord2).x;
+        |  /*lightMap*/ li = lightIntensity + li - lightIntensity*li;
         |
         |  /*lightMap*/ fragColor = c * li; // vec4(lightIntensity,lightIntensity, lightIntensity, 1);
         |  /*base*/ fragColor = c * lightIntensity;
         |} """.stripMargin.trim
 
-  def apply(lightMap:Boolean) = {
-    val l = if(lightMap) List("/*lightMap*/", "*base*") else List("*lightMap*", "/*base*/")
-    new GlPrograms(l.fold(vertex){(a, b) =>
+  def vertex(lightMap:Boolean = false) = {
+    val l = if (lightMap) List("/*lightMap*/", "*base*") else List("*lightMap*", "/*base*/")
+    l.fold(vertexCode) { (a, b) =>
       a.replace(b, "")
-    }, l.fold(fragment){(a, b) =>
-      a.replace(b, "")
-    })
+    }
   }
+
+  def fragment(lightMap:Boolean = false, discard:Boolean = false) = {
+    var l = if (lightMap) List("/*lightMap*/", "*base*") else List("*lightMap*", "/*base*/")
+    l = (if (discard) "/*discard*/" else "*discard*") :: l
+    l.fold(fragmentCode) { (a, b) =>
+      a.replace(b, "")
+    }
+  }
+
 
 }
