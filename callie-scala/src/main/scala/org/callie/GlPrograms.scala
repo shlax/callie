@@ -9,8 +9,8 @@ object GlPrograms {
         |
         |layout(location = 0) in vec3 inPosition;
         |layout(location = 1) in vec3 inNormal;
-        |layout(location = 2) in vec2 inTextureCoord;
-        |/*lightMap*/ layout(location = 3) in vec2 inTextureCoord2;
+        |layout(location = 2) in vec2 inTextureCoord1;
+        |/*lightMap*/layout(location = 3) in vec2 inTextureCoord2;
         |
         |uniform mat4 viewMatrix;
         |uniform mat4 normalMatrix;
@@ -25,7 +25,8 @@ object GlPrograms {
         |const vec3 lightDirection = normalize(vec3(1, 1, 2));
         |
         |out float lightIntensity;
-        |out vec2 texCoord;
+        |
+        |out vec2 texCoord1;
         |/*lightMap*/out vec2 texCoord2;
         |
         |void main(){
@@ -35,44 +36,93 @@ object GlPrograms {
         |  //gl_Position = vec4(tmp.x / tmp.w, tmp.y / tmp.w, tmp.z / tmp.w, 1);
         |
         |  lightIntensity = 0.2 + (max(dot((normalMatrix * vec4(inNormal,1)).xyz, lightDirection), 0.0) * 0.8);
-        |  texCoord = inTextureCoord;
-        |  /*lightMap*/ texCoord2 = inTextureCoord2;
+        |  texCoord1 = inTextureCoord1;
+        |  /*lightMap*/texCoord2 = inTextureCoord2;
         |
         |} """.stripMargin.trim
 
   val fragmentCode = s"""#version $glslVersion
         |
         |uniform sampler2D textureDiffuse;
-        |/*lightMap*/ uniform sampler2D textureLight;
         |
         |in highp float lightIntensity;
         |in highp vec2 texCoord;
-        |/*lightMap*/ in highp vec2 texCoord2;
         |
         |out highp vec4 fragColor;
         |
         |void main(){
         |  highp vec4 c = texture(textureDiffuse, texCoord);
-        |  /*discard*/ if (c.w < 0.5) discard;
+        |  /*discard*/if (c.w < 0.5) discard;
         |
-        |  /*lightMap*/ highp float li = texture(textureLight, texCoord2).x;
-        |  /*lightMap*/ li = lightIntensity + li - lightIntensity*li;
+        |  fragColor = c * lightIntensity;
+        |} """.stripMargin.trim
+
+  val fragmentCodeTexture = s"""#version $glslVersion
         |
-        |  /*lightMap*/ fragColor = c * li; // vec4(lightIntensity,lightIntensity, lightIntensity, 1);
-        |  /*base*/ fragColor = c * lightIntensity;
+        |uniform sampler2D textureLight;
+        |uniform sampler2D textureDiffuse;
+        |
+        |in highp float lightIntensity;
+        |
+        |in highp vec2 texCoord1;
+        |in highp vec2 texCoord2;
+        |
+        |out highp vec4 fragColor;
+        |
+        |void main(){
+        |  highp vec4 c = texture(textureLight, texCoord1);
+        |  /*discard*/if (c.w < 0.5) discard;
+        |
+        |  highp float li = c.x;
+        |  li = lightIntensity + li - lightIntensity * li;
+        |
+        |  highp vec4 d = texture(textureLight, texCoord2);
+        |
+        |  fragColor = d * lightIntensity;
+        |} """.stripMargin.trim
+
+  val fragmentCodeMul = s"""#version $glslVersion
+        |
+        |uniform sampler2D textureLight;
+        |uniform sampler2D textureDiffuse;
+        |
+        |in highp float lightIntensity;
+        |
+        |in highp vec2 texCoord1;
+        |
+        |uniform float scale;
+        |
+        |out highp vec4 fragColor;
+        |
+        |void main(){
+        |  highp vec4 c = texture(textureLight, texCoord1);
+        |  /*discard*/if (c.w < 0.5) discard;
+        |
+        |  highp float li = c.x;
+        |  li = lightIntensity + li - lightIntensity * li;
+        |
+        |  highp vec4 d = texture(textureLight, texCoord1 * scale);
+        |
+        |  fragColor = d * lightIntensity;
         |} """.stripMargin.trim
 
   def vertex(lightMap:Boolean = false) = {
-    val l = if (lightMap) List("/*lightMap*/", "*base*") else List("*lightMap*", "/*base*/")
+    val l = if (lightMap) List("/*lightMap*/") else List("*lightMap*")
     l.fold(vertexCode) { (a, b) =>
       a.replace(b, "")
     }
   }
 
-  def fragment(lightMap:Boolean = false, discard:Boolean = false) = {
-    var l = if (lightMap) List("/*lightMap*/", "*base*") else List("*lightMap*", "/*base*/")
-    l = (if (discard) "/*discard*/" else "*discard*") :: l
-    l.fold(fragmentCode) { (a, b) =>
+  def fragment(lightMap:LightMapType = LightMapType.None, discard:Boolean = false) = {
+    val code = {
+      case LightMapType.Texture => fragmentCodeTexture
+      case LightMapType.Mul => fragmentCodeMul
+      case LightMapType.None =>
+    }
+
+    val l = if (discard) List("/*discard*/") else List("*discard*")
+
+    l.fold(code) { (a, b) =>
       a.replace(b, "")
     }
   }
