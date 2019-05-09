@@ -38,7 +38,6 @@ proc int exportJointsAngels(string $name,int $filename, int $height){
 	$src_connections = `listConnections -d true -s false -t jointCluster $name`;
 	for( $cluster in $src_connections ){
 
-
 		$A = `listSets -o $cluster`;
 		for( $b in $A ){
 			select $b;
@@ -47,7 +46,10 @@ proc int exportJointsAngels(string $name,int $filename, int $height){
 				if($is == 0){
 				    if($height > 0) fprint($filename, "\n");
 					for($k = 0; $k < $height; $k ++) fprint($filename, "\t");
-					fprint($filename, "["+$name+":(");
+
+					string $nm[];
+					$cnt = `tokenize $name ":" $nm`;
+					fprint($filename, "["+$nm[$cnt - 1]+":(");
 
 					string $arg;
 

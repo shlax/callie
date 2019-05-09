@@ -46,12 +46,12 @@ object GlPrograms {
         |uniform sampler2D textureDiffuse;
         |
         |in highp float lightIntensity;
-        |in highp vec2 texCoord;
+        |in highp vec2 texCoord1;
         |
         |out highp vec4 fragColor;
         |
         |void main(){
-        |  highp vec4 c = texture(textureDiffuse, texCoord);
+        |  highp vec4 c = texture(textureDiffuse, texCoord1);
         |  /*discard*/if (c.w < 0.5) discard;
         |
         |  fragColor = c * lightIntensity;
@@ -90,7 +90,7 @@ object GlPrograms {
         |
         |in highp vec2 texCoord1;
         |
-        |uniform float scale;
+        |uniform highp float scale;
         |
         |out highp vec4 fragColor;
         |
@@ -114,10 +114,10 @@ object GlPrograms {
   }
 
   def fragment(lightMap:LightMapType = LightMapType.None, discard:Boolean = false) = {
-    val code = {
+    val code = lightMap match {
       case LightMapType.Texture => fragmentCodeTexture
       case LightMapType.Mul => fragmentCodeMul
-      case LightMapType.None =>
+      case LightMapType.None => fragmentCode
     }
 
     val l = if (discard) List("/*discard*/") else List("*discard*")
