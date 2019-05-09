@@ -17,11 +17,11 @@ object Camera {
   // http://stackoverflow.com/questions/21079623/how-to-calculate-the-normal-matrix
 
   var viewMatrix: Int = _
-  var normalMatrix: Int = _
+  var lightDirection: Int = _
 
-  def program(gl:GlType, id:Int, view:String="viewMatrix", normal:String="normalMatrix"){
+  def program(gl:GlType, id:Int, view:String="viewMatrix", normal:String="lightDirection"){
     viewMatrix = gl.glGetUniformLocation(id, view)
-    normalMatrix = gl.glGetUniformLocation(id, normal)
+    lightDirection = gl.glGetUniformLocation(id, normal)
     display(gl)
   }
 
@@ -35,6 +35,9 @@ object Camera {
   val angY = Angle()
 
   val off = Vector3(0f, 0f, -5f)
+
+  val light = Vector3(0f, 0f, 1f)
+  val vecTmp = Vector3(0f, 0f, 1f)
 
   val tmp = Matrix4()
   val modMat = Matrix4()
@@ -88,7 +91,9 @@ object Camera {
                            0f, 0f, -1f, 0f)
 
   val viewAr = new Array[Float](16)
-  val normAr = new Array[Float](16)
+  val lightDirectionAr = new Array[Float](3)
+
+  var cnt = 0
 
   // mat4 normalMatrix = transpose(inverse(modelView));
   def display(gl:GlType){
@@ -98,12 +103,24 @@ object Camera {
 
     //modMat.rotX(angX()).mul(tmp.rotY((Math.PI/2d).asInstanceOf[Float] + angY()))
     modMat.rotX(angX()).mul(tmp.rotY(angY()))
-    gl.glUniformMatrix4fv(normalMatrix, 1, true, modMat.toArray(normAr), 0)
+    //println("normalMatrix "+modMat)
+    //modMat.apply(light, vecTmp)
 
+    gl.glUniform3fv(lightDirection, 1, vecTmp.toArray(lightDirectionAr), 0)
+
+    /* cnt += 1
+    if(cnt == 250) {
+      println(angY()+ " " + light + " -> " + vecTmp)
+      cnt = 0
+    } */
+
+
+
+   //modMat.rotY(angY())
     modMat.mul(tmp.set(target.position))
     modMat.mul(tmp.set(off), modMat)
 //    modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position))
-//    println(m)
+    //println("viewMatrix "+modMat)
     gl.glUniformMatrix4fv(viewMatrix, 1, true, tmp.mul(projection, modMat).toArray(viewAr), 0)
 
   }

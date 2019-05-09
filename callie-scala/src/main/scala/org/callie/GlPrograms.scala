@@ -13,7 +13,7 @@ object GlPrograms {
         |/*lightMap*/layout(location = 3) in vec2 inTextureCoord2;
         |
         |uniform mat4 viewMatrix;
-        |uniform mat4 normalMatrix;
+        |uniform vec3 lightDirection;
         |
         |/* const mat4 projection = mat4( // 1 : 10 X 0.5
         | vec4(2, 0, 0, 0),
@@ -22,7 +22,7 @@ object GlPrograms {
         | vec4(0, 0, -1, 0)
         |); */
         |
-        |const vec3 lightDirection = normalize(vec3(1, 1, 2));
+        |//const vec3 lightDirection = vec3(0, 0, 1);
         |
         |out float lightIntensity;
         |
@@ -35,7 +35,8 @@ object GlPrograms {
         |  //vec4 tmp = viewMatrix * vec4(inPosition, 1);
         |  //gl_Position = vec4(tmp.x / tmp.w, tmp.y / tmp.w, tmp.z / tmp.w, 1);
         |
-        |  lightIntensity = 0.2 + (max(dot((normalMatrix * vec4(inNormal,1)).xyz, (normalMatrix * vec4(lightDirection,1)).xyz), 0.0) * 0.8);
+        |  //lightIntensity = 0.2 + (max(dot((normalMatrix * vec4(inNormal,0)), (normalMatrix * vec4(lightDirection,0))), 0.0) * 0.8);
+        |  lightIntensity = 0.2 + (max(dot(inNormal, lightDirection), 0.0) * 0.8);
         |  texCoord1 = inTextureCoord1;
         |  /*lightMap*/texCoord2 = inTextureCoord2;
         |
@@ -81,7 +82,7 @@ object GlPrograms {
         |  fragColor = d * lightIntensity;
         |} """.stripMargin.trim
 
-  val fragmentCodeMul = s"""#version $glslVersion
+  /* val fragmentCodeMul = s"""#version $glslVersion
         |
         |uniform sampler2D textureLight;
         |uniform sampler2D textureDiffuse;
@@ -104,7 +105,7 @@ object GlPrograms {
         |  highp vec4 d = texture(textureLight, texCoord1 * scale);
         |
         |  fragColor = d * lightIntensity;
-        |} """.stripMargin.trim
+        |} """.stripMargin.trim */
 
   def vertex(lightMap:Boolean = false) = {
     val l = if (lightMap) List("/*lightMap*/") else List("*lightMap*")
@@ -116,7 +117,7 @@ object GlPrograms {
   def fragment(lightMap:LightMapType = LightMapType.None, discard:Boolean = false) = {
     val code = lightMap match {
       case LightMapType.Texture => fragmentCodeTexture
-      case LightMapType.Mul => fragmentCodeMul
+      // case LightMapType.Mul => fragmentCodeMul
       case LightMapType.None => fragmentCode
     }
 

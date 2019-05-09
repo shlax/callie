@@ -125,7 +125,7 @@ class StaticObject(ev:GlEventListener) extends GlObject{
         val stride = (6 + uvCount * 2)*Buffers.SIZEOF_FLOAT
 
         gl.glVertexAttribPointer(0, 3, Gl.FLOAT, false, stride, 0*Buffers.SIZEOF_FLOAT)
-        gl.glVertexAttribPointer(1, 2, Gl.FLOAT, false, stride, 3*Buffers.SIZEOF_FLOAT)
+        gl.glVertexAttribPointer(1, 3, Gl.FLOAT, false, stride, 3*Buffers.SIZEOF_FLOAT)
         for(i <- 0 until uvCount) {
           gl.glVertexAttribPointer(2 + i, 2, Gl.FLOAT, false, stride, (6 + i * 2) * Buffers.SIZEOF_FLOAT)
         }

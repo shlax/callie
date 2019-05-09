@@ -85,6 +85,13 @@ trait Vector3 extends Translation{
     this
   }
 
+  def toArray(a:Array[Float]) = {
+    a(0) = x; a(1) = y; a(2) = z
+    a
+  }
+
+  def toArray() = Array[Float](x, y, z)
+
   def dot(a: Vector3) = a.x * this.x + a.y * this.y + a.z * this.z
 
   override def toString = "{"+x+", "+y+", "+z+"}"

@@ -26,6 +26,10 @@ object MainLevel extends App {
 
     val char = new TextureGroup(this, "/data/char/char.png", Gl.TEXTURE0, charObj:_* )
 
+    val sphere = new TextureGroup(this, "/demo/box/white.png", Gl.TEXTURE0,
+      new StaticObject(this, Mod.load("/demo/box/sphere.mod"))
+    )
+
     val dunes = new TextureGroup(this, "/data/map/sand.png", Gl.TEXTURE0,
       new StaticObject(this, Mod.load("/data/map/dunes.mod"))
     )
@@ -48,6 +52,8 @@ object MainLevel extends App {
       val prog = createProgram(gl, vertexSchader, fragmentSchader)
 
       char.init(gl)
+
+      sphere.init(gl)
 
       dunes.init(gl)
       sky.init(gl)
@@ -76,6 +82,8 @@ object MainLevel extends App {
       Camera.display(gl)
 
       char.display(gl)
+
+      sphere.display(gl)
 
       dunes.display(gl)
       sky.display(gl)

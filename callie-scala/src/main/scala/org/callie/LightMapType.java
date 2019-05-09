@@ -1,5 +1,5 @@
 package org.callie;
 
 public enum LightMapType {
-    Texture, Mul, None
+    Texture, /*Mul, */ None
 }

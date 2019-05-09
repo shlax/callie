@@ -12,7 +12,7 @@ tasks.withType(ScalaCompile) {
 }
 
 dependencies {
-    compile 'org.scala-lang:scala-library:2.12.7'
+    compile 'org.scala-lang:scala-library:2.12.8'
     compile 'org.scala-lang.modules:scala-parser-combinators_2.12:1.1.1'
     
     compile 'org.jogamp.gluegen:gluegen-rt-main:2.3.2'
