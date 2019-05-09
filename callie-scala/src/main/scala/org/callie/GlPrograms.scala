@@ -35,7 +35,7 @@ object GlPrograms {
         |  //vec4 tmp = viewMatrix * vec4(inPosition, 1);
         |  //gl_Position = vec4(tmp.x / tmp.w, tmp.y / tmp.w, tmp.z / tmp.w, 1);
         |
-        |  lightIntensity = 0.2 + (max(dot((normalMatrix * vec4(inNormal,1)).xyz, lightDirection), 0.0) * 0.8);
+        |  lightIntensity = 0.2 + (max(dot((normalMatrix * vec4(inNormal,1)).xyz, (normalMatrix * vec4(lightDirection,1)).xyz), 0.0) * 0.8);
         |  texCoord1 = inTextureCoord1;
         |  /*lightMap*/texCoord2 = inTextureCoord2;
         |
