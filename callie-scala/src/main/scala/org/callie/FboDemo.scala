@@ -199,7 +199,7 @@ object FboDemo extends App{
       mapa.init(gl)
       char.init(gl)
 
-      Camera.program(gl, prog)
+      Camera.program(gl, Seq(prog))
       Camera.lookAt(camCtrl)
 
       gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f)

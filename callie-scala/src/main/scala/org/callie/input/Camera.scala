@@ -16,12 +16,12 @@ object Camera {
 
   // http://stackoverflow.com/questions/21079623/how-to-calculate-the-normal-matrix
 
-  var viewMatrix: Int = _
-  var lightDirectionVec: Int = _
+  var viewMatrix: Array[Int] = _
+  var lightDirectionVec: Array[Int] = _
 
-  def program(gl:GlType, id:Int, view:String="viewMatrix", lightDirection:String="lightDirection"){
-    viewMatrix = gl.glGetUniformLocation(id, view)
-    lightDirectionVec = gl.glGetUniformLocation(id, lightDirection)
+  def program(gl:GlType, id:Seq[Int], view:String="viewMatrix", lightDirection:String="lightDirection"){
+    viewMatrix = id.map(i => gl.glGetUniformLocation(i, view)).toArray
+    lightDirectionVec = id.map(i => gl.glGetUniformLocation(i, lightDirection)).toArray
     display(gl)
   }
 
@@ -37,7 +37,7 @@ object Camera {
   val off = Vector3(0f, 0f, -5f)
 
   val light = Vector3(0f, 0f, 1f)
-  val vecTmp = Vector3()
+  //val vecTmp = Vector3()
 
   val tmp = Matrix4()
   val modMat = Matrix4()
@@ -102,8 +102,8 @@ object Camera {
     angY() += Inputs.xDiff() * 0.025f
 
     //modMat.rotX(angX()).mul(tmp.rotY((Math.PI/2d).asInstanceOf[Float] + angY()))
-    modMat.rotY(-1f * angY()).mul(tmp.rotX(-1f * angX())).apply(light, vecTmp)
-    gl.glUniform3fv(lightDirectionVec, 1, vecTmp.toArray(lightDirectionAr), 0)
+    modMat.rotY(-1f * angY()).mul(tmp.rotX(-1f * angX())).apply(light, lightDirectionAr)
+    for(i <- lightDirectionVec) gl.glUniform3fv(i, 1, lightDirectionAr, 0)
 
     //println("normalMatrix "+modMat)
 
@@ -115,8 +115,9 @@ object Camera {
 
    //modMat.rotY(angY())
 //    modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position))
-    modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position)) //.mul(tmp.set(off), modMat)
-    gl.glUniformMatrix4fv(viewMatrix, 1, true, tmp.mul(projection, modMat).toArray(viewAr), 0)
+    //modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position)) //.mul(tmp.set(off), modMat)
+    projection.mul(modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position)), viewAr)
+    for(i <- viewMatrix) gl.glUniformMatrix4fv(i, 1, true, viewAr, 0)
 
     //println("viewMatrix "+modMat)
   }

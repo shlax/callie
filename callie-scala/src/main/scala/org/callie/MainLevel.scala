@@ -60,7 +60,7 @@ object MainLevel extends App {
 
       for(o <- objects) o.init(gl)
 
-      Camera.program(gl, prog)
+      Camera.program(gl, Seq(prog))
       Camera.lookAt(camCtrl)
 
       gl.glUseProgram(prog)

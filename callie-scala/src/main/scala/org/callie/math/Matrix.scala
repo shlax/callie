@@ -74,15 +74,22 @@ class Matrix4(var m00: Float, var m01: Float, var m02: Float, var m03: Float,   
                              m.m20, m.m21, m.m22, m.m23,
                              m.m30, m.m31, m.m32, m.m33)
                     
-  def apply(v: Vector3){
-    apply(v, v)
+  def apply(v: Vector3): Vector3 = apply(v, v)
+
+  def apply(in: Vector3, out : Vector3) = {
+    val x = m00*in.x + m01*in.y + m02*in.z + m03
+    val y = m10*in.x + m11*in.y + m12*in.z + m13
+    val z = m20*in.x + m21*in.y + m22*in.z + m23
+    out.x = x; out.y =y; out.z = z
+    out
   }
-  
-  def apply(in: Vector3, out : Vector3){
-	    val x = m00*in.x + m01*in.y + m02*in.z + m03
-      val y = m10*in.x + m11*in.y + m12*in.z + m13
-      val z = m20*in.x + m21*in.y + m22*in.z + m23
-      out.x = x; out.y =y; out.z = z
+
+  def apply(in: Vector3, out : Array[Float]) = {
+    val x = m00*in.x + m01*in.y + m02*in.z + m03
+    val y = m10*in.x + m11*in.y + m12*in.z + m13
+    val z = m20*in.x + m21*in.y + m22*in.z + m23
+    out(0) = x; out(1) =y; out(2) = z
+    out
   }
 
   def mul (m : Matrix4) : Matrix4 = mul(this, m)
@@ -105,14 +112,42 @@ class Matrix4(var m00: Float, var m01: Float, var m02: Float, var m03: Float,   
     val t32 = m.m30 * n.m02 + m.m31 * n.m12 + m.m32 * n.m22 + m.m33 * n.m32
     val t33 = m.m30 * n.m03 + m.m31 * n.m13 + m.m32 * n.m23 + m.m33 * n.m33
 
-    m00 = t00;  m01 = t01;  m02 = t02; m03 = t03
-    m10 = t10;  m11 = t11;  m12 = t12; m13 = t13
-    m20 = t20;  m21 = t21;  m22 = t22; m23 = t23
-    m30 = t30; m31 = t31;  m32 = t32; m33 = t33
+    m00 = t00; m01 = t01; m02 = t02; m03 = t03
+    m10 = t10; m11 = t11; m12 = t12; m13 = t13
+    m20 = t20; m21 = t21; m22 = t22; m23 = t23
+    m30 = t30; m31 = t31; m32 = t32; m33 = t33
     
     this
   }
-  
+
+  def mul (m : Matrix4, out:Array[Float]) : Array[Float] = mul(this, m, out)
+
+  def mul(m : Matrix4, n : Matrix4, out:Array[Float]) = {
+    val t00 = m.m00 * n.m00 + m.m01 * n.m10 + m.m02 * n.m20 + m.m03 * n.m30
+    val t01 = m.m00 * n.m01 + m.m01 * n.m11 + m.m02 * n.m21 + m.m03 * n.m31
+    val t02 = m.m00 * n.m02 + m.m01 * n.m12 + m.m02 * n.m22 + m.m03 * n.m32
+    val t03 = m.m00 * n.m03 + m.m01 * n.m13 + m.m02 * n.m23 + m.m03 * n.m33
+    val t10 = m.m10 * n.m00 + m.m11 * n.m10 + m.m12 * n.m20 + m.m13 * n.m30
+    val t11 = m.m10 * n.m01 + m.m11 * n.m11 + m.m12 * n.m21 + m.m13 * n.m31
+    val t12 = m.m10 * n.m02 + m.m11 * n.m12 + m.m12 * n.m22 + m.m13 * n.m32
+    val t13 = m.m10 * n.m03 + m.m11 * n.m13 + m.m12 * n.m23 + m.m13 * n.m33
+    val t20 = m.m20 * n.m00 + m.m21 * n.m10 + m.m22 * n.m20 + m.m23 * n.m30
+    val t21 = m.m20 * n.m01 + m.m21 * n.m11 + m.m22 * n.m21 + m.m23 * n.m31
+    val t22 = m.m20 * n.m02 + m.m21 * n.m12 + m.m22 * n.m22 + m.m23 * n.m32
+    val t23 = m.m20 * n.m03 + m.m21 * n.m13 + m.m22 * n.m23 + m.m23 * n.m33
+    val t30 = m.m30 * n.m00 + m.m31 * n.m10 + m.m32 * n.m20 + m.m33 * n.m30
+    val t31 = m.m30 * n.m01 + m.m31 * n.m11 + m.m32 * n.m21 + m.m33 * n.m31
+    val t32 = m.m30 * n.m02 + m.m31 * n.m12 + m.m32 * n.m22 + m.m33 * n.m32
+    val t33 = m.m30 * n.m03 + m.m31 * n.m13 + m.m32 * n.m23 + m.m33 * n.m33
+
+    out(0)  = t00; out(1)  = t01; out(2)  = t02; out(3)  = t03
+    out(4)  = t10; out(5)  = t11; out(6)  = t12; out(7)  = t13
+    out(8)  = t20; out(9)  = t21; out(10) = t22; out(11) = t23
+    out(12) = t30; out(13) = t31; out(14) = t32; out(15) = t33
+
+    out
+  }
+
   def set(v: Vector3) = {
     m00 = 1f; m01 = 0f; m02 = 0f; m03 = v.x
     m10 = 0f; m11 = 1f; m12 = 0f; m13 = v.y

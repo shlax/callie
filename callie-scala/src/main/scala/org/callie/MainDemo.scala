@@ -42,7 +42,7 @@ object MainDemo extends App{
       mapa.init(gl)
       char.init(gl)
 
-      Camera.program(gl, prog)
+      Camera.program(gl, Seq(prog))
       Camera.lookAt(camCtrl)
 
       gl.glUseProgram(prog)
