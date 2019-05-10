@@ -102,9 +102,7 @@ object Camera {
     angY() += Inputs.xDiff() * 0.025f
 
     //modMat.rotX(angX()).mul(tmp.rotY((Math.PI/2d).asInstanceOf[Float] + angY()))
-    modMat.rotY(-1f * angY()).mul(tmp.rotX(-1f * angX()))
-    modMat.apply(light, vecTmp)
-
+    modMat.rotY(-1f * angY()).mul(tmp.rotX(-1f * angX())).apply(light, vecTmp)
     gl.glUniform3fv(lightDirectionVec, 1, vecTmp.toArray(lightDirectionAr), 0)
 
     //println("normalMatrix "+modMat)
@@ -116,13 +114,11 @@ object Camera {
     } */
 
    //modMat.rotY(angY())
-    modMat.rotX(angX()).mul(tmp.rotY(angY()))
-    modMat.mul(tmp.set(target.position))
-    modMat.mul(tmp.set(off), wwwwwwwww)
 //    modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position))
-    //println("viewMatrix "+modMat)
+    modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position)) //.mul(tmp.set(off), modMat)
     gl.glUniformMatrix4fv(viewMatrix, 1, true, tmp.mul(projection, modMat).toArray(viewAr), 0)
 
+    //println("viewMatrix "+modMat)
   }
 
 }
