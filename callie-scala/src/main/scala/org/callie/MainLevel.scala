@@ -13,9 +13,10 @@ object MainLevel extends App {
 
   JoglFrame(new GlEventListener {
 
-    val (charObj, joint) = Node.load(this, Map("pSphere5" -> Mod.load("/data/char/model.mod").scale(0.1f),
-      "polySurface115" -> Mod.load("/data/char/hair.mod").scale(0.1f)),
-      "/data/char/joints.skl", 0.1f)
+    val (charObj, joint) = Node.load(this, Map(
+        "pSphere5" -> Mod.load("/data/char/model.mod").scale(0.1f),
+        "polySurface115" -> Mod.load("/data/char/hair.mod").scale(0.1f)
+      ), "/data/char/joints.skl", 0.1f)
 
     val stand = KeyFrameLoader.load(joint, "/data/char/anim/stand.ang", 0.1f)
 
