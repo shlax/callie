@@ -47,7 +47,7 @@ object JoinControl{
 
 /** animacia nad JoinState */
 class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame]) {
-  val interval = 0.85f / cntrl.maxRunSpeed
+  val interval = 0.7f / cntrl.maxRunSpeed
   val invInter = 1f/interval
 
   var act = AnimState.STAND

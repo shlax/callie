@@ -13,7 +13,7 @@ class MovingObject(val map:Map25, height:Float, val pos2D: Vector2 = Vector2(), 
   val acceleration = 15f
   val deAcceleration = acceleration * 2f
 
-  override val maxRunSpeed = 4f
+  override val maxRunSpeed = 2.5f
   var speed = 0f
 
   override val position = Vector3()

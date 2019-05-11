@@ -34,6 +34,7 @@ object MainLevel extends App {
     val objects = Array(
       new TextureGroup(this, "/data/char/char.png", Gl.TEXTURE0, charObj:_* ),
 
+      //new TextureGroup(this, "/demo/t.png", Gl.TEXTURE0,
       new TextureGroup(this, "/data/map/sand.png", Gl.TEXTURE0,
         new StaticObject(this, Mod.load("/data/map/dunes.mod"))
       ),
