@@ -114,12 +114,8 @@ object GlPrograms {
     }
   }
 
-  def fragment(lightMap:LightMapType = LightMapType.None, discard:Boolean = false) = {
-    val code = lightMap match {
-      case LightMapType.Texture => fragmentCodeTexture
-      // case LightMapType.Mul => fragmentCodeMul
-      case LightMapType.None => fragmentCode
-    }
+  def fragment(lightMap:Boolean = false, discard:Boolean = false) = {
+    val code = if(lightMap) fragmentCodeTexture else fragmentCode
 
     val l = if (discard) List("/*discard*/") else List("*discard*")
 
