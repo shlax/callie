@@ -117,7 +117,7 @@ class StaticObject(ev:GlEventListener) extends GlObject{
     vao = ev.createVertexArray(gl){
       gl.glEnableVertexAttribArray(0)
       gl.glEnableVertexAttribArray(1)
-      gl.glEnableVertexAttribArray(2)
+      for(i <- 0 until uvCount) gl.glEnableVertexAttribArray(2 + i)
       
       ev.createBuffer(gl, Gl.ARRAY_BUFFER){
         coords.asBuffer(gl.glBufferData(Gl.ARRAY_BUFFER, _, _, Gl.STATIC_DRAW))
