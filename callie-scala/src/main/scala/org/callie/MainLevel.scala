@@ -32,7 +32,7 @@ object MainLevel extends App {
     ) */
 
     val objects = Array(
-      new TextureGroup(this, "/data/char/char.png", Gl.TEXTURE0, charObj:_* ),
+      new TextureGroup(this, "/data/char/char.png", Gl.TEXTURE0, charObj.toIndexedSeq:_* ),
 
       //new TextureGroup(this, "/demo/t.png", Gl.TEXTURE0,
       new TextureGroup(this, "/data/map/sand.png", Gl.TEXTURE0,
@@ -50,7 +50,7 @@ object MainLevel extends App {
 
     var t: Long = 0
 
-    override def initGL4(gl: GlType){
+    override def initGL4(gl: GlType):Unit={
       val vertexSchader = createShader(gl, Gl.VERTEX_SHADER, GlPrograms.vertex())
       val fragmentSchader = createShader(gl, Gl.FRAGMENT_SHADER, GlPrograms.fragment(discard = true))
       val prog = createProgram(gl, vertexSchader, fragmentSchader)
@@ -73,7 +73,7 @@ object MainLevel extends App {
       t = System.nanoTime()
     }
 
-    override def displayGL4(gl: GlType){
+    override def displayGL4(gl: GlType):Unit={
       gl.glClear(Gl.COLOR_BUFFER_BIT | Gl.DEPTH_BUFFER_BIT)
 
       val tmp = System.nanoTime()

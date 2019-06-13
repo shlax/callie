@@ -5,20 +5,20 @@ import com.jogamp.opengl.{GLAutoDrawable, GLEventListener}
 trait GlEventListener extends GLEventListener{
 
   // GLEventListener
-  override def init(drawable: GLAutoDrawable) {
+  override def init(drawable: GLAutoDrawable):Unit={
     drawable.setAutoSwapBufferMode(true)
     initGL4(glProfile(drawable))
   }
 
-  def initGL4(gl:GlType)
+  def initGL4(gl:GlType):Unit
 
-  override def display(drawable: GLAutoDrawable) {
+  override def display(drawable: GLAutoDrawable):Unit={
     displayGL4(glProfile(drawable))
   }
 
-  def displayGL4(gl:GlType)
+  def displayGL4(gl:GlType):Unit
 
-  override def reshape(drawable: GLAutoDrawable, x: Int, y: Int, width: Int, height: Int) {
+  override def reshape(drawable: GLAutoDrawable, x: Int, y: Int, width: Int, height: Int):Unit={
     val gl = glProfile(drawable)
     gl.glViewport(x, y, width, height)
   }
@@ -30,7 +30,7 @@ trait GlEventListener extends GLEventListener{
   var disposeFbo : List[Int] = Nil
   var disposeRbo : List[Int] = Nil
 
-  override def dispose(drawable: GLAutoDrawable) {
+  override def dispose(drawable: GLAutoDrawable):Unit={
     val gl = glProfile(drawable)
 
     if(disposeVbo.nonEmpty) gl.glDeleteBuffers(disposeVbo.size, disposeVbo.toArray, 0)
@@ -59,33 +59,33 @@ trait GlEventListener extends GLEventListener{
     texId
   }
   
-  def bindTexture(gl : GlType, tex:Int)(f: =>Unit){
+  def bindTexture(gl : GlType, tex:Int)(f: =>Unit):Unit={
     gl.glBindTexture(Gl.TEXTURE_2D, tex)
     f
     gl.glBindTexture(Gl.TEXTURE_2D, 0)
   }
   
-  def createVertexArray(gl : GlType)(f: =>Unit) = {
+  def createVertexArray(gl : GlType)(f: =>Unit):Int = {
     val vao = &(gl.glGenVertexArrays(1, _, 0))
     disposeVao = vao :: disposeVao
     bindVertexArray(gl, vao)(f)
     vao
   }
 
-  def bindVertexArray(gl : GlType, array:Int)(f: => Unit){
+  def bindVertexArray(gl : GlType, array:Int)(f: => Unit):Unit={
     gl.glBindVertexArray(array)
     f
     gl.glBindVertexArray(0)
   }
 
-  def createBuffer(gl : GlType, target:Int)(f: => Unit) = {
+  def createBuffer(gl : GlType, target:Int)(f: => Unit):Int = {
     val vbo = &(gl.glGenBuffers(1, _, 0))
     disposeVbo = vbo :: disposeVbo
     bindBuffer(gl, target, vbo)(f)
     vbo
   }
 
-  def bindBuffer(gl : GlType, target:Int, buffer:Int)(f: => Unit){
+  def bindBuffer(gl : GlType, target:Int, buffer:Int)(f: => Unit):Unit={
     gl.glBindBuffer(target, buffer)
     f
     gl.glBindBuffer(target, 0)
@@ -93,7 +93,7 @@ trait GlEventListener extends GLEventListener{
 
   // --------------------------------------------------------------------------------
 
-  def createFrameBuffer(gl : GlType)(f: => Unit)= {
+  def createFrameBuffer(gl : GlType)(f: => Unit):Int= {
     val fbo = &(gl.glGenFramebuffers(1, _, 0))
     disposeFbo = fbo :: disposeFbo
     bindFrameBuffer(gl, fbo)(f)
@@ -104,20 +104,20 @@ trait GlEventListener extends GLEventListener{
     fbo
   }
 
-  def bindFrameBuffer(gl : GlType, buffer:Int)(f: => Unit){
+  def bindFrameBuffer(gl : GlType, buffer:Int)(f: => Unit):Unit={
     gl.glBindFramebuffer(Gl.FRAMEBUFFER, buffer)
     f
     gl.glBindFramebuffer(Gl.FRAMEBUFFER, 0)
   }
 
-  def createRenderbuffer(gl : GlType)(f: => Unit)= {
+  def createRenderbuffer(gl : GlType)(f: => Unit):Int= {
     val rbo = &(gl.glGenRenderbuffers(1, _, 0))
     disposeRbo = rbo :: disposeRbo
     bindRenderbuffer(gl, rbo)(f)
     rbo
   }
 
-  def bindRenderbuffer(gl : GlType, buffer:Int)(f: => Unit){
+  def bindRenderbuffer(gl : GlType, buffer:Int)(f: => Unit):Unit={
     gl.glBindRenderbuffer(Gl.RENDERBUFFER, buffer)
     f
     gl.glBindRenderbuffer(Gl.RENDERBUFFER, 0)
@@ -125,7 +125,7 @@ trait GlEventListener extends GLEventListener{
 
   // --------------------------------------------------------------------------------
 
-  def createShader(gl:GlType, tpe:Int, source:String) = {
+  def createShader(gl:GlType, tpe:Int, source:String):Int = {
     val tmp = Array(0)
     val s = gl.glCreateShader(tpe) // VERTEX/FRAGMENT/GEOMETRY_SHADER
     gl.glShaderSource(s, 1, Array(source), null)
@@ -142,7 +142,7 @@ trait GlEventListener extends GLEventListener{
     s
   }
 
-  def createProgram(gl:GlType, shaders:Int*) = {
+  def createProgram(gl:GlType, shaders:Int*):Int = {
     val p = gl.glCreateProgram()
     disposeProgram = p :: disposeProgram
 

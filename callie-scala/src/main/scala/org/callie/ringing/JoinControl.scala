@@ -7,7 +7,7 @@ trait JoinState extends Transformation{
 
   def maxRunSpeed:Float
 
-  def apply(delta:Float)
+  def apply(delta:Float):Unit
 
   def state(): AnimState
 }
@@ -55,7 +55,7 @@ class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame
 
   var runInd = 0
 
-  def apply(delta:Float){
+  def apply(delta:Float):Unit={
     cntrl.apply(delta)
 
     acc += delta

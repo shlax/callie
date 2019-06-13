@@ -14,9 +14,9 @@ trait Joint {
   def name:String
 
   /** time s intervalu <0,1>  */
-  def apply(trans: Matrix4, normalTrans: Matrix4, time:Float)// : (Matrix4, Matrix4)
+  def apply(trans: Matrix4, normalTrans: Matrix4, time:Float):Unit// : (Matrix4, Matrix4)
 
-  def apply(trans: Transformation, time:Float){
+  def apply(trans: Transformation, time:Float):Unit={
     apply(trans.transformation, trans.normalTransformation, time)
   }
 }
@@ -32,7 +32,7 @@ class OffsetJoint(override val ax: Intr, override val  ay:Intr, override val az 
   override def name = ""
 
   val m = Matrix4()
-  override def apply(trans: Matrix4, normalTrans: Matrix4, time: Float){
+  override def apply(trans: Matrix4, normalTrans: Matrix4, time: Float):Unit={
     m.set(ax(time), ay(time), az(time)).mul(trans)
     child.apply(m, normalTrans, time)
   }
@@ -51,7 +51,7 @@ class IntrJoint(override val name:String,
   var rotZ : Float = _
 
   val n = Matrix4(); val m = Matrix4()
-  def apply(trans : Matrix4, normalTrans : Matrix4, time:Float){
+  def apply(trans : Matrix4, normalTrans : Matrix4, time:Float):Unit={
     //val n = Matrix4()
     rotX = ax(time); rotY = ay(time); rotZ = az(time)
     m.rotZ(rotZ).mul(n.rotY(rotY)).mul(n.rotX(rotX))
@@ -71,7 +71,7 @@ class IntrTravJoint(name:String,
                     offset:Matrix4, ax: Intr, ay:Intr, az : Intr, override val childs:Array[Joint],
                     points:Array[(Vector3, Vector3)], normals:Array[(Vector3, Vector3)] ) extends IntrJoint(name, offset, ax, ay, az, points, normals) with JointTrav{
 
-  override def apply(trans : Matrix4, normalTrans : Matrix4, time:Float){
+  override def apply(trans : Matrix4, normalTrans : Matrix4, time:Float):Unit={
     super.apply(trans, normalTrans, time)
     for(j <- childs) j.apply(n, m, time)
   }
@@ -90,7 +90,7 @@ class LinearJoint(override val name:String,
   }
 
   val n = Matrix4(); val m = Matrix4()
-  override def apply(trans:Matrix4, normalTrans:Matrix4, time:Float){
+  override def apply(trans:Matrix4, normalTrans:Matrix4, time:Float):Unit={
 
     m.rotZ(iz.value * value(iz.axis)).mul(n.rotY(iy.value * value(iy.axis))).mul(n.rotX(ix.value * value(ix.axis)))
     

@@ -10,5 +10,5 @@ object ModTst extends App{
 
   val m = Mod.apply(s.mkString)
 
-  println(m.points.size+" / "+m.faces.size)
+  println(m.points.size.toString+" / "+m.faces.size)
 }

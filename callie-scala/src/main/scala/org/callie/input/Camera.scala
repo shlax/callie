@@ -6,7 +6,9 @@ import org.callie.math.{Angle, Matrix4, Vector3}
 // http://www.gamedev.net/topic/617711-glulookat-replacement/
 object Camera {
   var target:TrackingObject = ZeroTrackingObject
-  def lookAt(t:TrackingObject){ target = t }
+  def lookAt(t:TrackingObject):Unit={
+    target = t
+  }
 
 //  var position = Vector3(0, 0, -1f)
 
@@ -19,7 +21,7 @@ object Camera {
   var viewMatrix: Array[Int] = _
   var lightDirectionVec: Array[Int] = _
 
-  def program(gl:GlType, id:Seq[Int], view:String="viewMatrix", lightDirection:String="lightDirection"){
+  def program(gl:GlType, id:Seq[Int], view:String="viewMatrix", lightDirection:String="lightDirection"):Unit={
     viewMatrix = id.map(i => gl.glGetUniformLocation(i, view)).toArray
     lightDirectionVec = id.map(i => gl.glGetUniformLocation(i, lightDirection)).toArray
     display(gl)
@@ -96,7 +98,7 @@ object Camera {
   var cnt = 0
 
   // mat4 normalMatrix = transpose(inverse(modelView));
-  def display(gl:GlType){
+  def display(gl:GlType):Unit={
     off.z += Inputs.zDiff() * 0.25f
     angX() += Inputs.yDiff() * 0.025f
     angY() += Inputs.xDiff() * 0.025f

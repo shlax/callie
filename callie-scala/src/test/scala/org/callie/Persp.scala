@@ -29,10 +29,10 @@ object Persp extends App{
 
   println(pm)
 
-  def tst(i: Vector3) {
+  def tst(i: Vector3):Unit={
     val q = Vector3()
     pm.apply(i, q)
-    println(i + " -> " + q)
+    println(i.toString + " -> " + q)
   }
 
   tst(Vector3(0, 0, -0.5f))

@@ -10,7 +10,7 @@ object KeyFrameLoader extends RegexParsers {
   type F3 = (Float, Float, Float)
 
   class NodeKeys(val nm:String, angles:F3, childs:List[NodeKeys]){
-    def apply(j:Joint, l:mutable.MutableList[KeyValue]){
+    def apply(j:Joint, l:mutable.ArrayBuffer[KeyValue]):Unit={
       val ji = j.asInstanceOf[JointIntr]
 
       val conv = (Math.PI/180d).asInstanceOf[Float]
@@ -29,7 +29,7 @@ object KeyFrameLoader extends RegexParsers {
 
   class MainNodeKeys(nm:String, offset:Vector3, angles:F3, childs:List[NodeKeys]) extends NodeKeys(nm, angles, childs){
     def apply(j:Joint) : (Vector3, KeyFrame) = {
-      val l = mutable.MutableList[KeyValue]()
+      val l = mutable.ArrayBuffer[KeyValue]()
       apply(j, l)
       (offset, new KeyFrame(l.toArray))
     }

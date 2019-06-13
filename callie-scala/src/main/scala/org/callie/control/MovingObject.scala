@@ -24,7 +24,7 @@ class MovingObject(val map:Map25, height:Float, val pos2D: Vector2 = Vector2(), 
   normalTransformation.rotY(Angle.PI1 - angle())
   calculate(map.apply(pos2D))
 
-  def calculate(z:Float){
+  def calculate(z:Float):Unit={
     position.x = pos2D.x
     position.y = z
     position.z = pos2D.y
@@ -37,7 +37,7 @@ class MovingObject(val map:Map25, height:Float, val pos2D: Vector2 = Vector2(), 
     position.z *= -1f
   }
 
-  override def apply(delta:Float){
+  override def apply(delta:Float):Unit={
     if(Inputs.w){ // accelerate
       if(angle.rotateTo(Camera.angY, delta * epsilon)){
         normalTransformation.rotY(Angle.PI1 - angle())

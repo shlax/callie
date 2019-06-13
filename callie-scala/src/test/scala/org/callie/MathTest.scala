@@ -6,26 +6,26 @@ import scala.util.Random
 
 object MathTest extends App{
 
-  def invTest(){
+  def invTest():Unit={
     val m = Matrix4(1, 2, 3, 9,
                     4, 7, 6, 8,
                     7, 8, 9, 7,
                     1, 2, 3, 6)
 
-    println(m+"\n")
+    println(m.toString+"\n")
 
     val i = Matrix4(m).inverse()
 
-    println(i+"\n")
+    println(i.toString+"\n")
 
     m.mul(i)
 
-    println(m+"\n")
+    println(m.toString+"\n")
   }
 
   invTest()
 
-  def rndTest(){
+  def rndTest():Unit={
     val rand = new Random()
     def rnd() = rand.nextFloat() * 100f - 50f
 
@@ -48,7 +48,7 @@ object MathTest extends App{
       m.inverse().transpose()
       n.invert(); n.transpose()
 
-      def tst(a: Float, b: Float, msg: String) {
+      def tst(a: Float, b: Float, msg: String):Unit={
         val s = Math.abs(a - b)
         val h = (Math.abs(a) + Math.abs(b)) / 2f
         assert(s / h < 0.1f || s < 0.1f, "" + i + "->" + msg + " " + a + " " + b + "\n\n" + q + "\n\n" + m + "\n\n" + n)

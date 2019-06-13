@@ -21,9 +21,9 @@ class Vector2(var x : Float, var y : Float){
 
 trait Vector3 extends Translation{
 
-  def x_=(v:Float)
-  def y_=(v:Float)
-  def z_=(v:Float)
+  def x_=(v:Float):Unit
+  def y_=(v:Float):Unit
+  def z_=(v:Float):Unit
 
   def len2 = x*x + y*y + z*z
   def len = Math.sqrt(len2).asInstanceOf[Float]
@@ -128,7 +128,7 @@ object Vector3{
 
   def div(v:Vector3, m:Float) = Vector3(v.x / m, v.y / m, v.z / m)
 
-  def normalize(v:Vector3){
+  def normalize(v:Vector3):Unit={
     val l = v.len
     new VectorVar(v.x / l, v.y / l, v.z / l)
   }
@@ -148,15 +148,15 @@ class VectorProjection(val v : Array[Float], val i: Int) extends Vector3 {
   override def y = v(i + 1)
   override def z = v(i + 2)
 
-  override def x_=(nv:Float){
+  override def x_=(nv:Float):Unit={
     v(i) = nv /*+0*/
   }
 
-  override def y_=(nv:Float){
+  override def y_=(nv:Float):Unit={
     v(i + 1) = nv
   }
 
-  override def z_=(nv:Float){
+  override def z_=(nv:Float):Unit={
     v(i + 2) = nv
   }
 
@@ -168,15 +168,15 @@ class VectorProjectionN(val v : Array[Float], val i: Array[Int]) extends Vector3
   override def y = v(i(0) + 1)
   override def z = v(i(0) + 2)
   
-  override def x_=(nv:Float){
+  override def x_=(nv:Float):Unit={
     for(j <- i) v(j) = nv  /*+0*/
   }
 
-  override def y_=(nv:Float) {
+  override def y_=(nv:Float):Unit={
     for(j <- i) v(j + 1) = nv
   }
 
-  override def z_=(nv:Float){
+  override def z_=(nv:Float):Unit={
     for(j <- i) v(j + 2) = nv
   }
   

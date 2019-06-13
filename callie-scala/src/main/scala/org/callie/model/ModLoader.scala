@@ -51,13 +51,13 @@ object Mod extends RegexParsers {
     Mod(i._1, i._2)
   }
 
-  def load(nm:String) = {
+  def load(nm:String):Mod = {
     import org.callie._
     Source.fromInputStream(getClass.getResourceAsStream(nm), "UTF-8")|{s =>
       apply(s.mkString)
     }
   }
 
-  def apply(r:CharSequence) = parseAll(value, r).get
+  def apply(r:CharSequence):Mod = parseAll(value, r).get
 
 }

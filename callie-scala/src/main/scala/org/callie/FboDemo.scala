@@ -116,7 +116,7 @@ object FboDemo extends App{
     val run3 = KeyFrameLoader.load(joint, "/demo/char/run3.mod", 0.1f)
     val run4 = KeyFrameLoader.load(joint, "/demo/char/run4.mod", 0.1f)
 
-    val char = new TextureGroup(this, "/demo/char/texture.png", Gl.TEXTURE0, charObj:_* )
+    val char = new TextureGroup(this, "/demo/char/texture.png", Gl.TEXTURE0, charObj.toIndexedSeq:_* )
 
     val mapa = new TextureGroup(this, "/demo/t.png", Gl.TEXTURE0,
       new StaticObject(this, Mod.load("/demo/map/floor.mod"))
@@ -137,7 +137,7 @@ object FboDemo extends App{
     var dataQuad:Int = _
     var dataQuadInd:Int = _
 
-    override def initGL4(gl: GlType){
+    override def initGL4(gl: GlType):Unit={
       fbo = createFrameBuffer(gl){
 
         fboTex = createTexture(gl){
@@ -210,7 +210,7 @@ object FboDemo extends App{
       t = System.nanoTime()
     }
 
-    override def displayGL4(gl: GlType){
+    override def displayGL4(gl: GlType):Unit={
       val tmp = System.nanoTime()
       val dt: Float = ((tmp - t) / 1e9d).asInstanceOf[Float]
       t = tmp

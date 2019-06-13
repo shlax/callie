@@ -9,7 +9,7 @@ object GenSgl extends App{
   val out = new StringBuilder("object Gl {")
   val done = mutable.Set[Class[_]]()
 
-  def prc(cls:Class[_]){
+  def prc(cls:Class[_]):Unit={
     if(cls != null &&  done.add(cls)){
       if(cls != null && classOf[Object] != cls){
 

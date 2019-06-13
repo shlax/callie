@@ -22,7 +22,7 @@ class Accl extends Intr{
 
   //var active = false
 
-  override def update(value: Float, nextValue:Float){
+  override def update(value: Float, nextValue:Float):Unit={
     s0 += lastS
 
     val s2 = value - s0

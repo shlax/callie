@@ -14,12 +14,12 @@ case class AxisValue(axis:Axis, value:Float)
 
 abstract class Node(ind:Map[String,List[Int]]){
 
-  def apply(ev:GlEventListener, m:Map[String,Mod]) = {
+  def apply(ev:GlEventListener, m:Map[String,Mod]): (Array[MorfingObject], Joint) = {
     val o = m.map(kv => (kv._1, new MorfingObject(ev, kv._2)))
     (o.values.toArray, join(o, Vector3()) )
   }
 
-  def cordsNormals(m:Map[String, MorfingObject], offset:Vector3) = {
+  def cordsNormals(m:Map[String, MorfingObject], offset:Vector3): (Mapping, Mapping) = {
     val t = ind.map{ i =>
       val obj = m(i._1)
       i._2.map(j => (obj.projPoint(j), obj.projNormals(j)) )
@@ -33,7 +33,7 @@ abstract class Node(ind:Map[String,List[Int]]){
 }
 
 class IntNode(name:String, v:Vector3, ind:Map[String,List[Int]], childs:List[Node]) extends Node(ind){
-  override def join(ojbs:Map[String, MorfingObject], offset:Vector3, parent:Option[IntrTravJoint]) = {
+  override def join(ojbs:Map[String, MorfingObject], offset:Vector3, parent:Option[IntrTravJoint]):IntrJoint = {
     val ax = new Accl; val ay = new Accl; val az = new Accl
     val m = Matrix4(v)
 
@@ -51,7 +51,7 @@ class IntNode(name:String, v:Vector3, ind:Map[String,List[Int]], childs:List[Nod
 }
 
 class LinNode(name:String, ix:AxisValue, iy:AxisValue, iz:AxisValue, ind:Map[String,List[Int]])  extends Node(ind){
-  override def join(ojbs:Map[String, MorfingObject], offset:Vector3, parent:Option[IntrTravJoint]) = {
+  override def join(ojbs:Map[String, MorfingObject], offset:Vector3, parent:Option[IntrTravJoint]):LinearJoint = {
     val (coord, normals) = cordsNormals(ojbs, offset)
     new LinearJoint(name, parent.get, ix, iy, iz, coord, normals)
   }
@@ -77,7 +77,7 @@ object Node extends RegexParsers {
   def groupMap: Parser[Map[String, List[Int]]] = "{" ~> repsep(group, ",") <~ "}" ^^ { v =>
     val m = mutable.Map[String, mutable.Set[Int]]()
     for(i <- v) m.getOrElseUpdate(i._1, mutable.Set[Int]()) ++= i._2
-    m.mapValues(_.toList).toMap
+    m.toMap.map{kv => (kv._1, kv._2.toList)}
   }
 
   def node(scale:Float) : Parser[Node] = "[" ~> ( normal(scale) | linear ) <~ "]"
@@ -108,14 +108,14 @@ object Node extends RegexParsers {
     new LinNode(q._1._1._1, ix, iy, iz, q._2)
   }
 
-  def load(ev:GlEventListener, m:Map[String,Mod], nm:String, scale:Float = 1f) = {
+  def load(ev:GlEventListener, m:Map[String,Mod], nm:String, scale:Float = 1f): (Array[MorfingObject], Joint) = {
     import org.callie._
     Source.fromInputStream(getClass.getResourceAsStream(nm), "UTF-8")|{ s =>
       apply(ev, m, s.mkString, scale)
     }
   }
 
-  def apply(ev:GlEventListener, m:Map[String,Mod], r:CharSequence, scale:Float = 1f) = {
+  def apply(ev:GlEventListener, m:Map[String,Mod], r:CharSequence, scale:Float = 1f): (Array[MorfingObject], Joint) = {
     val n = parseAll(node(scale), r).get
     n(ev, m)
   }
