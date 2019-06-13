@@ -13,19 +13,15 @@ object MainLevel extends App {
 
   JoglFrame(new GlEventListener {
 
-    val (charObj, joint) = Node.load(this, Map(
+    val (charObj, joint, zero) = Node.load(this, Map(
         "pSphere5" -> Mod.load("/data/char/model.mod").scale(0.1f),
         "polySurface115" -> Mod.load("/data/char/hair.mod").scale(0.1f)
       ), "/data/char/joints.skl", 0.1f)
 
     val stand = KeyFrameLoader.load(joint, "/data/char/anim/stand.ang", 0.1f)
+    val run = for(i <- 1 to 8) yield KeyFrameLoader.load(joint, "/data/char/anim/run/run"+i+".ang", 0.1f)
 
-    val run1 = KeyFrameLoader.load(joint, "/data/char/anim/run/run1.ang", 0.1f)
-    val run2 = KeyFrameLoader.load(joint, "/data/char/anim/run/run2.ang", 0.1f)
-    val run3 = KeyFrameLoader.load(joint, "/data/char/anim/run/run3.ang", 0.1f)
-    val run4 = KeyFrameLoader.load(joint, "/data/char/anim/run/run4.ang", 0.1f)
-
-    val anim = JoinControl(camCtrl, joint, stand, run1, run2, run3, run4)
+    val anim = JoinControl(camCtrl, joint, zero , stand, run:_*)
 
     /* val sphere = new TextureGroup(this, "/demo/box/white.png", Gl.TEXTURE0,
       new StaticObject(this, Mod.load("/demo/box/sphere.mod"))

@@ -13,7 +13,7 @@ object MainDemo extends App{
 
   JoglFrame(new GlEventListener {
 
-    val (charObj, joint) = Node.load(this, Map("pSphere5" -> Mod.load("/demo/char/base.mod").scale(0.1f),
+    val (charObj, joint, zero) = Node.load(this, Map("pSphere5" -> Mod.load("/demo/char/base.mod").scale(0.1f),
                                                "polySurface115" -> Mod.load("/demo/char/hair.mod").scale(0.1f)),
                                   "/demo/char/joints.mod", 0.1f)
 
@@ -30,7 +30,7 @@ object MainDemo extends App{
       new StaticObject(this, Mod.load("/demo/map/floor.mod"))
     )
 
-    val anim = JoinControl(camCtrl, joint, stand, run1, run2, run3, run4)
+    val anim = JoinControl(camCtrl, joint, zero, stand, run1, run2, run3, run4)
 
     var t: Long = 0
 

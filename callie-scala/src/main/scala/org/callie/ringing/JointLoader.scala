@@ -12,11 +12,11 @@ import scala.io.Source
 
 case class AxisValue(axis:Axis, value:Float)
 
-abstract class Node(ind:Map[String,List[Int]]){
+abstract class Node(off:Option[Vector3], ind:Map[String,List[Int]]){
 
-  def apply(ev:GlEventListener, m:Map[String,Mod]): (Array[MorfingObject], Joint) = {
+  def apply(ev:GlEventListener, m:Map[String,Mod]): (Array[MorfingObject], Joint, Vector3) = {
     val o = m.map(kv => (kv._1, new MorfingObject(ev, kv._2)))
-    (o.values.toArray, join(o, Vector3()) )
+    (o.values.toArray, join(o, Vector3()), off.getOrElse(Vector3()))
   }
 
   def cordsNormals(m:Map[String, MorfingObject], offset:Vector3): (Mapping, Mapping) = {
@@ -32,7 +32,7 @@ abstract class Node(ind:Map[String,List[Int]]){
   def join(m:Map[String, MorfingObject], offset:Vector3, parent:Option[IntrTravJoint] = None) : Joint
 }
 
-class IntNode(name:String, v:Vector3, ind:Map[String,List[Int]], childs:List[Node]) extends Node(ind){
+class IntNode(name:String, v:Vector3, ind:Map[String,List[Int]], childs:List[Node]) extends Node(Some(v), ind){
   override def join(ojbs:Map[String, MorfingObject], offset:Vector3, parent:Option[IntrTravJoint]):IntrJoint = {
     val ax = new Accl; val ay = new Accl; val az = new Accl
     val m = Matrix4(v)
@@ -50,7 +50,7 @@ class IntNode(name:String, v:Vector3, ind:Map[String,List[Int]], childs:List[Nod
   }
 }
 
-class LinNode(name:String, ix:AxisValue, iy:AxisValue, iz:AxisValue, ind:Map[String,List[Int]])  extends Node(ind){
+class LinNode(name:String, ix:AxisValue, iy:AxisValue, iz:AxisValue, ind:Map[String,List[Int]])  extends Node(None ,ind){
   override def join(ojbs:Map[String, MorfingObject], offset:Vector3, parent:Option[IntrTravJoint]):LinearJoint = {
     val (coord, normals) = cordsNormals(ojbs, offset)
     new LinearJoint(name, parent.get, ix, iy, iz, coord, normals)
@@ -108,14 +108,14 @@ object Node extends RegexParsers {
     new LinNode(q._1._1._1, ix, iy, iz, q._2)
   }
 
-  def load(ev:GlEventListener, m:Map[String,Mod], nm:String, scale:Float = 1f): (Array[MorfingObject], Joint) = {
+  def load(ev:GlEventListener, m:Map[String,Mod], nm:String, scale:Float = 1f): (Array[MorfingObject], Joint, Vector3) = {
     import org.callie._
     Source.fromInputStream(getClass.getResourceAsStream(nm), "UTF-8")|{ s =>
       apply(ev, m, s.mkString, scale)
     }
   }
 
-  def apply(ev:GlEventListener, m:Map[String,Mod], r:CharSequence, scale:Float = 1f): (Array[MorfingObject], Joint) = {
+  def apply(ev:GlEventListener, m:Map[String,Mod], r:CharSequence, scale:Float = 1f): (Array[MorfingObject], Joint, Vector3) = {
     val n = parseAll(node(scale), r).get
     n(ev, m)
   }

@@ -15,13 +15,12 @@ trait JoinState extends Transformation{
 object JoinControl{
   type VecFrame = (Vector3, KeyFrame)
 
-  def apply(cntrl:JoinState, j: Joint, stand: VecFrame, run: VecFrame*) = {
+  def apply(cntrl:JoinState, j: Joint, zero:Vector3, stand: VecFrame, run: VecFrame*):JoinControl = {
     val ax = new Accl()
     val ay = new Accl()
     val az = new Accl()
 
     val name = "main"
-    val zero = stand._1
     def remap(i: VecFrame) = {
       val off = i._1
       val vx = new KeyValue(name, Axis.X ,ax, off.x - zero.x)
@@ -47,7 +46,7 @@ object JoinControl{
 
 /** animacia nad JoinState */
 class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame]) {
-  val interval = 0.7f / cntrl.maxRunSpeed
+  val interval = 0.35f / cntrl.maxRunSpeed
   val invInter = 1f/interval
 
   var act = AnimState.STAND
