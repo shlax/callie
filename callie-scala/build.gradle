@@ -18,6 +18,17 @@ dependencies {
     compile 'org.jogamp.gluegen:gluegen-rt-main:2.3.2'
     compile 'org.jogamp.jogl:jogl-all-main:2.3.2'
 
+    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version: '3.2.2'
+    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version: '3.2.2'
+
+    runtimeOnly "org.lwjgl:lwjgl:3.2.2:natives-linux"
+    runtimeOnly "org.lwjgl:lwjgl-glfw:3.2.2:natives-linux"
+    runtimeOnly "org.lwjgl:lwjgl-opengl:3.2.2:natives-linux"
+
+    runtimeOnly "org.lwjgl:lwjgl:3.2.2:natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-glfw:3.2.2:natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-opengl:3.2.2:natives-windows"
+
     testCompile 'javax.vecmath:vecmath:1.5.2'
 
     testCompile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.6'
