@@ -221,10 +221,10 @@
 //        gl.glUseProgram(prog)
 //
 //        anim.apply(dt)
-//        Camera.display(gl)
+//        Camera.update(gl)
 //
-//        mapa.display(gl)
-//        char.display(gl)
+//        mapa.update(gl)
+//        char.update(gl)
 //      }
 //
 //      gl.glClear(Gl.COLOR_BUFFER_BIT | Gl.DEPTH_BUFFER_BIT)

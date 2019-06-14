@@ -9,25 +9,25 @@ trait GlObject{
 
   def init():Unit
   
-  def display():Unit
+  def update():Unit
 }
 
 class ObjectGroup(objs:GlObject*) extends GlObject{
-  
+
   override def init():Unit={
     for(o <- objs) o.init()
   }
-  
-  override def display():Unit={
-    for(o <- objs) o.display()
+
+  override def update():Unit={
+    for(o <- objs) o.update()
   }
 
 }
 
 class TextureGroup(ev: GlEventListener, image:String, ind:Int, objs:GlObject*) extends ObjectGroup(objs:_*){
-  
+
   var texId : Int = _
-    
+
   override def init():Unit={
     import org.callie._
     val (buff, w, h, f, fi) = getClass.getResourceAsStream(image)|{ in =>
@@ -65,18 +65,18 @@ class TextureGroup(ev: GlEventListener, image:String, ind:Int, objs:GlObject*) e
       Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, Gl.GL_REPEAT)
       Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR)
       Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_LINEAR)
-    
+
       super.init()
     }
   }
-  
-  override def display():Unit={
+
+  override def update():Unit={
     Gl.glActiveTexture(ind)
     ev.bindTexture(texId){
-      super.display()
+      super.update()
     }
   }
-  
+
 }
 
 class StaticObject(ev:GlEventListener) extends GlObject{
@@ -115,16 +115,16 @@ class StaticObject(ev:GlEventListener) extends GlObject{
     coords = a.toArray
     indices = i.toArray
   }
-    
+
   var vao : Int = _
   var vbi : Int = _
-  
+
   override def init():Unit={
     vao = ev.createVertexArray{
       Gl.glEnableVertexAttribArray(0)
       Gl.glEnableVertexAttribArray(1)
       for(i <- 0 until uvCount) Gl.glEnableVertexAttribArray(2 + i)
-      
+
       ev.createBuffer(Gl.GL_ARRAY_BUFFER){
         Gl.glBufferData(Gl.GL_ARRAY_BUFFER, coords, Gl.GL_STATIC_DRAW)
 
@@ -137,20 +137,20 @@ class StaticObject(ev:GlEventListener) extends GlObject{
         }
       }
     }
-    
+
     vbi = ev.createBuffer(Gl.GL_ELEMENT_ARRAY_BUFFER){
       Gl.glBufferData(Gl.GL_ELEMENT_ARRAY_BUFFER, indices, Gl.GL_STATIC_DRAW)
     }
   }
-  
-  override def display():Unit={
+
+  override def update():Unit={
     ev.bindVertexArray(vao){
       ev.bindBuffer(Gl.GL_ELEMENT_ARRAY_BUFFER, vbi){
         Gl.glDrawElements(Gl.GL_TRIANGLES, indices.length, Gl.GL_UNSIGNED_INT, 0)
       }
     }
   }
-  
+
 }
 
 class MorfingObject(ev:GlEventListener) extends GlObject{
@@ -215,17 +215,17 @@ class MorfingObject(ev:GlEventListener) extends GlObject{
     projPoint = prPoint.toArray
     projNormals = prNormals.toArray
   }
-  
+
   var vao : Int = _
   var vbi : Int = _
   var vbo : Int = _
-  
+
   override def init():Unit={
     vao = ev.createVertexArray{
       Gl.glEnableVertexAttribArray(0)
       Gl.glEnableVertexAttribArray(1)
       Gl.glEnableVertexAttribArray(2)
-      
+
       vbo = ev.createBuffer(Gl.GL_ARRAY_BUFFER){
         Gl.glBufferData(Gl.GL_ARRAY_BUFFER, coords, Gl.GL_DYNAMIC_DRAW)
 
@@ -238,13 +238,13 @@ class MorfingObject(ev:GlEventListener) extends GlObject{
         }
       }
     }
-    
+
     vbi = ev.createBuffer(Gl.GL_ELEMENT_ARRAY_BUFFER){
       Gl.glBufferData(Gl.GL_ELEMENT_ARRAY_BUFFER, indices, Gl.GL_STATIC_DRAW)
     }
   }
-  
-  override def display():Unit={
+
+  override def update():Unit={
     ev.bindVertexArray(vao){
       ev.bindBuffer(Gl.GL_ARRAY_BUFFER, vbo){
         Gl.glBufferData(Gl.GL_ARRAY_BUFFER, coords, Gl.GL_DYNAMIC_DRAW)

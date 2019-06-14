@@ -194,7 +194,7 @@
 //    var theProgram : Int = _
 //    var positionBufferObject : Int = _
 //
-//    override def display(drawable:GLAutoDrawable){
+//    override def update(drawable:GLAutoDrawable){
 //      //drawable.setAutoSwapBufferMode(true)
 //      val gl = drawable.getGL.getGL4
 //      gl.glEnableVertexAttribArray(0)

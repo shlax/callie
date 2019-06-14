@@ -267,7 +267,7 @@
 //      gl.glClear(Gl.COLOR_BUFFER_BIT | Gl.DEPTH_BUFFER_BIT)
 //      // > code
 //      //gl.glDrawArrays(Gl.TRIANGLES, 0, 3)
-//      Camera.display
+//      Camera.update
 //
 //      bindVertexArray(vao){
 //        bindBuffer(Gl.ELEMENT_ARRAY_BUFFER, vbi){

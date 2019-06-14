@@ -31,8 +31,8 @@
 //
 //    override def displayGL4(implicit gl: GL3ES3){
 //      Physics.update()
-//      Graphics.display(gl)
-//      Camera.display(gl)
+//      Graphics.update(gl)
+//      Camera.update(gl)
 //    }
 //  })
 //}

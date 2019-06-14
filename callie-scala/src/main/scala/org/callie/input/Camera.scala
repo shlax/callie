@@ -13,7 +13,7 @@ object Camera {
 //  var position = Vector3(0, 0, -1f)
 
 //  def init(implicit gl:GL4){
-//    display(gl)
+//    update(gl)
 //  }
 
   // http://stackoverflow.com/questions/21079623/how-to-calculate-the-normal-matrix
@@ -24,7 +24,7 @@ object Camera {
   def program(id:Seq[Int], view:String="viewMatrix", lightDirection:String="lightDirection"):Unit={
     viewMatrix = id.map(i => Gl.glGetUniformLocation(i, view)).toArray
     lightDirectionVec = id.map(i => Gl.glGetUniformLocation(i, lightDirection)).toArray
-    display()
+    update()
   }
 
   // http://gamedev.stackexchange.com/questions/56609/how-to-create-a-projection-matrix-in-opengl-es-2-0
@@ -106,7 +106,7 @@ object Camera {
 
     //modMat.rotX(angX()).mul(tmp.rotY((Math.PI/2d).asInstanceOf[Float] + angY()))
     modMat.rotY(-1f * angY()).mul(tmp.rotX(-1f * angX())).apply(light, lightDirectionAr)
-
+    for(i <- lightDirectionVec) Gl.glUniform3fv(i, lightDirectionAr)
 
     //println("normalMatrix "+modMat)
 
@@ -121,14 +121,9 @@ object Camera {
     //modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position)) //.mul(tmp.set(off), modMat)
     //projection.mul(modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY()+1.5f)).mul(tmp.set(target.position)), viewAr)
     projection.mul(modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position)), viewAr)
-
+    for(i <- viewMatrix) Gl.glUniformMatrix4fv(i, true, viewAr)
 
     //println("viewMatrix "+modMat)
-  }
-
-  def display():Unit={
-    for(i <- lightDirectionVec) Gl.glUniform3fv(i, lightDirectionAr)
-    for(i <- viewMatrix) Gl.glUniformMatrix4fv(i, true, viewAr)
   }
 
 }

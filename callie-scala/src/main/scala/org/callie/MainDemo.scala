@@ -62,10 +62,10 @@
 //      t = tmp
 //
 //      anim.apply(dt)
-//      Camera.display(gl)
+//      Camera.update(gl)
 //
-//      mapa.display(gl)
-//      char.display(gl)
+//      mapa.update(gl)
+//      char.update(gl)
 //    }
 //
 //  })

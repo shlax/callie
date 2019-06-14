@@ -165,7 +165,7 @@
 //      gl.glClear(Gl.COLOR_BUFFER_BIT | Gl.DEPTH_BUFFER_BIT)
 //      // > code
 //
-//      Camera.display
+//      Camera.update
 //      //gl.glDrawArrays(Gl.TRIANGLES, 0, 3)
 //
 //      gl.glBindTexture(Gl.TEXTURE_2D, texId)
