@@ -36,7 +36,7 @@ public final class Gl {
     GL20C.glDeleteProgram(buffer);
   }
 
-  public static final int glGenTextures(){
+  public static int glGenTextures(){
     return GL11C.glGenTextures();
   }
 
@@ -58,7 +58,7 @@ public final class Gl {
     GL11C.glBindTexture(target, texture);
   }
 
-  public static final int glGenVertexArrays(){
+  public static int glGenVertexArrays(){
     return GL30C.glGenVertexArrays();
   }
 
@@ -66,7 +66,7 @@ public final class Gl {
     GL30C.glBindVertexArray(array);
   }
 
-  public static final int glGenBuffers(){
+  public static int glGenBuffers(){
     return GL15C.glGenBuffers();
   }
 
@@ -74,7 +74,7 @@ public final class Gl {
     GL15C.glBindBuffer(target, buffer);
   }
 
-  public static final int glGenFramebuffers(){
+  public static int glGenFramebuffers(){
     return GL30C.glGenFramebuffers();
   }
 
@@ -86,11 +86,11 @@ public final class Gl {
 
   public static final int GL_FRAMEBUFFER_COMPLETE = GL30C.GL_FRAMEBUFFER_COMPLETE;
 
-  public static final int glCheckFramebufferStatus(int target){
+  public static int glCheckFramebufferStatus(int target){
     return GL30C.glCheckFramebufferStatus(target);
   }
 
-  public static final int glGenRenderbuffers(){
+  public static int glGenRenderbuffers(){
     return GL30C.glGenRenderbuffers();
   }
 
@@ -100,7 +100,7 @@ public final class Gl {
     GL30C.glBindRenderbuffer(target, renderbuffer);
   }
 
-  public static final int glCreateShader(int tpe){
+  public static int glCreateShader(int tpe){
     return GL20C.glCreateShader(tpe);
   }
 
@@ -124,7 +124,7 @@ public final class Gl {
 
   public static final int GL_FALSE = GL11C.GL_FALSE;
 
-  public static final int glCreateProgram(){
+  public static int glCreateProgram(){
     return GL20C.glCreateProgram();
   }
 
@@ -230,7 +230,7 @@ public final class Gl {
     GL20C.glUniformMatrix4fv(location, transpose, value);
   }
 
-  public static final int glGetUniformLocation(int program, String name){
+  public static int glGetUniformLocation(int program, String name){
     return GL20C.glGetUniformLocation(program, name);
   }
 
