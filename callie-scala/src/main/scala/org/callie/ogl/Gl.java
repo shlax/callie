@@ -16,24 +16,24 @@ public final class Gl {
     GL15C.glDeleteBuffers(buffer);
   }
 
-  public static void glDeleteVertexArrays(int buffer){
-    GL30C.glDeleteVertexArrays(buffer);
+  public static void glDeleteVertexArrays(int array){
+    GL30C.glDeleteVertexArrays(array);
   }
 
-  public static void glDeleteTextures(int buffer){
-    GL11C.glDeleteTextures(buffer);
+  public static void glDeleteTextures(int texture){
+    GL11C.glDeleteTextures(texture);
   }
 
-  public static void glDeleteFramebuffers(int buffer){
-    GL30C.glDeleteFramebuffers(buffer);
+  public static void glDeleteFramebuffers(int framebuffer){
+    GL30C.glDeleteFramebuffers(framebuffer);
   }
 
-  public static void glDeleteRenderbuffers(int buffer){
-    GL30C.glDeleteRenderbuffers(buffer);
+  public static void glDeleteRenderbuffers(int renderbuffer){
+    GL30C.glDeleteRenderbuffers(renderbuffer);
   }
 
-  public static void glDeleteProgram(int buffer){
-    GL20C.glDeleteProgram(buffer);
+  public static void glDeleteProgram(int program){
+    GL20C.glDeleteProgram(program);
   }
 
   public static int glGenTextures(){
