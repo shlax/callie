@@ -1,6 +1,6 @@
 package org.callie.input
 
-import org.callie.jogl.GlType
+import org.callie.ogl.Gl
 import org.callie.math.{Angle, Matrix4, Vector3}
 
 // http://www.gamedev.net/topic/617711-glulookat-replacement/
@@ -21,10 +21,10 @@ object Camera {
   var viewMatrix: Array[Int] = _
   var lightDirectionVec: Array[Int] = _
 
-  def program(gl:GlType, id:Seq[Int], view:String="viewMatrix", lightDirection:String="lightDirection"):Unit={
-    viewMatrix = id.map(i => gl.glGetUniformLocation(i, view)).toArray
-    lightDirectionVec = id.map(i => gl.glGetUniformLocation(i, lightDirection)).toArray
-    display(gl)
+  def program(id:Seq[Int], view:String="viewMatrix", lightDirection:String="lightDirection"):Unit={
+    viewMatrix = id.map(i => Gl.glGetUniformLocation(i, view)).toArray
+    lightDirectionVec = id.map(i => Gl.glGetUniformLocation(i, lightDirection)).toArray
+    display()
   }
 
   // http://gamedev.stackexchange.com/questions/56609/how-to-create-a-projection-matrix-in-opengl-es-2-0
@@ -98,14 +98,14 @@ object Camera {
   var cnt = 0
 
   // mat4 normalMatrix = transpose(inverse(modelView));
-  def display(gl:GlType):Unit={
+  def display():Unit={
     off.z += Inputs.zDiff() * 0.25f
     angX() += Inputs.yDiff() * 0.025f
     angY() += Inputs.xDiff() * 0.025f
 
     //modMat.rotX(angX()).mul(tmp.rotY((Math.PI/2d).asInstanceOf[Float] + angY()))
     modMat.rotY(-1f * angY()).mul(tmp.rotX(-1f * angX())).apply(light, lightDirectionAr)
-    for(i <- lightDirectionVec) gl.glUniform3fv(i, 1, lightDirectionAr, 0)
+    for(i <- lightDirectionVec) Gl.glUniform3fv(i, lightDirectionAr)
 
     //println("normalMatrix "+modMat)
 
@@ -120,7 +120,7 @@ object Camera {
     //modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position)) //.mul(tmp.set(off), modMat)
     //projection.mul(modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY()+1.5f)).mul(tmp.set(target.position)), viewAr)
     projection.mul(modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position)), viewAr)
-    for(i <- viewMatrix) gl.glUniformMatrix4fv(i, 1, true, viewAr, 0)
+    for(i <- viewMatrix) Gl.glUniformMatrix4fv(i, true, viewAr)
 
     //println("viewMatrix "+modMat)
   }

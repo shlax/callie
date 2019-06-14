@@ -3,7 +3,7 @@ package org.callie.ringing
 import scala.util.parsing.combinator.RegexParsers
 import org.callie.math.{Matrix4, Vector3}
 import org.callie.math.intr.Accl
-import org.callie.jogl.GlEventListener
+import org.callie.ogl.GlEventListener
 import org.callie.model.{Mod, MorfingObject}
 import org.callie.math.Axis
 

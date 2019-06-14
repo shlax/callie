@@ -1,6 +1,6 @@
 package org.callie
 
-import org.callie.jogl.glslVersion
+import org.callie.ogl.glslVersion
 
 // https://stackoverflow.com/questions/18510701/glsl-how-to-show-normals-with-geometry-shader
 object GlPrograms {

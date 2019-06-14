@@ -1,41 +1,25 @@
 package org.callie.model
 
 import scala.collection.mutable.ListBuffer
-import com.jogamp.common.nio.Buffers
-import com.jogamp.opengl.util.texture.TextureIO
-import org.callie.jogl.{Gl, GlEventListener, GlType, buffers}
+import de.matthiasmann.twl.utils.PNGDecoder
+import org.callie.ogl.{Gl, GlEventListener}
 import org.callie.math.Vector3
-import buffers._
-
-object Graphics{
-  var parts:Array[GlObject] = Array()
-
-  def init(gl:GlType):Unit={
-    for(o <- parts)o.init(gl)
-  }
-
-  def display(gl:GlType):Unit={
-    for(o <- parts)o.display(gl)
-  }
-
-}
 
 trait GlObject{
 
-  def init(gl:GlType):Unit
+  def init():Unit
   
-  def display(gl:GlType):Unit
-    
+  def display():Unit
 }
 
 class ObjectGroup(objs:GlObject*) extends GlObject{
   
-  override def init(gl:GlType):Unit={
-    for(o <- objs) o.init(gl)
+  override def init():Unit={
+    for(o <- objs) o.init()
   }
   
-  override def display(gl:GlType):Unit={
-    for(o <- objs) o.display(gl)
+  override def display():Unit={
+    for(o <- objs) o.display()
   }
   
 }
@@ -44,30 +28,52 @@ class TextureGroup(ev: GlEventListener, image:String, ind:Int, objs:GlObject*) e
   
   var texId : Int = _
     
-  override def init(gl:GlType):Unit={
-    val texture = TextureIO.newTextureData(gl.getGLProfile, getClass.getResourceAsStream(image), false, TextureIO.PNG)
-    
-    texId = ev.createTexture(gl){
-      gl.glPixelStorei(Gl.TEXTURE_2D, texture.getAlignment)
-      gl.glTexImage2D(Gl.TEXTURE_2D, 0, texture.getInternalFormat, texture.getWidth, texture.getHeight, texture.getBorder, texture.getPixelFormat, texture.getPixelType, texture.getBuffer)
+  override def init():Unit={
+    import org.callie._
+    val (buff, w, h, f, fi) = getClass.getResourceAsStream(image)|{ in =>
+      import java.nio.ByteBuffer
 
-      gl.glGenerateMipmap(Gl.TEXTURE_2D)
+      val dec = new PNGDecoder(in)
 
-      gl.glTexParameteri(Gl.TEXTURE_2D, Gl.TEXTURE_WRAP_S, Gl.REPEAT)
-      gl.glTexParameteri(Gl.TEXTURE_2D, Gl.TEXTURE_WRAP_T, Gl.REPEAT)
-      gl.glTexParameteri(Gl.TEXTURE_2D, Gl.TEXTURE_MAG_FILTER, Gl.LINEAR)
-      gl.glTexParameteri(Gl.TEXTURE_2D, Gl.TEXTURE_MIN_FILTER, Gl.LINEAR_MIPMAP_LINEAR)
-    
-      super.init(gl)
+      val n = if(dec.hasAlpha) PNGDecoder.Format.RGBA else PNGDecoder.Format.RGB
+      val nc = n.getNumComponents
+      val w = dec.getWidth
+      val h = dec.getHeight
+
+      val buf = ByteBuffer.allocateDirect(nc * w * h)
+      dec.decodeFlipped(buf, w * nc, n)
+      buf.flip()
+
+      (buf, w, h, n match {
+        case PNGDecoder.Format.RGBA =>  Gl.GL_RGBA
+        case PNGDecoder.Format.RGB => Gl.GL_RGB
+        case f => throw new RuntimeException("match "+f)
+      }, n match {
+        case PNGDecoder.Format.RGBA =>  Gl.GL_RGBA8
+        case PNGDecoder.Format.RGB => Gl.GL_RGB8
+        case f => throw new RuntimeException("match "+f)
+      })
     }
+
+    texId = ev.createTexture{
+      Gl.glPixelStorei(Gl.GL_UNPACK_ALIGNMENT, 1)
+      Gl.glTexImage2D(Gl.GL_TEXTURE_2D, 0, fi, w, h, 0, f, Gl.GL_UNSIGNED_BYTE, buff)
+
+      Gl.glGenerateMipmap(Gl.GL_TEXTURE_2D)
+
+      Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, Gl.GL_REPEAT)
+      Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, Gl.GL_REPEAT)
+      Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR)
+      Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_LINEAR)
     
-    texture.destroy()    
+      super.init()
+    }
   }
   
-  override def display(gl:GlType):Unit={
-    gl.glActiveTexture(ind)
-    ev.bindTexture(gl, texId){
-      super.display(gl)
+  override def display():Unit={
+    Gl.glActiveTexture(ind)
+    ev.bindTexture(texId){
+      super.display()
     }
   }
   
@@ -113,34 +119,34 @@ class StaticObject(ev:GlEventListener) extends GlObject{
   var vao : Int = _
   var vbi : Int = _
   
-  override def init(gl:GlType):Unit={
-    vao = ev.createVertexArray(gl){
-      gl.glEnableVertexAttribArray(0)
-      gl.glEnableVertexAttribArray(1)
-      for(i <- 0 until uvCount) gl.glEnableVertexAttribArray(2 + i)
+  override def init():Unit={
+    vao = ev.createVertexArray{
+      Gl.glEnableVertexAttribArray(0)
+      Gl.glEnableVertexAttribArray(1)
+      for(i <- 0 until uvCount) Gl.glEnableVertexAttribArray(2 + i)
       
-      ev.createBuffer(gl, Gl.ARRAY_BUFFER){
-        coords.asBuffer(gl.glBufferData(Gl.ARRAY_BUFFER, _, _, Gl.STATIC_DRAW))
+      ev.createBuffer(Gl.GL_ARRAY_BUFFER){
+        Gl.glBufferData(Gl.GL_ARRAY_BUFFER, coords, Gl.GL_STATIC_DRAW)
 
-        val stride = (6 + uvCount * 2)*Buffers.SIZEOF_FLOAT
+        val stride = (6 + uvCount * 2)*Gl.SIZEOF_FLOAT
 
-        gl.glVertexAttribPointer(0, 3, Gl.FLOAT, false, stride, 0*Buffers.SIZEOF_FLOAT)
-        gl.glVertexAttribPointer(1, 3, Gl.FLOAT, false, stride, 3*Buffers.SIZEOF_FLOAT)
+        Gl.glVertexAttribPointer(0, 3, Gl.GL_FLOAT, false, stride, 0*Gl.SIZEOF_FLOAT)
+        Gl.glVertexAttribPointer(1, 3, Gl.GL_FLOAT, false, stride, 3*Gl.SIZEOF_FLOAT)
         for(i <- 0 until uvCount) {
-          gl.glVertexAttribPointer(2 + i, 2, Gl.FLOAT, false, stride, (6 + i * 2) * Buffers.SIZEOF_FLOAT)
+          Gl.glVertexAttribPointer(2 + i, 2, Gl.GL_FLOAT, false, stride, (6 + i * 2) * Gl.SIZEOF_FLOAT)
         }
       }
     }
     
-    vbi = ev.createBuffer(gl, Gl.ELEMENT_ARRAY_BUFFER){
-      indices.asBuffer(gl.glBufferData(Gl.ELEMENT_ARRAY_BUFFER, _, _, Gl.STATIC_DRAW))
+    vbi = ev.createBuffer(Gl.GL_ELEMENT_ARRAY_BUFFER){
+      Gl.glBufferData(Gl.GL_ELEMENT_ARRAY_BUFFER, indices, Gl.GL_STATIC_DRAW)
     }
   }
   
-  override def display(gl:GlType):Unit={
-    ev.bindVertexArray(gl, vao){
-      ev.bindBuffer(gl, Gl.ELEMENT_ARRAY_BUFFER, vbi){
-        gl.glDrawElements(Gl.TRIANGLES, indices.length, Gl.UNSIGNED_INT, 0)
+  override def display():Unit={
+    ev.bindVertexArray(vao){
+      ev.bindBuffer(Gl.GL_ELEMENT_ARRAY_BUFFER, vbi){
+        Gl.glDrawElements(Gl.GL_TRIANGLES, indices.length, Gl.GL_UNSIGNED_INT, 0)
       }
     }
   }
@@ -214,38 +220,38 @@ class MorfingObject(ev:GlEventListener) extends GlObject{
   var vbi : Int = _
   var vbo : Int = _
   
-  override def init(gl:GlType):Unit={
-    vao = ev.createVertexArray(gl){
-      gl.glEnableVertexAttribArray(0)
-      gl.glEnableVertexAttribArray(1)
-      gl.glEnableVertexAttribArray(2)
+  override def init():Unit={
+    vao = ev.createVertexArray{
+      Gl.glEnableVertexAttribArray(0)
+      Gl.glEnableVertexAttribArray(1)
+      Gl.glEnableVertexAttribArray(2)
       
-      vbo = ev.createBuffer(gl, Gl.ARRAY_BUFFER){
-        coords.asBuffer(gl.glBufferData(Gl.ARRAY_BUFFER, _, _, Gl.DYNAMIC_DRAW))
+      vbo = ev.createBuffer(Gl.GL_ARRAY_BUFFER){
+        Gl.glBufferData(Gl.GL_ARRAY_BUFFER, coords, Gl.GL_DYNAMIC_DRAW)
 
-        val stride = (6 + uvCount * 2)*Buffers.SIZEOF_FLOAT
+        val stride = (6 + uvCount * 2)*Gl.SIZEOF_FLOAT
 
-        gl.glVertexAttribPointer(0, 3, Gl.FLOAT, false, stride, 0*Buffers.SIZEOF_FLOAT)
-        gl.glVertexAttribPointer(1, 3, Gl.FLOAT, false, stride, 3*Buffers.SIZEOF_FLOAT)
+        Gl.glVertexAttribPointer(0, 3, Gl.GL_FLOAT, false, stride, 0*Gl.SIZEOF_FLOAT)
+        Gl.glVertexAttribPointer(1, 3, Gl.GL_FLOAT, false, stride, 3*Gl.SIZEOF_FLOAT)
         for(i <- 0 until uvCount) {
-          gl.glVertexAttribPointer(2 + i, 2, Gl.FLOAT, false, stride, (6 + i * 2) * Buffers.SIZEOF_FLOAT)
+          Gl.glVertexAttribPointer(2 + i, 2, Gl.GL_FLOAT, false, stride, (6 + i * 2) * Gl.SIZEOF_FLOAT)
         }
       }
     }
     
-    vbi = ev.createBuffer(gl, Gl.ELEMENT_ARRAY_BUFFER){
-      indices.asBuffer(gl.glBufferData(Gl.ELEMENT_ARRAY_BUFFER, _, _, Gl.STATIC_DRAW))
+    vbi = ev.createBuffer(Gl.GL_ELEMENT_ARRAY_BUFFER){
+      Gl.glBufferData(Gl.GL_ELEMENT_ARRAY_BUFFER, indices, Gl.GL_STATIC_DRAW)
     }
   }
   
-  override def display(gl:GlType):Unit={
-    ev.bindVertexArray(gl, vao){
-      ev.bindBuffer(gl, Gl.ARRAY_BUFFER, vbo){
-        coords.asBuffer(gl.glBufferData(Gl.ARRAY_BUFFER, _, _, Gl.DYNAMIC_DRAW))
+  override def display():Unit={
+    ev.bindVertexArray(vao){
+      ev.bindBuffer(Gl.GL_ARRAY_BUFFER, vbo){
+        Gl.glBufferData(Gl.GL_ARRAY_BUFFER, coords, Gl.GL_DYNAMIC_DRAW)
       }
       
-      ev.bindBuffer(gl, Gl.ELEMENT_ARRAY_BUFFER, vbi){
-        gl.glDrawElements(Gl.TRIANGLES, indices.length, Gl.UNSIGNED_INT, 0)
+      ev.bindBuffer(Gl.GL_ELEMENT_ARRAY_BUFFER, vbi){
+        Gl.glDrawElements(Gl.GL_TRIANGLES, indices.length, Gl.GL_UNSIGNED_INT, 0)
       }     
     }
   }

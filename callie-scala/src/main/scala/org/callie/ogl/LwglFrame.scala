@@ -1,13 +1,19 @@
-package org.callie.jogl
+package org.callie.ogl
 
+import org.callie.input.Inputs
 import org.lwjgl.glfw._
 import org.lwjgl.opengl._
-
 import org.lwjgl.glfw.GLFW._
 import org.lwjgl.opengl.GL11._
 import org.lwjgl.system.MemoryUtil._
 
-class LwglFrame(l:GlEventListener) {
+object LwglFrame{
+  def apply(l: GlEventListener):Unit={
+    new LwglFrame(l).run()
+  }
+}
+
+class LwglFrame(l:GlEventListener){
 
   GLFWErrorCallback.createPrint(System.err).set
 
@@ -29,14 +35,15 @@ class LwglFrame(l:GlEventListener) {
 
   glfwSetScrollCallback(window, new GLFWScrollCallback() {
     override def invoke(window: Long, xoffset: Double, yoffset: Double): Unit = {
-      println(""+xoffset+" "+yoffset)
+      Inputs.mouseZ += yoffset.toInt
     }
   })
 
   glfwSetCursorPosCallback(window, new GLFWCursorPosCallback() {
     override def invoke(window: Long, xpos: Double, ypos: Double): Unit = {
       glfwSetCursorPos(window, 640,  360)
-      println(""+xpos+" "+ypos)
+      Inputs.mouseX += xpos.toInt - 640
+      Inputs.mouseY += ypos.toInt - 360
     }
   })
 
@@ -44,30 +51,34 @@ class LwglFrame(l:GlEventListener) {
     override def invoke(window: Long, key: Int, scancode: Int, action: Int, mods: Int): Unit = {
       if(action == GLFW_PRESS){
         if(key == GLFW_KEY_W) {
-          println("" + key + " " + action)
+          Inputs.w = true
         }
       }else if(action == GLFW_RELEASE){
         if(key == GLFW_KEY_W) {
-          println("" + key + " " + action)
+          Inputs.w = false
         }
       }
 
     }
   })
 
-  glfwShowWindow(window)
+  def run():Unit={
+    glfwShowWindow(window)
+    GL.createCapabilities()
 
-  GL.createCapabilities()
-  //glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
-  l.init()
+    try {
+      l.init()
 
-  while ( !glfwWindowShouldClose(window) ) {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+      while (!glfwWindowShouldClose(window)) {
+        l.display()
 
-    l.display()
+        glfwSwapBuffers(window)
+        glfwPollEvents()
+      }
 
-    glfwSwapBuffers(window)
-    glfwPollEvents()
+    } finally {
+      l.dispose()
+    }
   }
 
 }
