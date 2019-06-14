@@ -63,10 +63,10 @@ class LwglFrame(l:GlEventListener){
       l.init()
 
       while (!glfwWindowShouldClose(window)) {
-        l.display()
-        //Gl.glFlush()
         glfwPollEvents()
         l.update()
+
+        l.display()
         glfwSwapBuffers(window)
       }
 
