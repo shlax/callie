@@ -1,6 +1,4 @@
-package org.callie
-
-import org.lwjgl.glfw.GLFWErrorCallback
+package org.callie.jogl
 
 import org.lwjgl.glfw._
 import org.lwjgl.opengl._
@@ -9,7 +7,7 @@ import org.lwjgl.glfw.GLFW._
 import org.lwjgl.opengl.GL11._
 import org.lwjgl.system.MemoryUtil._
 
-object LwglDemo extends App{
+class LwglFrame(l:GlEventListener) {
 
   GLFWErrorCallback.createPrint(System.err).set
 
@@ -60,12 +58,13 @@ object LwglDemo extends App{
   glfwShowWindow(window)
 
   GL.createCapabilities()
-  glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
+  //glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
+  l.init()
 
   while ( !glfwWindowShouldClose(window) ) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-
+    l.display()
 
     glfwSwapBuffers(window)
     glfwPollEvents()
