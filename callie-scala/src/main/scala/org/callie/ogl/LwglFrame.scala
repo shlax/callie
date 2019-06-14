@@ -7,69 +7,72 @@ import org.lwjgl.glfw.GLFW._
 import org.lwjgl.system.MemoryUtil._
 
 object LwglFrame{
+
   def apply(l: GlEventListener):Unit={
-    new LwglFrame(l).run()
-  }
-}
 
-class LwglFrame(l:GlEventListener){
+    GLFWErrorCallback.createPrint(System.err).set()
 
-  GLFWErrorCallback.createPrint(System.err).set
+    if (!glfwInit()) throw new IllegalStateException("Unable to initialize GLFW")
 
-  if (!glfwInit()) throw new IllegalStateException("Unable to initialize GLFW")
+    glfwDefaultWindowHints()
+    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE)
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE)
 
-  glfwDefaultWindowHints()
-  glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE)
-  glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE)
+    val window = glfwCreateWindow(1280, 720, "", NULL, NULL)
 
-  val window = glfwCreateWindow(1280, 720, "", NULL, NULL)
+    if(window == NULL) throw new RuntimeException("Failed to create the GLFW window")
 
-  if(window == NULL) throw new RuntimeException("Failed to create the GLFW window")
+    glfwSetWindowPos(window, 200, 100)
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN)
 
-  glfwSetWindowPos(window, 200, 100)
-  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN)
+    glfwMakeContextCurrent(window)
+    glfwSwapInterval(1)
 
-  glfwMakeContextCurrent(window)
-  glfwSwapInterval(1)
+    glfwSetScrollCallback(window, (_: Long, _: Double, yoffset: Double) => {
+      Inputs.mouseZ += yoffset.toInt
+    })
 
-  glfwSetScrollCallback(window, (_: Long, _: Double, yoffset: Double) => {
-    Inputs.mouseZ += yoffset.toInt
-  })
+    glfwSetCursorPosCallback(window, (window: Long, xpos: Double, ypos: Double) => {
+      glfwSetCursorPos(window, 640, 360)
+      Inputs.mouseX += xpos.toInt - 640
+      Inputs.mouseY += ypos.toInt - 360
+    })
 
-  glfwSetCursorPosCallback(window, (window: Long, xpos: Double, ypos: Double) => {
-    glfwSetCursorPos(window, 640, 360)
-    Inputs.mouseX += xpos.toInt - 640
-    Inputs.mouseY += ypos.toInt - 360
-  })
-
-  glfwSetKeyCallback(window, (_: Long, key: Int, _: Int, action: Int, _: Int) => {
-    if (action == GLFW_PRESS) {
-      if (key == GLFW_KEY_W) {
-        Inputs.w = true
+    glfwSetKeyCallback(window, (_: Long, key: Int, _: Int, action: Int, _: Int) => {
+      if (action == GLFW_PRESS) {
+        if (key == GLFW_KEY_W) {
+          Inputs.w = true
+        }
+      } else if (action == GLFW_RELEASE) {
+        if (key == GLFW_KEY_W) {
+          Inputs.w = false
+        }
       }
-    } else if (action == GLFW_RELEASE) {
-      if (key == GLFW_KEY_W) {
-        Inputs.w = false
-      }
-    }
 
-  })
+    })
 
-  def run():Unit={
     glfwShowWindow(window)
-    GL.createCapabilities()
-
     try {
-      l.init()
+      GL.createCapabilities()
 
-      while (!glfwWindowShouldClose(window)) {
-        l.update()
-        glfwSwapBuffers(window)
-        glfwPollEvents()
+      try {
+        l.init()
+
+        while (!glfwWindowShouldClose(window)) {
+          l.update()
+          glfwSwapBuffers(window)
+          glfwPollEvents()
+        }
+
+      } finally {
+        l.dispose()
       }
+    }finally {
+      Callbacks.glfwFreeCallbacks(window)
+      glfwDestroyWindow(window)
 
-    } finally {
-      l.dispose()
+      glfwTerminate()
+      glfwSetErrorCallback(null).free()
     }
   }
 
