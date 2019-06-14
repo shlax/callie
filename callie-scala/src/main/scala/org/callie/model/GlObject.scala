@@ -56,7 +56,7 @@ class TextureGroup(ev: GlEventListener, image:String, ind:Int, objs:GlObject*) e
     }
 
     texId = ev.createTexture{
-      Gl.glPixelStorei(Gl.GL_UNPACK_ALIGNMENT, 1)
+      //Gl.glPixelStorei(Gl.GL_UNPACK_ALIGNMENT, 1)
       Gl.glTexImage2D(Gl.GL_TEXTURE_2D, 0, fi, w, h, 0, f, Gl.GL_UNSIGNED_BYTE, buff)
 
       Gl.glGenerateMipmap(Gl.GL_TEXTURE_2D)
