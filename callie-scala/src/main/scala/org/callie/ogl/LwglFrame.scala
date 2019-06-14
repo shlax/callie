@@ -4,7 +4,6 @@ import org.callie.input.Inputs
 import org.lwjgl.glfw._
 import org.lwjgl.opengl._
 import org.lwjgl.glfw.GLFW._
-import org.lwjgl.opengl.GL11._
 import org.lwjgl.system.MemoryUtil._
 
 object LwglFrame{
@@ -33,33 +32,27 @@ class LwglFrame(l:GlEventListener){
   glfwMakeContextCurrent(window)
   glfwSwapInterval(1)
 
-  glfwSetScrollCallback(window, new GLFWScrollCallback() {
-    override def invoke(window: Long, xoffset: Double, yoffset: Double): Unit = {
-      Inputs.mouseZ += yoffset.toInt
-    }
+  glfwSetScrollCallback(window, (_: Long, _: Double, yoffset: Double) => {
+    Inputs.mouseZ += yoffset.toInt
   })
 
-  glfwSetCursorPosCallback(window, new GLFWCursorPosCallback() {
-    override def invoke(window: Long, xpos: Double, ypos: Double): Unit = {
-      glfwSetCursorPos(window, 640,  360)
-      Inputs.mouseX += xpos.toInt - 640
-      Inputs.mouseY += ypos.toInt - 360
-    }
+  glfwSetCursorPosCallback(window, (window: Long, xpos: Double, ypos: Double) => {
+    glfwSetCursorPos(window, 640, 360)
+    Inputs.mouseX += xpos.toInt - 640
+    Inputs.mouseY += ypos.toInt - 360
   })
 
-  glfwSetKeyCallback(window, new GLFWKeyCallback() {
-    override def invoke(window: Long, key: Int, scancode: Int, action: Int, mods: Int): Unit = {
-      if(action == GLFW_PRESS){
-        if(key == GLFW_KEY_W) {
-          Inputs.w = true
-        }
-      }else if(action == GLFW_RELEASE){
-        if(key == GLFW_KEY_W) {
-          Inputs.w = false
-        }
+  glfwSetKeyCallback(window, (_: Long, key: Int, _: Int, action: Int, _: Int) => {
+    if (action == GLFW_PRESS) {
+      if (key == GLFW_KEY_W) {
+        Inputs.w = true
       }
-
+    } else if (action == GLFW_RELEASE) {
+      if (key == GLFW_KEY_W) {
+        Inputs.w = false
+      }
     }
+
   })
 
   def run():Unit={
