@@ -11,6 +11,8 @@ trait GlEventListener extends GlObject{
   var disposeFbo : List[Int] = Nil
   var disposeRbo : List[Int] = Nil
 
+  def update():Unit
+
   def dispose():Unit={
     for(i <- disposeVbo) Gl.glDeleteBuffers(i)
     for(i <- disposeVao) Gl.glDeleteVertexArrays(i)

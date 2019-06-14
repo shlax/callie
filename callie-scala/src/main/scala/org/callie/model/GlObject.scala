@@ -21,7 +21,7 @@ class ObjectGroup(objs:GlObject*) extends GlObject{
   override def display():Unit={
     for(o <- objs) o.display()
   }
-  
+
 }
 
 class TextureGroup(ev: GlEventListener, image:String, ind:Int, objs:GlObject*) extends ObjectGroup(objs:_*){

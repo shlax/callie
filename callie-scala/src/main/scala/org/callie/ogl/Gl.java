@@ -264,4 +264,8 @@ public final class Gl {
     GL11C.glClearColor(red, green, blue, alpha);
   }
 
+  public static void glFlush(){
+    GL11C.glFlush();
+  }
+
 }

@@ -98,14 +98,15 @@ object Camera {
   var cnt = 0
 
   // mat4 normalMatrix = transpose(inverse(modelView));
-  def display():Unit={
+  def update():Unit={
+
     off.z += Inputs.zDiff() * 0.25f
     angX() += Inputs.yDiff() * 0.025f
     angY() += Inputs.xDiff() * 0.025f
 
     //modMat.rotX(angX()).mul(tmp.rotY((Math.PI/2d).asInstanceOf[Float] + angY()))
     modMat.rotY(-1f * angY()).mul(tmp.rotX(-1f * angX())).apply(light, lightDirectionAr)
-    for(i <- lightDirectionVec) Gl.glUniform3fv(i, lightDirectionAr)
+
 
     //println("normalMatrix "+modMat)
 
@@ -120,9 +121,14 @@ object Camera {
     //modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position)) //.mul(tmp.set(off), modMat)
     //projection.mul(modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY()+1.5f)).mul(tmp.set(target.position)), viewAr)
     projection.mul(modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position)), viewAr)
-    for(i <- viewMatrix) Gl.glUniformMatrix4fv(i, true, viewAr)
+
 
     //println("viewMatrix "+modMat)
+  }
+
+  def display():Unit={
+    for(i <- lightDirectionVec) Gl.glUniform3fv(i, lightDirectionAr)
+    for(i <- viewMatrix) Gl.glUniformMatrix4fv(i, true, viewAr)
   }
 
 }

@@ -69,14 +69,19 @@ object MainLevel extends App {
       t = System.nanoTime()
     }
 
-    override def display():Unit={
-      Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT)
 
+    override def update(): Unit = {
       val tmp = System.nanoTime()
       val dt: Float = ((tmp - t) / 1e9d).asInstanceOf[Float]
       t = tmp
 
+      Camera.update()
       anim.apply(dt)
+    }
+
+    override def display():Unit={
+      Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT)
+
       Camera.display()
 
       //char.display(gl)
