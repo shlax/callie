@@ -13,6 +13,7 @@ object GlPrograms {
         |/*lightMap*/layout(location = 3) in vec2 inTextureCoord2;
         |
         |uniform mat4 viewMatrix;
+        |uniform mat4 normalMatrix;
         |uniform vec3 lightDirection;
         |
         |/* const mat4 projection = mat4( // 1 : 10 X 0.5
@@ -36,7 +37,10 @@ object GlPrograms {
         |  //gl_Position = vec4(tmp.x / tmp.w, tmp.y / tmp.w, tmp.z / tmp.w, 1);
         |
         |  //lightIntensity = 0.2 + (max(dot((normalMatrix * vec4(inNormal,0)), (normalMatrix * vec4(lightDirection,0))), 0.0) * 0.8);
-        |  lightIntensity = 0.35 + (max(dot(inNormal, lightDirection), 0.0) * 0.65);
+        |
+        |  vec3 nv = (normalMatrix * vec4(inNormal,1)).xyz;
+        |  lightIntensity = 0.35 + (max(dot(nv, lightDirection), 0.0) * 0.65);
+        |
         |  texCoord1 = inTextureCoord1;
         |  /*lightMap*/texCoord2 = inTextureCoord2;
         |
@@ -55,6 +59,7 @@ object GlPrograms {
         |  highp vec4 c = texture(textureDiffuse, texCoord1);
         |  /*discard*/if (c.w < 0.5) discard;
         |
+        |  //fragColor = vec4(lightIntensity, lightIntensity, lightIntensity, 1);
         |  fragColor = c * lightIntensity;
         |} """.stripMargin.trim
 
@@ -79,6 +84,7 @@ object GlPrograms {
         |
         |  highp vec4 d = texture(textureLight, texCoord2);
         |
+        |  //fragColor = vec4(lightIntensity, lightIntensity, lightIntensity, 1);
         |  fragColor = d * lightIntensity;
         |} """.stripMargin.trim
 

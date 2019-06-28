@@ -19,12 +19,14 @@ object Camera {
   // http://stackoverflow.com/questions/21079623/how-to-calculate-the-normal-matrix
 
   var viewMatrix: Array[Int] = _
+  var normalMatrix: Array[Int] = _
+
   var lightDirectionVec: Array[Int] = _
 
-  def program(id:Seq[Int], view:String="viewMatrix", lightDirection:String="lightDirection"):Unit={
+  def program(id:Seq[Int], view:String="viewMatrix", normal:String = "normalMatrix", lightDirection:String="lightDirection"):Unit={
     viewMatrix = id.map(i => Gl.glGetUniformLocation(i, view)).toArray
     lightDirectionVec = id.map(i => Gl.glGetUniformLocation(i, lightDirection)).toArray
-    update()
+    normalMatrix = id.map(i => Gl.glGetUniformLocation(i, normal)).toArray
   }
 
   // http://gamedev.stackexchange.com/questions/56609/how-to-create-a-projection-matrix-in-opengl-es-2-0
@@ -92,13 +94,15 @@ object Camera {
                            0f, 0f, -1.002002f, -2.002002f,
                            0f, 0f, -1f, 0f)
 
+  val normAr = new Array[Float](16)
   val viewAr = new Array[Float](16)
+
   val lightDirectionAr = new Array[Float](3)
 
   var cnt = 0
 
   // mat4 normalMatrix = transpose(inverse(modelView));
-  def update():Unit={
+  def apply():Unit={
 
     off.z += Inputs.zDiff() * 0.25f
     angX() += Inputs.yDiff() * 0.025f
@@ -120,10 +124,19 @@ object Camera {
 //    modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position))
     //modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position)) //.mul(tmp.set(off), modMat)
     //projection.mul(modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY()+1.5f)).mul(tmp.set(target.position)), viewAr)
-    projection.mul(modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position)), viewAr)
-    for(i <- viewMatrix) Gl.glUniformMatrix4fv(i, true, viewAr)
+    modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position))
+    modMat.mul(projection, modMat)
+    //for(i <- viewMatrix) Gl.glUniformMatrix4fv(i, true, viewAr)
 
     //println("viewMatrix "+modMat)
+  }
+
+  def update(norm:Matrix4, model:Matrix4):Unit={
+    norm.toArray(normAr)
+    for(i <- normalMatrix) Gl.glUniformMatrix4fv(i, true, normAr)
+
+    modMat.mul(model, viewAr)
+    for(i <- viewMatrix) Gl.glUniformMatrix4fv(i, true, viewAr)
   }
 
 }

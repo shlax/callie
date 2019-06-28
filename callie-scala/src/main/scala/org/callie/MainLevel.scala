@@ -4,6 +4,7 @@ import org.callie.control.MovingObject
 import org.callie.input.Camera
 import org.callie.ogl.{Gl, GlEventListener, LwglFrame}
 import org.callie.map.Map25
+import org.callie.math.Matrix4
 import org.callie.model.{Mod, StaticObject, TextureGroup}
 import org.callie.ringing.{JoinControl, KeyFrameLoader, Node}
 
@@ -69,14 +70,19 @@ object MainLevel extends App {
       t = System.nanoTime()
     }
 
+    val identity = Matrix4()
+
     override def update():Unit={
       Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT)
+
+      Camera.apply()
 
       val tmp = System.nanoTime()
       val dt: Float = ((tmp - t) / 1e9d).asInstanceOf[Float]
       t = tmp
 
-      Camera.update()
+      Camera.update(identity, identity)
+
       anim.apply(dt)
       //char.update(gl)
       //sphere.update(gl)
