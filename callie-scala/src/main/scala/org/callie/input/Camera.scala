@@ -125,7 +125,7 @@ object Camera {
     //modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position)) //.mul(tmp.set(off), modMat)
     //projection.mul(modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY()+1.5f)).mul(tmp.set(target.position)), viewAr)
     modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position))
-    //modMat.mul(projection, modMat)
+    modMat.mul(projection, modMat)
     //for(i <- viewMatrix) Gl.glUniformMatrix4fv(i, true, viewAr)
 
     //println("viewMatrix "+modMat)
@@ -135,7 +135,7 @@ object Camera {
     norm.toArray(normAr)
     for(i <- normalMatrix) Gl.glUniformMatrix4fv(i, true, normAr)
 
-    projection.mul(tmp.mul(modMat, model), viewAr)
+    modMat.mul(model, viewAr)
     for(i <- viewMatrix) Gl.glUniformMatrix4fv(i, true, viewAr)
   }
 
