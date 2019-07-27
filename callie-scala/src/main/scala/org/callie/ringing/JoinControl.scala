@@ -32,7 +32,7 @@ object JoinControl{
     val s = remap(stand)
     s.apply()
 
-    val oj = new OffsetJoint(ax, ay, az, j)
+    val oj = new OffsetJoint(name, ax, ay, az, j)
     oj.apply(cntrl, 1f)
 
     val runCycle = run.map(remap).toArray
