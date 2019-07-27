@@ -4,9 +4,9 @@ import org.callie.control.MovingObject
 import org.callie.input.Camera
 import org.callie.ogl.{Gl, GlEventListener, LwglFrame}
 import org.callie.map.Map25
-import org.callie.math.Matrix4
-import org.callie.model.{Mod, StaticObject, TextureGroup}
-import org.callie.ringing.{JoinControl, KeyFrameLoader, Node}
+import org.callie.math.{Matrix4, Vector3}
+import org.callie.model.{Mod, MorfingObject, StaticObject, TextureGroup}
+import org.callie.ringing.{JoinControl, Joint, KeyFrameLoader, Node}
 
 object MainLevel extends App {
 
@@ -14,7 +14,7 @@ object MainLevel extends App {
 
   LwglFrame(new GlEventListener {
 
-    val (charObj, joint, zero) = Node.load(this, Map(
+    val (charObj: Array[MorfingObject], joint: Joint, zero: Vector3) = Node.load(this, Map(
         "pSphere5" -> Mod.load("/data/char/model.mod").scale(0.1f),
         "polySurface115" -> Mod.load("/data/char/hair.mod").scale(0.1f)
       ), "/data/char/joints.skl", 0.1f)
@@ -23,6 +23,9 @@ object MainLevel extends App {
     val run = for(i <- 1 to 8) yield KeyFrameLoader.load(joint, "/data/char/anim/run/run"+i+".ang", 0.1f)
 
     val anim = JoinControl(camCtrl, joint, zero , stand, run:_*)
+
+//    val leg = joint.lookup("joint752").get.asInstanceOf[JointAttachment]
+//    val hand = joint.lookup("joint714").get.asInstanceOf[JointAttachment]
 
     /* val sphere = new TextureGroup(this, "/demo/box/white.png", Gl.TEXTURE0,
       new StaticObject(this, Mod.load("/demo/box/sphere.mod"))
