@@ -89,16 +89,17 @@ class LinearJoint(override val name:String,
     case Z => parent.rotZ
   }
 
-  val n = Matrix4(); val m = Matrix4()
+  val transform = Matrix4()
+  val normal = Matrix4()
   override def apply(trans:Matrix4, normalTrans:Matrix4, time:Float):Unit={
 
-    m.rotZ(iz.value * value(iz.axis)).mul(n.rotY(iy.value * value(iy.axis))).mul(n.rotX(ix.value * value(ix.axis)))
-    
-    n.mul(trans, m) // next trans
-    m.mul(normalTrans, m) // next normalTrans
+    normal.rotZ(iz.value * value(iz.axis)).mul(transform.rotY(iy.value * value(iy.axis))).mul(transform.rotX(ix.value * value(ix.axis)))
+
+    transform.mul(trans, normal) // next trans
+    normal.mul(normalTrans, normal) // next normalTrans
     
     //cluster(n, m)
-    for(v <- points) n(v._1, v._2)
-    for(v <- normals) m(v._1, v._2)
+    for(v <- points) transform(v._1, v._2)
+    for(v <- normals) normal(v._1, v._2)
   }
 }

@@ -29,7 +29,7 @@ object MainLevel extends App {
     ) */
 
     val objects = Array(
-      new TextureGroup(this, "/data/char/char.png", Gl.GL_TEXTURE0, charObj.toIndexedSeq:_* ),
+      new TextureGroup(this, "/data/char/char.png", Gl.GL_TEXTURE0, charObj:_* ),
 
       //new TextureGroup(this, "/demo/t.png", Gl.TEXTURE0,
       new TextureGroup(this, "/data/map/sand.png", Gl.GL_TEXTURE0,
