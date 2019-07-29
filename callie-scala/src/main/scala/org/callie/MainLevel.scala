@@ -32,7 +32,7 @@ object MainLevel extends App {
     ) */
 
     val objects = Array(
-      new TextureGroup(this, "/data/char/char.png", Gl.GL_TEXTURE0, charObj:_* ),
+      new TextureGroup(this, "/data/char/char.png", Gl.GL_TEXTURE0, charObj.toIndexedSeq:_* ),
 
       //new TextureGroup(this, "/demo/t.png", Gl.TEXTURE0,
       new TextureGroup(this, "/data/map/sand.png", Gl.GL_TEXTURE0,
@@ -73,8 +73,6 @@ object MainLevel extends App {
       t = System.nanoTime()
     }
 
-    val identity = Matrix4()
-
     override def update():Unit={
       Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT)
 
@@ -84,12 +82,11 @@ object MainLevel extends App {
       val dt: Float = ((tmp - t) / 1e9d).asInstanceOf[Float]
       t = tmp
 
-      Camera.update(identity, identity)
-
       anim.apply(dt)
       //char.update(gl)
       //sphere.update(gl)
 
+      Camera.identity()
       for(o <- objects) o.update()
     }
 

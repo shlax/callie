@@ -56,14 +56,14 @@ trait JointTrav extends Joint{
   }
 }
 
-trait JointAttachment extends Joint {
+trait AttachmentJoint extends Joint {
   val transform = Matrix4()
   val normal = Matrix4()
 }
 
 class IntrJoint(override val name:String,
                 offset:Matrix4, override val ax: Intr, override val  ay:Intr, override val  az : Intr,
-				        points:Array[(Vector3, Vector3)], normals:Array[(Vector3, Vector3)] ) extends JointAttachment with JointIntr{
+				        points:Array[(Vector3, Vector3)], normals:Array[(Vector3, Vector3)] ) extends AttachmentJoint with JointIntr{
   
   var rotX : Float = _
   var rotY : Float = _
@@ -97,7 +97,7 @@ class IntrTravJoint(name:String,
 
 class LinearJoint(override val name:String,
                   parent:IntrTravJoint, ix:AxisValue, iy:AxisValue, iz:AxisValue,
-    							points:Array[(Vector3, Vector3)], normals:Array[(Vector3, Vector3)] ) extends JointAttachment{
+    							points:Array[(Vector3, Vector3)], normals:Array[(Vector3, Vector3)] ) extends AttachmentJoint{
 
   import Axis._
 

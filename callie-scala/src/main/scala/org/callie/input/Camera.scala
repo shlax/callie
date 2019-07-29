@@ -130,12 +130,18 @@ object Camera {
     //println("viewMatrix "+modMat)
   }
 
-  def update(norm:Matrix4, model:Matrix4):Unit={
+  def update(model:Matrix4, norm:Matrix4):Unit={
     norm.toArray(matrixArray)
     for(i <- normalMatrix) Gl.glUniformMatrix4fv(i, true, matrixArray)
 
     modMat.mul(model, matrixArray)
     for(i <- viewMatrix) Gl.glUniformMatrix4fv(i, true, matrixArray)
+  }
+
+  val identityMatrix = Matrix4()
+
+  def identity():Unit={
+    update(identityMatrix, identityMatrix)
   }
 
 }
