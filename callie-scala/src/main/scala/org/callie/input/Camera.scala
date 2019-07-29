@@ -94,8 +94,7 @@ object Camera {
                            0f, 0f, -1.002002f, -2.002002f,
                            0f, 0f, -1f, 0f)
 
-  val normAr = new Array[Float](16)
-  val viewAr = new Array[Float](16)
+  val matrixArray = new Array[Float](16)
 
   val lightDirectionAr = new Array[Float](3)
 
@@ -132,11 +131,11 @@ object Camera {
   }
 
   def update(norm:Matrix4, model:Matrix4):Unit={
-    norm.toArray(normAr)
-    for(i <- normalMatrix) Gl.glUniformMatrix4fv(i, true, normAr)
+    norm.toArray(matrixArray)
+    for(i <- normalMatrix) Gl.glUniformMatrix4fv(i, true, matrixArray)
 
-    modMat.mul(model, viewAr)
-    for(i <- viewMatrix) Gl.glUniformMatrix4fv(i, true, viewAr)
+    modMat.mul(model, matrixArray)
+    for(i <- viewMatrix) Gl.glUniformMatrix4fv(i, true, matrixArray)
   }
 
 }
