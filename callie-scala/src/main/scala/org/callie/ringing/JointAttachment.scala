@@ -16,11 +16,11 @@ object JointAttachment{
 }
 
 class JointAttachment(joint:AttachmentJoint, obj:GlObject*) extends ObjectGroup(obj:_*){
-  val transform = joint.transform
+  val model = joint.model
   val normal = joint.normal
 
   override def update():Unit={
-    Camera.update(transform, normal)
+    Camera.update(model, normal)
     super.update()
   }
 

@@ -57,7 +57,7 @@ trait JointTrav extends Joint{
 }
 
 trait AttachmentJoint extends Joint {
-  val transform = Matrix4()
+  val model = Matrix4()
   val normal = Matrix4()
 }
 
@@ -72,13 +72,13 @@ class IntrJoint(override val name:String,
   def apply(trans : Matrix4, normalTrans : Matrix4, time:Float):Unit={
     //val n = Matrix4()
     rotX = ax(time); rotY = ay(time); rotZ = az(time)
-    normal.rotZ(rotZ).mul(transform.rotY(rotY)).mul(transform.rotX(rotX))
+    normal.rotZ(rotZ).mul(model.rotY(rotY)).mul(model.rotX(rotX))
 
-    transform.mul(trans, offset).mul(normal) // next trans
+    model.mul(trans, offset).mul(normal) // next trans
     normal.mul(normalTrans, normal) // next normalTrans
 
     //cluster(n, m)
-    for(v <- points) transform(v._1, v._2)
+    for(v <- points) model(v._1, v._2)
     for(v <- normals) normal(v._1, v._2)
   }
 
@@ -91,7 +91,7 @@ class IntrTravJoint(name:String,
 
   override def apply(trans : Matrix4, normalTrans : Matrix4, time:Float):Unit={
     super.apply(trans, normalTrans, time)
-    for(j <- childs) j.apply(transform, normal, time)
+    for(j <- childs) j.apply(model, normal, time)
   }
 }
 
@@ -107,15 +107,15 @@ class LinearJoint(override val name:String,
     case Z => parent.rotZ
   }
 
-  override def apply(trans:Matrix4, normalTrans:Matrix4, time:Float):Unit={
+  override def apply(modelTrans:Matrix4, normalTrans:Matrix4, time:Float):Unit={
 
-    normal.rotZ(iz.value * value(iz.axis)).mul(transform.rotY(iy.value * value(iy.axis))).mul(transform.rotX(ix.value * value(ix.axis)))
+    normal.rotZ(iz.value * value(iz.axis)).mul(model.rotY(iy.value * value(iy.axis))).mul(model.rotX(ix.value * value(ix.axis)))
 
-    transform.mul(trans, normal) // next trans
+    model.mul(modelTrans, normal) // next trans
     normal.mul(normalTrans, normal) // next normalTrans
     
     //cluster(n, m)
-    for(v <- points) transform(v._1, v._2)
+    for(v <- points) model(v._1, v._2)
     for(v <- normals) normal(v._1, v._2)
   }
 }
