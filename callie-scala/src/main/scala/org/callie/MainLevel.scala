@@ -1,10 +1,10 @@
 package org.callie
 
 import org.callie.control.MovingObject
-import org.callie.input.Camera
+import org.callie.input.{Camera, CameraProgram}
 import org.callie.ogl.{Gl, GlEventListener, LwglFrame}
 import org.callie.map.Map25
-import org.callie.math.{Matrix4, Vector3}
+import org.callie.math.Vector3
 import org.callie.model.{Mod, MorfingObject, StaticObject, TextureGroup}
 import org.callie.ringing.{JoinControl, Joint, KeyFrameLoader, Node}
 
@@ -50,6 +50,8 @@ object MainLevel extends App {
 
     var t: Long = 0
 
+    var camProg: CameraProgram = _
+
     override def init():Unit={
       val vertexSchader = createShader(Gl.GL_VERTEX_SHADER, GlPrograms.vertex())
       val fragmentSchader = createShader(Gl.GL_FRAGMENT_SHADER, GlPrograms.fragment(discard = true))
@@ -59,10 +61,10 @@ object MainLevel extends App {
 
       //sphere.init(gl)
 
-      for(o <- objects) o.init()
-
-      Camera.program(Seq(prog))
+      camProg = Camera.program(prog)
       Camera.lookAt(camCtrl)
+
+      for(o <- objects) o.init()
 
       Gl.glUseProgram(prog)
       Gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
@@ -86,7 +88,9 @@ object MainLevel extends App {
       //char.update(gl)
       //sphere.update(gl)
 
-      Camera.identity()
+      camProg.light()
+
+      camProg.identity()
       for(o <- objects) o.update()
     }
 

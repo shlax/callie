@@ -28,8 +28,7 @@ object Camera {
     val viewMatrix = Gl.glGetUniformLocation(id, view)
     val normalMatrix = Gl.glGetUniformLocation(id, normal)
     val lightDirectionVec = Gl.glGetUniformLocation(id, lightDirection)
-
-    new CameraProgram(viewMatrix, modMat, normalMatrix, lightDirectionVec, lightDirectionAr)
+    new CameraProgram(viewMatrix, normalMatrix, lightDirectionVec)
   }
 
   // http://gamedev.stackexchange.com/questions/56609/how-to-create-a-projection-matrix-in-opengl-es-2-0
@@ -140,16 +139,16 @@ object CameraProgram{
   val matrixArray = new Array[Float](16)
 }
 
-class CameraProgram(view: Int, modMat:Matrix4,
-                    normal:Int,
-                    lightDirectionVec:Int, lightDirectionAr:Array[Float]){
+class CameraProgram(view: Int, normal:Int, lightDirectionVec:Int){
 
-  val identityMatrix = CameraProgram.identityMatrix
-  val matrixArray = CameraProgram.matrixArray
+  val lightDirectionAr = Camera.lightDirectionAr
 
   def light() : Unit= {
     Gl.glUniform3fv(lightDirectionVec, lightDirectionAr)
   }
+
+  val matrixArray = CameraProgram.matrixArray
+  val modMat = Camera.modMat
 
   def update(model:Matrix4, norm:Matrix4):Unit={
     norm.toArray(matrixArray)
@@ -159,9 +158,13 @@ class CameraProgram(view: Int, modMat:Matrix4,
     Gl.glUniformMatrix4fv(view, true, matrixArray)
   }
 
+  val identityMatrix = CameraProgram.identityMatrix
+
   def identity():Unit={
+    modMat.toArray(matrixArray)
+    Gl.glUniformMatrix4fv(view, true, matrixArray)
+
     Gl.glUniformMatrix4fv(normal, true, identityMatrix)
-    Gl.glUniformMatrix4fv(view, true, identityMatrix)
   }
 
 }

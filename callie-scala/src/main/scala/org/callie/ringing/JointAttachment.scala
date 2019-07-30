@@ -1,26 +1,26 @@
 package org.callie.ringing
 
-import org.callie.input.Camera
+import org.callie.input.{Camera, CameraProgram}
 import org.callie.model.{GlObject, ObjectGroup}
 
 object JointAttachment{
 
-  def apply(joint: Joint, nm:String, obj: GlObject*): JointAttachment = {
+  def apply(prog:CameraProgram, joint: Joint, nm:String, obj: GlObject*): JointAttachment = {
     val a = joint.lookup(nm).get match {
       case b: AttachmentJoint => b
     }
 
-    new JointAttachment(a, obj:_*)
+    new JointAttachment(prog, a, obj:_*)
   }
 
 }
 
-class JointAttachment(joint:AttachmentJoint, obj:GlObject*) extends ObjectGroup(obj:_*){
+class JointAttachment(prog:CameraProgram, joint:AttachmentJoint, obj:GlObject*) extends ObjectGroup(obj:_*){
   val model = joint.model
   val normal = joint.normal
 
   override def update():Unit={
-    Camera.update(model, normal)
+    prog.update(model, normal)
     super.update()
   }
 
