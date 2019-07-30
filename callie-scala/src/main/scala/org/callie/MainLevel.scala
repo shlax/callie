@@ -10,9 +10,9 @@ import org.callie.ringing.{JoinControl, Joint, KeyFrameLoader, Node}
 
 object MainLevel extends App {
 
-  val camCtrl = new MovingObject(Map25.load("/data/map/data.map"), 1.5f)
-
   LwglFrame(new GlEventListener {
+
+    val camCtrl = new MovingObject(Map25.load("/data/map/data.map"), 1.5f)
 
     val (charObj: Array[MorfingObject], joint: Joint, zero: Vector3) = Node.load(this, Map(
         "pSphere5" -> Mod.load("/data/char/model.mod").scale(0.1f),
