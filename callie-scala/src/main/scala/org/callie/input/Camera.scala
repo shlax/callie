@@ -18,15 +18,18 @@ object Camera {
 
   // http://stackoverflow.com/questions/21079623/how-to-calculate-the-normal-matrix
 
-  var viewMatrix: Array[Int] = _
-  var normalMatrix: Array[Int] = _
+//  var viewMatrix: Array[Int] = _
+//  var normalMatrix: Array[Int] = _
+//
+//  var lightDirectionVec: Array[Int] = _
+  //val identityMatrix = Matrix4().toArray
 
-  var lightDirectionVec: Array[Int] = _
+  def program(id: Int, view:String="viewMatrix", normal:String = "normalMatrix", lightDirection:String="lightDirection"):CameraProgram={
+    val viewMatrix = Gl.glGetUniformLocation(id, view)
+    val normalMatrix = Gl.glGetUniformLocation(id, normal)
+    val lightDirectionVec = Gl.glGetUniformLocation(id, lightDirection)
 
-  def program(id:Seq[Int], view:String="viewMatrix", normal:String = "normalMatrix", lightDirection:String="lightDirection"):Unit={
-    viewMatrix = id.map(i => Gl.glGetUniformLocation(i, view)).toArray
-    lightDirectionVec = id.map(i => Gl.glGetUniformLocation(i, lightDirection)).toArray
-    normalMatrix = id.map(i => Gl.glGetUniformLocation(i, normal)).toArray
+    new CameraProgram(viewMatrix, modMat, normalMatrix, lightDirectionVec, lightDirectionAr)
   }
 
   // http://gamedev.stackexchange.com/questions/56609/how-to-create-a-projection-matrix-in-opengl-es-2-0
@@ -94,7 +97,7 @@ object Camera {
                            0f, 0f, -1.002002f, -2.002002f,
                            0f, 0f, -1f, 0f)
 
-  val matrixArray = new Array[Float](16)
+  //val matrixArray = new Array[Float](16)
 
   val lightDirectionAr = new Array[Float](3)
 
@@ -109,7 +112,7 @@ object Camera {
 
     //modMat.rotX(angX()).mul(tmp.rotY((Math.PI/2d).asInstanceOf[Float] + angY()))
     modMat.rotY(-1f * angY()).mul(tmp.rotX(-1f * angX())).apply(light, lightDirectionAr)
-    for(i <- lightDirectionVec) Gl.glUniform3fv(i, lightDirectionAr)
+//    for(i <- lightDirectionVec) Gl.glUniform3fv(i, lightDirectionAr)
 
     //println("normalMatrix "+modMat)
 
@@ -130,18 +133,35 @@ object Camera {
     //println("viewMatrix "+modMat)
   }
 
-  def update(model:Matrix4, norm:Matrix4):Unit={
-    norm.toArray(matrixArray)
-    for(i <- normalMatrix) Gl.glUniformMatrix4fv(i, true, matrixArray)
+}
 
-    modMat.mul(model, matrixArray)
-    for(i <- viewMatrix) Gl.glUniformMatrix4fv(i, true, matrixArray)
+object CameraProgram{
+  val identityMatrix = Matrix4().toArray
+  val matrixArray = new Array[Float](16)
+}
+
+class CameraProgram(view: Int, modMat:Matrix4,
+                    normal:Int,
+                    lightDirectionVec:Int, lightDirectionAr:Array[Float]){
+
+  val identityMatrix = CameraProgram.identityMatrix
+  val matrixArray = CameraProgram.matrixArray
+
+  def light() : Unit= {
+    Gl.glUniform3fv(lightDirectionVec, lightDirectionAr)
   }
 
-  val identityMatrix = Matrix4()
+  def update(model:Matrix4, norm:Matrix4):Unit={
+    norm.toArray(matrixArray)
+    Gl.glUniformMatrix4fv(normal, true, matrixArray)
+
+    modMat.mul(model, matrixArray)
+    Gl.glUniformMatrix4fv(view, true, matrixArray)
+  }
 
   def identity():Unit={
-    update(identityMatrix, identityMatrix)
+    Gl.glUniformMatrix4fv(normal, true, identityMatrix)
+    Gl.glUniformMatrix4fv(view, true, identityMatrix)
   }
 
 }
