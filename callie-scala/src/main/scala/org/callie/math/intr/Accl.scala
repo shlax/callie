@@ -41,12 +41,12 @@ class Accl extends Intr{
 
     v0 = lastV
 
-    a1 = 4 * s2 - 3 * v0 - v2
-    v1 = v0 + a1 / 2
+    a1 = 4f * s2 - 3f * v0 - v2
+    v1 = v0 + a1 / 2f
 
-    a2 = 2 * v2 - 2 * v1
+    a2 = 2f * v2 - 2f * v1
 
-    s1 = v0 / 2 + a1 / 8
+    s1 = v0 / 2f + a1 / 8f
     // }
   }
 
