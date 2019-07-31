@@ -56,12 +56,12 @@ class Accl extends Intr{
     if(t <= 0.5f){
       val at = a1 * t
       lastV = v0 + at
-      lastS = v0 * t + (at * t)/2
+      lastS = v0 * t + (at * t)/2f
     }else{
       val dt = t - 0.5f
       val adt = a2 * dt
       lastV = v1 + adt
-      lastS = v1 * dt + (adt * dt)/2 + s1
+      lastS = v1 * dt + (adt * dt)/2f + s1
     }
 
     s0 + lastS
