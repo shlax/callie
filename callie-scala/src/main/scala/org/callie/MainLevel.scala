@@ -6,7 +6,7 @@ import org.callie.ogl.{Gl, GlEventListener, LwglFrame}
 import org.callie.map.Map25
 import org.callie.math.Vector3
 import org.callie.model.{Mod, MorfingObject, StaticObject, TextureGroup}
-import org.callie.ringing.{JoinControl, Joint, KeyFrameLoader, Node}
+import org.callie.ringing.{JoinControl, Joint, JointAttachment, KeyFrameLoader, Node}
 
 object MainLevel extends App {
 
@@ -22,10 +22,14 @@ object MainLevel extends App {
     val stand = KeyFrameLoader.load(joint, "/data/char/anim/stand.ang", 0.1f)
     val run = for(i <- 1 to 8) yield KeyFrameLoader.load(joint, "/data/char/anim/run/run"+i+".ang", 0.1f)
 
-    val anim = JoinControl(camCtrl, joint, zero , stand, run:_*)
+    val anim : JoinControl = JoinControl(camCtrl, joint, zero , stand, run:_*)
 
 //    val leg = joint.lookup("joint752").get.asInstanceOf[JointAttachment]
 //    val hand = joint.lookup("joint714").get.asInstanceOf[JointAttachment]
+
+    val revolverHolder = new TextureGroup(this, "/data/char/pistol/revolver.png", Gl.GL_TEXTURE0,
+      new StaticObject(this, Mod.load("/data/char/pistol/holder.mod").scale(0.1f))
+    )
 
     /* val sphere = new TextureGroup(this, "/demo/box/white.png", Gl.TEXTURE0,
       new StaticObject(this, Mod.load("/demo/box/sphere.mod"))
@@ -51,6 +55,7 @@ object MainLevel extends App {
     var t: Long = 0
 
     var camProg: CameraProgram = _
+    var holder:JointAttachment = _
 
     override def init():Unit={
       val vertexSchader = createShader(Gl.GL_VERTEX_SHADER, GlPrograms.vertex())
@@ -60,9 +65,10 @@ object MainLevel extends App {
       //char.init(gl)
 
       //sphere.init(gl)
-
-      camProg = Camera.program(prog)
       Camera.lookAt(camCtrl)
+      camProg = Camera.program(prog)
+
+      holder = JointAttachment.apply(camProg, joint, "joint752", revolverHolder)
 
       for(o <- objects) o.init()
 
@@ -89,6 +95,8 @@ object MainLevel extends App {
       //sphere.update(gl)
 
       camProg.light()
+
+      holder.update()
 
       camProg.identity()
       for(o <- objects) o.update()

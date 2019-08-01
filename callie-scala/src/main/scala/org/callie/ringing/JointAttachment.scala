@@ -6,11 +6,13 @@ import org.callie.model.{GlObject, ObjectGroup}
 object JointAttachment{
 
   def apply(prog:CameraProgram, joint: Joint, nm:String, obj: GlObject*): JointAttachment = {
-    val a = joint.lookup(nm).get match {
+    val j = joint.lookup(nm).get match {
       case b: AttachmentJoint => b
     }
 
-    new JointAttachment(prog, a, obj:_*)
+    val ja = new JointAttachment(prog, j, obj:_*)
+    ja.init()
+    ja
   }
 
 }
