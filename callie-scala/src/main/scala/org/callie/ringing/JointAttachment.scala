@@ -10,9 +10,7 @@ object JointAttachment{
       case b: AttachmentJoint => b
     }
 
-    val ja = new JointAttachment(prog, j, obj:_*)
-    ja.init()
-    ja
+    new JointAttachment(prog, j, obj:_*)
   }
 
 }

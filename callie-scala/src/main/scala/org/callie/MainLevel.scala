@@ -1,7 +1,7 @@
 package org.callie
 
 import org.callie.control.MovingObject
-import org.callie.input.{Camera, CameraProgram}
+import org.callie.input.Camera
 import org.callie.ogl.{Gl, GlEventListener, LwglFrame, Scene}
 import org.callie.map.Map25
 import org.callie.math.Vector3
@@ -27,9 +27,7 @@ object MainLevel extends App {
       //    val leg = joint.lookup("joint752").get.asInstanceOf[JointAttachment]
       //    val hand = joint.lookup("joint714").get.asInstanceOf[JointAttachment]
 
-      val revolverHolder = new TextureGroup(gl, "/data/char/pistol/revolver.png", Gl.GL_TEXTURE0,
-        new StaticObject(gl, Mod.load("/data/char/pistol/holder.mod").scale(0.1f))
-      )
+
 
       /* val sphere = new TextureGroup(this, "/demo/box/white.png", Gl.TEXTURE0,
       new StaticObject(this, Mod.load("/demo/box/sphere.mod"))
@@ -62,7 +60,13 @@ object MainLevel extends App {
       //sphere.init(gl)
       val camProg = Camera.program(prog)
 
-      val holder = JointAttachment.apply(camProg, joint, "joint752", revolverHolder)
+      val revolver = new TextureGroup(gl, "/data/char/pistol/revolver.png", Gl.GL_TEXTURE0,
+        JointAttachment(camProg, joint, "joint752",
+          new StaticObject(gl, Mod.load("/data/char/pistol/holder.mod").scale(0.1f))
+        )
+      )
+
+      revolver.init()
 
       for (o <- objects) o.init()
 
@@ -89,7 +93,7 @@ object MainLevel extends App {
 
         camProg.light()
 
-        holder.update()
+        revolver.update()
 
         camProg.identity()
         for (o <- objects) o.update()

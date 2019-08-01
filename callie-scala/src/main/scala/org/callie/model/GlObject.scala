@@ -13,13 +13,14 @@ trait GlObject{
 }
 
 class ObjectGroup(objs:GlObject*) extends GlObject{
+  val childs = objs.toArray
 
   override def init():Unit={
-    for(o <- objs) o.init()
+    for(o <- childs) o.init()
   }
 
   override def update():Unit={
-    for(o <- objs) o.update()
+    for(o <- childs) o.update()
   }
 
 }
@@ -206,7 +207,7 @@ class MorfingObject(ev:GlEventListener) extends GlObject{
       prPoint += ( (Vector3(i._1.x, i._1.y, i._1.z), Vector3(coords, t.map(_._2 * size).toArray )) )
       prNormals += t.map{j =>
           ( j._1.normal, j._2 * size + 3)
-        }.groupBy(_._1).map{ e =>
+        }.groupBy(_._1).map{ e : (Point3, ListBuffer[(Point3, Int)] ) =>
           (Vector3(e._1.x, e._1.y, e._1.z), Vector3(coords,  e._2.map(_._2).toArray))
         }.toArray
     }
