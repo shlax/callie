@@ -6,9 +6,13 @@ import org.lwjgl.opengl._
 import org.lwjgl.glfw.GLFW._
 import org.lwjgl.system.MemoryUtil._
 
+trait Scene {
+  def update():Unit
+}
+
 object LwglFrame{
 
-  def apply(l: GlEventListener):Unit={
+  def apply(fn: GlEventListener => Scene):Unit= {
 
     GLFWErrorCallback.createPrint(System.err).set()
 
@@ -51,22 +55,24 @@ object LwglFrame{
 
     })
 
-    glfwShowWindow(window)
     try {
       GL.createCapabilities()
+      val gl = new GlEventListener()
 
       try {
-        l.init()
+        val s = fn(gl)
+        glfwShowWindow(window)
 
         while (!glfwWindowShouldClose(window)) {
-          l.update()
+          s.update()
           glfwSwapBuffers(window)
           glfwPollEvents()
         }
 
       } finally {
-        l.dispose()
+        gl.close()
       }
+
     }finally {
       Callbacks.glfwFreeCallbacks(window)
       glfwDestroyWindow(window)

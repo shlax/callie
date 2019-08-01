@@ -1,8 +1,6 @@
 package org.callie.ogl
 
-import org.callie.model.GlObject
-
-trait GlEventListener extends GlObject{
+class GlEventListener extends AutoCloseable{
 
   var disposeTextures : List[Int] = Nil
   var disposeVbo : List[Int] = Nil
@@ -13,7 +11,7 @@ trait GlEventListener extends GlObject{
 
   //def update():Unit
 
-  def dispose():Unit={
+  override def close():Unit={
     for(i <- disposeVbo) Gl.glDeleteBuffers(i)
     for(i <- disposeVao) Gl.glDeleteVertexArrays(i)
     for(i <- disposeTextures) Gl.glDeleteTextures(i)

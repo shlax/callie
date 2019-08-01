@@ -8,7 +8,7 @@ import org.callie.math.Vector3
 trait GlObject{
 
   def init():Unit
-  
+
   def update():Unit
 }
 
