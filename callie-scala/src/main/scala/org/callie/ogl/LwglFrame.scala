@@ -1,13 +1,13 @@
 package org.callie.ogl
 
-import org.callie.input.Inputs
+import org.callie.input.{Camera, Inputs}
 import org.lwjgl.glfw._
 import org.lwjgl.opengl._
 import org.lwjgl.glfw.GLFW._
 import org.lwjgl.system.MemoryUtil._
 
 trait Scene {
-  def update():Unit
+  def update(dt:Float):Unit
 }
 
 object LwglFrame{
@@ -62,9 +62,17 @@ object LwglFrame{
       try {
         val s = fn(gl)
         glfwShowWindow(window)
+        var t = System.nanoTime()
 
         while (!glfwWindowShouldClose(window)) {
-          s.update()
+          Camera.update()
+
+          val tmp = System.nanoTime()
+          val dt: Float = ((tmp - t) / 1e9d).asInstanceOf[Float]
+          t = tmp
+
+          s.update(dt)
+
           glfwSwapBuffers(window)
           glfwPollEvents()
         }

@@ -6,6 +6,7 @@ import org.callie.math.{Angle, Matrix4, Vector3}
 // http://www.gamedev.net/topic/617711-glulookat-replacement/
 object Camera {
   var target:TrackingObject = ZeroTrackingObject
+
   def lookAt(t:TrackingObject):Unit={
     target = t
   }
@@ -103,7 +104,7 @@ object Camera {
   var cnt = 0
 
   // mat4 normalMatrix = transpose(inverse(modelView));
-  def apply():Unit={
+  def update():Unit={
 
     off.z += Inputs.zDiff() * 0.25f
     angX() += Inputs.yDiff() * 0.025f

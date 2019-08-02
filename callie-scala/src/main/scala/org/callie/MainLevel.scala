@@ -76,16 +76,10 @@ object MainLevel extends App {
 
     //Gl.glPolygonMode(Gl.GL_FRONT_AND_BACK, Gl.GL_LINE)
 
-    var t = System.nanoTime()
 
-    () => {
+
+    (dt:Float) => {
       Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT)
-
-      Camera.apply()
-
-      val tmp = System.nanoTime()
-      val dt: Float = ((tmp - t) / 1e9d).asInstanceOf[Float]
-      t = tmp
 
       anim.apply(dt)
       //char.update(gl)
