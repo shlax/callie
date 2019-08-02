@@ -75,6 +75,7 @@ class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame
             runInd = 0
             run(runInd).apply()
             acc = delta
+            act = ns
 
         }
 
@@ -83,6 +84,7 @@ class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame
           case AnimState.STAND => //  RUN -> STAND
             stand.apply()
             acc = delta
+            act = ns
 
           case AnimState.RUN => // RUN -> RUN
             acc += delta
@@ -97,7 +99,7 @@ class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame
     }
 
     j.apply(cntrl, acc * invInter)
-    act = ns
+    //act = ns
 
   }
 
