@@ -11,11 +11,11 @@ case class Point3(x:Float, y:Float, z:Float){
 
 case class Face(point:Int, normal:Point3, uv:List[Point2])
 
-case class Mod(points : List[Point3], faces : List[Face]){
-  def scale(s:Float) = Mod(points.map(_.scale(s)), faces)
+case class Model(points : List[Point3], faces : List[Face]){
+  def scale(s:Float) = Model(points.map(_.scale(s)), faces)
 }
 
-object Mod extends RegexParsers {
+object Model extends RegexParsers {
   def index: Parser[Int] = """\d+""".r ^^ (_.toInt)
 
   def float: Parser[Float] = """[+-]?(\d+(\.\d*)?|\d*\.\d+)([eE][+-]?\d+)?""".r ^^ (_.toFloat)
@@ -47,17 +47,17 @@ object Mod extends RegexParsers {
   // f
   def faces : Parser[List[Face]] = "{" ~> rep(face3) <~ "}" ^^ (_.flatten)
 
-  def value: Parser[Mod] = (points ~ faces) ^^ { i =>
-    Mod(i._1, i._2)
+  def value: Parser[Model] = (points ~ faces) ^^ { i =>
+    Model(i._1, i._2)
   }
 
-  def load(nm:String):Mod = {
+  def apply(nm:String):Model = {
     import org.callie._
     Source.fromInputStream(getClass.getResourceAsStream(nm), "UTF-8")|{s =>
-      apply(s.mkString)
+      load(s.mkString)
     }
   }
 
-  def apply(r:CharSequence):Mod = parseAll(value, r).get
+  def load(r:CharSequence):Model = parseAll(value, r).get
 
 }

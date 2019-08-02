@@ -4,7 +4,7 @@ import scala.util.parsing.combinator.RegexParsers
 import org.callie.math.{Matrix4, Vector3}
 import org.callie.math.intr.Accl
 import org.callie.ogl.GlEventListener
-import org.callie.model.{Mod, MorfingObject}
+import org.callie.model.{Model, MorfingObject}
 import org.callie.math.Axis
 
 import scala.collection.mutable
@@ -14,8 +14,8 @@ case class AxisValue(axis:Axis, value:Float)
 
 abstract class Node(off:Option[Vector3], ind:Map[String,List[Int]]){
 
-  def apply(ev:GlEventListener, m:Map[String,Mod]): (Array[MorfingObject], Joint, Vector3) = {
-    val o = m.map(kv => (kv._1, new MorfingObject(ev, kv._2)))
+  def apply(ev:GlEventListener, m:Map[String,Model]): (Array[MorfingObject], Joint, Vector3) = {
+    val o = m.map(kv => (kv._1, MorfingObject(ev, kv._2)))
     (o.values.toArray, join(o, Vector3()), off.getOrElse(Vector3()))
   }
 
@@ -108,14 +108,14 @@ object Node extends RegexParsers {
     new LinNode(q._1._1._1, ix, iy, iz, q._2)
   }
 
-  def load(ev:GlEventListener, m:Map[String,Mod], nm:String, scale:Float = 1f): (Array[MorfingObject], Joint, Vector3) = {
+  def apply(ev:GlEventListener, m:Map[String,Model], nm:String, scale:Float = 1f): (Array[MorfingObject], Joint, Vector3) = {
     import org.callie._
     Source.fromInputStream(getClass.getResourceAsStream(nm), "UTF-8")|{ s =>
-      apply(ev, m, s.mkString, scale)
+      load(ev, m, s.mkString, scale)
     }
   }
 
-  def apply(ev:GlEventListener, m:Map[String,Mod], r:CharSequence, scale:Float = 1f): (Array[MorfingObject], Joint, Vector3) = {
+  def load(ev:GlEventListener, m:Map[String,Model], r:CharSequence, scale:Float = 1f): (Array[MorfingObject], Joint, Vector3) = {
     val n = parseAll(node(scale), r).get
     n(ev, m)
   }

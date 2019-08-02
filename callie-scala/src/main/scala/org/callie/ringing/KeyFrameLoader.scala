@@ -35,14 +35,14 @@ object KeyFrameLoader extends RegexParsers {
     }
   }
 
-  def load(j:Joint, nm:String, scale:Float = 1f) = {
+  def apply(j:Joint, nm:String, scale:Float = 1f) = {
     import org.callie._
     Source.fromInputStream(getClass.getResourceAsStream(nm), "UTF-8")|{ s =>
-      apply(j, s.mkString, scale)
+      load(j, s.mkString, scale)
     }
   }
 
-  def apply(j:Joint, r:CharSequence, scale:Float = 1f) = {
+  def load(j:Joint, r:CharSequence, scale:Float = 1f) = {
     val n = parseAll(mainNode(scale), r).get
     n(j)
   }

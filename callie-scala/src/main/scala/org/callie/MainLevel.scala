@@ -5,7 +5,7 @@ import org.callie.input.Camera
 import org.callie.ogl.{Gl, GlEventListener, LwglFrame}
 import org.callie.map.Map25
 import org.callie.math.Vector3
-import org.callie.model.{GlObject, Mod, MorfingObject, StaticObject, TextureGroup}
+import org.callie.model.{GlObject, Model, MorfingObject, StaticObject, TextureGroup}
 import org.callie.ringing.{JoinControl, Joint, JointAttachment, KeyFrameLoader, Node}
 
 object MainLevel extends App {
@@ -14,13 +14,13 @@ object MainLevel extends App {
     val camCtrl = new MovingObject(Map25.load("/data/map/data.map"), 1.65f)
     Camera.lookAt(camCtrl)
 
-    val (charObj: Array[MorfingObject], joint: Joint, zero: Vector3) = Node.load(gl, Map(
-      "pSphere5" -> Mod.load("/data/char/model.mod").scale(0.1f),
-      "polySurface115" -> Mod.load("/data/char/hair.mod").scale(0.1f)
+    val (charObj: Array[MorfingObject], joint: Joint, zero: Vector3) = Node(gl, Map(
+      "pSphere5" -> Model("/data/char/model.mod").scale(0.1f),
+      "polySurface115" -> Model("/data/char/hair.mod").scale(0.1f)
     ), "/data/char/joints.skl", 0.1f)
 
-    val stand = KeyFrameLoader.load(joint, "/data/char/anim/stand.ang", 0.1f)
-    val run = for (i <- 1 to 8) yield KeyFrameLoader.load(joint, "/data/char/anim/run/run" + i + ".ang", 0.1f)
+    val stand = KeyFrameLoader(joint, "/data/char/anim/stand.ang", 0.1f)
+    val run = for (i <- 1 to 8) yield KeyFrameLoader(joint, "/data/char/anim/run/run" + i + ".ang", 0.1f)
 
     val anim: JoinControl = JoinControl(camCtrl, joint, zero, stand, run: _*)
 
@@ -34,19 +34,19 @@ object MainLevel extends App {
   ) */
 
     val objects = Array[GlObject](
-      new TextureGroup(gl, "/data/char/char.png", Gl.GL_TEXTURE0, charObj.toIndexedSeq: _*),
+      TextureGroup(gl, "/data/char/char.png", Gl.GL_TEXTURE0, charObj.toIndexedSeq: _*),
 
       //new TextureGroup(this, "/demo/t.png", Gl.TEXTURE0,
-      new TextureGroup(gl, "/data/map/sand.png", Gl.GL_TEXTURE0,
-        new StaticObject(gl, Mod.load("/data/map/dunes.mod"))
+      TextureGroup(gl, "/data/map/sand.png", Gl.GL_TEXTURE0,
+        StaticObject(gl, Model("/data/map/dunes.mod"))
       ),
 
-      new TextureGroup(gl, "/data/map/sky.png", Gl.GL_TEXTURE0,
-        new StaticObject(gl, Mod.load("/data/map/sky.mod"))
+      TextureGroup(gl, "/data/map/sky.png", Gl.GL_TEXTURE0,
+        StaticObject(gl, Model("/data/map/sky.mod"))
       ),
 
-      new TextureGroup(gl, "/data/map/sun.png", Gl.GL_TEXTURE0,
-        new StaticObject(gl, Mod.load("/data/map/sun.mod"))
+      TextureGroup(gl, "/data/map/sun.png", Gl.GL_TEXTURE0,
+        StaticObject(gl, Model("/data/map/sun.mod"))
       )
     )
 
@@ -58,17 +58,13 @@ object MainLevel extends App {
     //char.init(gl)
 
     //sphere.init(gl)
-    val camProg = Camera.program(prog)
+    val camProg = Camera(prog)
 
-    val revolver = new TextureGroup(gl, "/data/char/pistol/revolver.png", Gl.GL_TEXTURE0,
+    val revolver = TextureGroup(gl, "/data/char/pistol/revolver.png", Gl.GL_TEXTURE0,
       JointAttachment(camProg, joint, "joint752",
-        new StaticObject(gl, Mod.load("/data/char/pistol/holder.mod").scale(0.1f))
+        StaticObject(gl, Model("/data/char/pistol/holder.mod").scale(0.1f))
       )
     )
-
-    revolver.init()
-
-    for (o <- objects) o.init()
 
     Gl.glUseProgram(prog)
     Gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f)

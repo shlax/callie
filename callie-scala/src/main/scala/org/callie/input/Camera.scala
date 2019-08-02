@@ -25,7 +25,7 @@ object Camera {
 //  var lightDirectionVec: Array[Int] = _
   //val identityMatrix = Matrix4().toArray
 
-  def program(id: Int, view:String="viewMatrix", normal:String = "normalMatrix", lightDirection:String="lightDirection"):CameraProgram={
+  def apply(id: Int, view:String="viewMatrix", normal:String = "normalMatrix", lightDirection:String="lightDirection"):CameraProgram={
     val viewMatrix = Gl.glGetUniformLocation(id, view)
     val normalMatrix = Gl.glGetUniformLocation(id, normal)
     val lightDirectionVec = Gl.glGetUniformLocation(id, lightDirection)

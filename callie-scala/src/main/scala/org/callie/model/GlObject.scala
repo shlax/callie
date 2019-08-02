@@ -6,18 +6,11 @@ import org.callie.ogl.{Gl, GlEventListener}
 import org.callie.math.Vector3
 
 trait GlObject{
-
-  def init():Unit
-
   def update():Unit
 }
 
 class ObjectGroup(objs:GlObject*) extends GlObject{
   val childs = objs.toArray
-
-  override def init():Unit={
-    for(o <- childs) o.init()
-  }
 
   override def update():Unit={
     for(o <- childs) o.update()
@@ -25,11 +18,8 @@ class ObjectGroup(objs:GlObject*) extends GlObject{
 
 }
 
-class TextureGroup(ev: GlEventListener, image:String, ind:Int, objs:GlObject*) extends ObjectGroup(objs:_*){
-
-  var texId : Int = _
-
-  override def init():Unit={
+object TextureGroup{
+  def apply(ev: GlEventListener, image: String, ind: Int, objs: GlObject*): TextureGroup = {
     import org.callie._
     val (buff, w, h, f, fi) = getClass.getResourceAsStream(image)|{ in =>
       import java.nio.ByteBuffer
@@ -56,7 +46,7 @@ class TextureGroup(ev: GlEventListener, image:String, ind:Int, objs:GlObject*) e
       })
     }
 
-    texId = ev.createTexture{
+    val texId = ev.createTexture{
       //Gl.glPixelStorei(Gl.GL_UNPACK_ALIGNMENT, 1)
       Gl.glTexImage2D(Gl.GL_TEXTURE_2D, 0, fi, w, h, 0, f, Gl.GL_UNSIGNED_BYTE, buff)
 
@@ -66,10 +56,13 @@ class TextureGroup(ev: GlEventListener, image:String, ind:Int, objs:GlObject*) e
       Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, Gl.GL_REPEAT)
       Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR)
       Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_LINEAR)
-
-      super.init()
     }
+
+    new TextureGroup(ev, ind, texId, objs:_*)
   }
+}
+
+class TextureGroup(ev: GlEventListener, ind: Int, texId : Int, objs:GlObject*) extends ObjectGroup(objs:_*){
 
   override def update():Unit={
     Gl.glActiveTexture(ind)
@@ -80,19 +73,12 @@ class TextureGroup(ev: GlEventListener, image:String, ind:Int, objs:GlObject*) e
 
 }
 
-class StaticObject(ev:GlEventListener) extends GlObject{
-
+object StaticObject{
   case class PointFace(point:Point3, normal:Point3, uv:List[Point2])
 
-  var coords:Array[Float] = _
-  var indices:Array[Int] = _
+  def apply(ev: GlEventListener, m:Model): StaticObject ={
 
-  var uvCount:Int = _
-
-  def this(ev:GlEventListener, m:Mod){
-    this(ev)
-
-    uvCount = m.faces.head.uv.size
+    val uvCount = m.faces.head.uv.size
 
     // stack
     val s = ListBuffer[PointFace]()
@@ -113,15 +99,10 @@ class StaticObject(ev:GlEventListener) extends GlObject{
       }else i += ind
     }
 
-    coords = a.toArray
-    indices = i.toArray
-  }
+    val coords = a.toArray
+    val indices = i.toArray
 
-  var vao : Int = _
-  var vbi : Int = _
-
-  override def init():Unit={
-    vao = ev.createVertexArray{
+    val vao = ev.createVertexArray{
       Gl.glEnableVertexAttribArray(0)
       Gl.glEnableVertexAttribArray(1)
       for(i <- 0 until uvCount) Gl.glEnableVertexAttribArray(2 + i)
@@ -139,36 +120,33 @@ class StaticObject(ev:GlEventListener) extends GlObject{
       }
     }
 
-    vbi = ev.createBuffer(Gl.GL_ELEMENT_ARRAY_BUFFER){
+    val vbi = ev.createBuffer(Gl.GL_ELEMENT_ARRAY_BUFFER){
       Gl.glBufferData(Gl.GL_ELEMENT_ARRAY_BUFFER, indices, Gl.GL_STATIC_DRAW)
     }
+
+    new StaticObject(ev, vao, vbi, indices.length)
   }
+}
+
+class StaticObject(ev: GlEventListener, vao : Int, vbi : Int, size:Int) extends GlObject{
 
   override def update():Unit={
     ev.bindVertexArray(vao){
       ev.bindBuffer(Gl.GL_ELEMENT_ARRAY_BUFFER, vbi){
-        Gl.glDrawElements(Gl.GL_TRIANGLES, indices.length, Gl.GL_UNSIGNED_INT, 0)
+        Gl.glDrawElements(Gl.GL_TRIANGLES, size, Gl.GL_UNSIGNED_INT, 0)
       }
     }
   }
 
 }
 
-class MorfingObject(ev:GlEventListener) extends GlObject{
+object MorfingObject{
 
   case class PointFace(point:Int, normal:Point3, uv:List[Point2])
 
-  var uvCount:Int = _
+  def apply(ev: GlEventListener, m:Model): MorfingObject = {
 
-  var coords:Array[Float] = _
-  var indices:Array[Int] = _
-  var projPoint:Array[(Vector3, Vector3)] = _
-  var projNormals:Array[Array[(Vector3, Vector3)]] = _
-
-  def this(ev:GlEventListener, m:Mod){
-    this(ev)
-
-    uvCount = m.faces.head.uv.size
+    val uvCount = m.faces.head.uv.size
 
     // stack
     val s = ListBuffer[PointFace]()
@@ -195,7 +173,7 @@ class MorfingObject(ev:GlEventListener) extends GlObject{
     val prPoint = ListBuffer[(Vector3, Vector3)]()
     val prNormals = ListBuffer[Array[(Vector3, Vector3)]]()
 
-    coords = a.toArray
+    val coords = a.toArray
 
     val fi = s.zipWithIndex
 
@@ -206,23 +184,19 @@ class MorfingObject(ev:GlEventListener) extends GlObject{
 
       prPoint += ( (Vector3(i._1.x, i._1.y, i._1.z), Vector3(coords, t.map(_._2 * size).toArray )) )
       prNormals += t.map{j =>
-          ( j._1.normal, j._2 * size + 3)
-        }.groupBy(_._1).map{ e : (Point3, ListBuffer[(Point3, Int)] ) =>
-          (Vector3(e._1.x, e._1.y, e._1.z), Vector3(coords,  e._2.map(_._2).toArray))
-        }.toArray
+        ( j._1.normal, j._2 * size + 3)
+      }.groupBy(_._1).map{ e : (Point3, ListBuffer[(Point3, Int)] ) =>
+        (Vector3(e._1.x, e._1.y, e._1.z), Vector3(coords,  e._2.map(_._2).toArray))
+      }.toArray
     }
 
-    indices = i.toArray
-    projPoint = prPoint.toArray
-    projNormals = prNormals.toArray
-  }
+    val indices = i.toArray
+    val projPoint = prPoint.toArray
+    val projNormals = prNormals.toArray
 
-  var vao : Int = _
-  var vbi : Int = _
-  var vbo : Int = _
+    var vbo = 0
 
-  override def init():Unit={
-    vao = ev.createVertexArray{
+    val vao = ev.createVertexArray{
       Gl.glEnableVertexAttribArray(0)
       Gl.glEnableVertexAttribArray(1)
       Gl.glEnableVertexAttribArray(2)
@@ -240,10 +214,16 @@ class MorfingObject(ev:GlEventListener) extends GlObject{
       }
     }
 
-    vbi = ev.createBuffer(Gl.GL_ELEMENT_ARRAY_BUFFER){
+    val vbi = ev.createBuffer(Gl.GL_ELEMENT_ARRAY_BUFFER){
       Gl.glBufferData(Gl.GL_ELEMENT_ARRAY_BUFFER, indices, Gl.GL_STATIC_DRAW)
     }
+
+    new MorfingObject(projPoint, projNormals, ev, coords, vao, vbi, vbo, indices.length)
   }
+}
+
+class MorfingObject(val projPoint:Array[(Vector3, Vector3)], val projNormals:Array[Array[(Vector3, Vector3)]],
+    ev:GlEventListener, coords:Array[Float], vao : Int, vbi : Int, vbo : Int, size:Int) extends GlObject{
 
   override def update():Unit={
     ev.bindVertexArray(vao){
@@ -252,7 +232,7 @@ class MorfingObject(ev:GlEventListener) extends GlObject{
       }
       
       ev.bindBuffer(Gl.GL_ELEMENT_ARRAY_BUFFER, vbi){
-        Gl.glDrawElements(Gl.GL_TRIANGLES, indices.length, Gl.GL_UNSIGNED_INT, 0)
+        Gl.glDrawElements(Gl.GL_TRIANGLES, size, Gl.GL_UNSIGNED_INT, 0)
       }     
     }
   }
