@@ -57,15 +57,16 @@ class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame
   def apply(delta:Float):Unit={
     cntrl.apply(delta)
 
-    acc += delta
-    val next = acc > interval
+    //acc += delta
+    //val next = acc > interval
 
     val ns = cntrl.state()
     act match {
       case AnimState.STAND =>
         ns match {
           case AnimState.STAND => // STAND -> STAND
-            if(next){
+            acc += delta
+            if(acc > interval){
               stand.apply()
               acc = delta
             }
@@ -84,7 +85,8 @@ class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame
             acc = delta
 
           case AnimState.RUN => // RUN -> RUN
-            if(next){
+            acc += delta
+            if(acc > interval){
               runInd += 1
               if(runInd >= run.length) runInd = 0
 
