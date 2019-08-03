@@ -6,7 +6,11 @@ import org.callie.math.{Angle, Matrix4, Vector2, Vector3}
 import org.callie.ringing.{AnimState, JoinState}
 import java.lang.{Float => jFloat}
 
-class MovingObject(val map:Map25, height:Float, val pos2D: Vector2 = Vector2(), lookFrom:Float = 0f) extends TrackingObject with JoinState{
+object MovingObject{
+  def apply(map:Map25, height:Float, pos2D: Vector2 = Vector2(), lookFrom:Float = 0f): MovingObject = new MovingObject(map, height, pos2D, lookFrom)
+}
+
+class MovingObject(map:Map25, height:Float, pos2D: Vector2 = Vector2(), lookFrom:Float = 0f) extends TrackingObject with JoinState{
   val epsilon = 10f
   val angle = Angle(lookFrom)
 

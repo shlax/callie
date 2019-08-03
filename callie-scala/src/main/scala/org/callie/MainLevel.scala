@@ -11,7 +11,7 @@ import org.callie.ringing.{JoinControl, Joint, JointAttachment, KeyFrameLoader, 
 object MainLevel extends App {
 
   LwglFrame{gl: GlEventListener =>
-    val camCtrl = new MovingObject(Map25.load("/data/map/data.map"), 1.65f)
+    val camCtrl = MovingObject(Map25.load("/data/map/data.map"), 1.65f)
     Camera.lookAt(camCtrl)
 
     val (charObj: Array[MorfingObject], joint: Joint, zero: Vector3) = Node(gl, Map(
