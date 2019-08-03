@@ -13,7 +13,11 @@ class MovingObject(val map:Map25, height:Float, val pos2D: Vector2 = Vector2(), 
   val acceleration = 15f
   val deAcceleration = acceleration * 2f
 
-  override val maxRunSpeed = 2.5f
+  var maxSpeed = 0f
+  override def toSpeed(v: Float):Unit = {
+    maxSpeed = v
+  }
+
   var speed = 0f
 
   override val position = Vector3()
@@ -37,14 +41,16 @@ class MovingObject(val map:Map25, height:Float, val pos2D: Vector2 = Vector2(), 
     position.z *= -1f
   }
 
-  override def apply(delta:Float):Unit={
+  override def apply(delta:Float):AnimState={
+    var rotate = false
     if(Inputs.w){ // accelerate
       if(angle.rotateTo(Camera.angY, delta * epsilon)){
         normalTransformation.rotY(Angle.PI1 - angle())
+        rotate = true
       }
 
       speed += delta * acceleration
-      if(speed > maxRunSpeed) speed = maxRunSpeed
+      if(speed > maxSpeed) speed = maxSpeed
 
     }else if(speed > 0f){  // stop
       speed -= delta * deAcceleration
@@ -69,9 +75,9 @@ class MovingObject(val map:Map25, height:Float, val pos2D: Vector2 = Vector2(), 
       }
     }
 
+    if(speed > 0f) AnimState.RUN
+    else if(rotate) AnimState.ROTATE
+    else AnimState.STAND
   }
-
-  // JoinState
-  override def state() = if(Inputs.w && speed > 0f) AnimState.RUN else AnimState.STAND
 
 }

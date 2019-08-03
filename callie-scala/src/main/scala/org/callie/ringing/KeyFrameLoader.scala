@@ -28,10 +28,10 @@ object KeyFrameLoader extends RegexParsers {
   }
 
   class MainNodeKeys(nm:String, offset:Vector3, angles:F3, childs:List[NodeKeys]) extends NodeKeys(nm, angles, childs){
-    def apply(j:Joint) : (Vector3, KeyFrame) = {
+    def apply(j:Joint) : OffsetFrame = {
       val l = mutable.ArrayBuffer[KeyValue]()
       apply(j, l)
-      (offset, new KeyFrame(l.toArray))
+      OffsetFrame(offset, new KeyFrame(l.toArray))
     }
   }
 
@@ -44,7 +44,7 @@ object KeyFrameLoader extends RegexParsers {
 
   def load(j:Joint, r:CharSequence, scale:Float = 1f) = {
     val n = parseAll(mainNode(scale), r).get
-    n(j)
+    n.apply(j)
   }
 
   def float: Parser[Float] = """[+-]?(\d+(\.\d*)?|\d*\.\d+)([eE][+-]?\d+)?""".r ^^ (_.toFloat)
