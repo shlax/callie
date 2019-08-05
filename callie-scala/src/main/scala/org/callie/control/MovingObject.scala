@@ -2,7 +2,7 @@ package org.callie.control
 
 import org.callie.input.{Camera, Inputs, TrackingObject}
 import org.callie.map.Map25
-import org.callie.math.{Angle, Matrix4, Vector2, Vector3}
+import org.callie.math.{Angle, AngleRotation, Matrix4, Vector2, Vector3}
 import org.callie.ringing.{AnimState, JoinState}
 import java.lang.{Float => jFloat}
 
@@ -46,11 +46,12 @@ class MovingObject(map:Map25, height:Float, pos2D: Vector2 = Vector2(), lookFrom
   }
 
   override def apply(delta:Float):AnimState={
-    var rotate = false
+    var state = AnimState.STAND
     if(Inputs.w){ // accelerate
-      if(angle.rotateTo(Camera.angY, delta * epsilon)){
+      val ar = angle.rotateTo(Camera.angY, delta * epsilon)
+      if(ar != AngleRotation.ZERO){
         normalTransformation.rotY(Angle.PI1 - angle())
-        rotate = true
+        state = if(ar == AngleRotation.POSITIVE) AnimState.ROTATE_POSITIVE else AnimState.ROTATE_NEGATIVE
       }
 
       speed += delta * acceleration
@@ -80,8 +81,7 @@ class MovingObject(map:Map25, height:Float, pos2D: Vector2 = Vector2(), lookFrom
     }
 
     if(speed > 0f) AnimState.RUN
-    else if(rotate) AnimState.ROTATE
-    else AnimState.STAND
+    else state
   }
 
 }

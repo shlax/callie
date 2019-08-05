@@ -26,7 +26,7 @@ class Angle(start:Float = 0, min:Float = -Angle.PI2, max:Float = Angle.PI2) {
     else a
   }
 
-  def rotateTo(to:Angle, epsilon:Float)= {
+  def rotateTo(to:Angle, epsilon:Float):AngleRotation= {
     if(angle != to.angle) {
       val t = to.toPI()
       val f = toPI()
@@ -37,27 +37,41 @@ class Angle(start:Float = 0, min:Float = -Angle.PI2, max:Float = Angle.PI2) {
       if (ft <= tf) {
         if(ft <= epsilon){
           angle = to.angle
+          if (t <= f) AngleRotation.NEGATIVE else AngleRotation.POSITIVE
         }else {
-          if (t <= f) angle -= epsilon
-          else angle += epsilon
+          val ret = if (t <= f) {
+            angle -= epsilon
+            AngleRotation.NEGATIVE
+          }else{
+            angle += epsilon
+            AngleRotation.POSITIVE
+          }
 
           if (angle < min) angle += Angle.PI2
           if (angle > max) angle -= Angle.PI2
+
+          ret
         }
       } else {
         if(tf <= epsilon){
           angle = to.angle
+          if (t > f) AngleRotation.NEGATIVE else AngleRotation.POSITIVE
         }else {
-          if (t > f) angle -= epsilon
-          else angle += epsilon
+          val ret = if (t > f){
+            angle -= epsilon
+            AngleRotation.NEGATIVE
+          }else{
+            angle += epsilon
+            AngleRotation.POSITIVE
+          }
 
           if (angle < min) angle += Angle.PI2
           if (angle > max) angle -= Angle.PI2
+
+          ret
         }
       }
-
-      true
-    }else false
+    }else AngleRotation.ZERO
   }
 
   override def toString = "Angle("+angle+")"
