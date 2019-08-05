@@ -63,6 +63,8 @@ object MainLevel extends App {
     val revolver = TextureGroup(gl, "/data/char/pistol/revolver.png", Gl.GL_TEXTURE0,
       JointAttachment(camProg, joint, "joint752",
         StaticObject(gl, Model("/data/char/pistol/holder.mod").scale(0.1f))
+        //joint752 x: -0.031, y: 0.8684, z: -0.0056, rx: 102.311, ry: 1.413, rz: 6.938
+        //joint714 x: 0, y: 1.2088, z: 0.3247, rx: 0, ry: 0, rz: 0
       )
     )
 
