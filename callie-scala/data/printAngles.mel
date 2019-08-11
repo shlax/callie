@@ -1,0 +1,38 @@
+proc int printAngles(string $name){
+
+	$src_connections = `listConnections -d true -s false -t jointCluster $name`;
+	for( $cluster in $src_connections ){
+
+		$A = `listSets -o $cluster`;
+		for( $b in $A ){
+			select $b;
+			$c = `ls -selection`;
+			for($q in $c){
+				string $nm[];
+				$cnt = `tokenize $name ":" $nm`;
+
+				string $arg;
+
+				$arg = `getAttr ($name+".rotateX")`;
+				print("setAttr \""+$name+".rotateX\" "+$arg+";\n");
+
+				$arg = `getAttr ($name+".rotateY")`;
+				print("setAttr \""+$name+".rotateY\" "+$arg+";\n");
+
+				$arg = `getAttr ($name+".rotateZ")`;
+				print("setAttr \""+$name+".rotateZ\" "+$arg+";\n");
+			}
+
+		}
+	}
+
+	$src_connections = `listConnections -d true -s false -t joint $name`;
+	for($joint in $src_connections){
+		printAngles($joint);
+	}
+
+
+    return 0;
+}
+
+printAngles("joint714");
