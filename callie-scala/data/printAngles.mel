@@ -1,4 +1,37 @@
+proc int isLinear(string $name){
+	string $arg[];
+	$arg = `listAttr -st "linX" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "linY" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "linZ" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "linXY" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "linXZ" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "linYX" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "linYZ" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "linZX" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	$arg = `listAttr -st "linZY" $name`;
+	if(size($arg) == 1) return 1;
+//	print (size($arg)+"\n");
+	return 0;
+}
+
 proc int printAngles(string $name){
+    $is = 0;
 
 	$src_connections = `listConnections -d true -s false -t jointCluster $name`;
 	for( $cluster in $src_connections ){
@@ -8,19 +41,23 @@ proc int printAngles(string $name){
 			select $b;
 			$c = `ls -selection`;
 			for($q in $c){
-				string $nm[];
-				$cnt = `tokenize $name ":" $nm`;
+			    if($is == 0){
+                    string $nm[];
+                    $cnt = `tokenize $name ":" $nm`;
 
-				string $arg;
+                    string $arg;
 
-				$arg = `getAttr ($name+".rotateX")`;
-				print("setAttr \""+$name+".rotateX\" "+$arg+";\n");
+                    $arg = `getAttr ($name+".rotateX")`;
+                    print("setAttr \""+$name+".rotateX\" "+$arg+";\n");
 
-				$arg = `getAttr ($name+".rotateY")`;
-				print("setAttr \""+$name+".rotateY\" "+$arg+";\n");
+                    $arg = `getAttr ($name+".rotateY")`;
+                    print("setAttr \""+$name+".rotateY\" "+$arg+";\n");
 
-				$arg = `getAttr ($name+".rotateZ")`;
-				print("setAttr \""+$name+".rotateZ\" "+$arg+";\n");
+                    $arg = `getAttr ($name+".rotateZ")`;
+                    print("setAttr \""+$name+".rotateZ\" "+$arg+";\n");
+                }
+
+                $is ++;
 			}
 
 		}
@@ -28,7 +65,8 @@ proc int printAngles(string $name){
 
 	$src_connections = `listConnections -d true -s false -t joint $name`;
 	for($joint in $src_connections){
-		printAngles($joint);
+	    int $lin = isLinear($joint);
+        if($lin == 0) printAngles($joint);
 	}
 
 
