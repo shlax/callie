@@ -54,7 +54,9 @@ proc export( string $mesh, string $filename ){
 
 			fprint $file ( ":[" );
 			for($k=0;$k<size($uvNames);$k++){
-				polyUVSet -cuv -uvSet $uvNames[$k] $mesh;
+				if(size($uvNames) > 1){
+				    polyUVSet -cuv -uvSet $uvNames[$k] $mesh;
+				}
 
 				string $tinds[] = `polyListComponentConversion -fvf -tuv ($mesh+".vtxFace["+$split[($j+2)]+"]["+$i+"]")`;
 
