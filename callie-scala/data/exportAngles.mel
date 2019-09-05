@@ -111,7 +111,25 @@ proc exportJointsAngelsFile(string $name,string $filename){
 
 }
 
-//exportJointsAngelsFile("joint1", "C:/Users/root/IdeaProjects/callie/callie-scala/src/main/resources/data/char/anim/stand.ang");
+// stand
+
+exportJointsAngelsFile("joint1", "C:/Users/root/IdeaProjects/callie/callie-scala/src/main/resources/data/char/anim/stand.ang");
+
+// pistol
+
+currentTime 20;
+exportJointsAngelsFile("joint1", "C:/Users/root/IdeaProjects/callie/callie-scala/src/main/resources/data/char/anim/pistol/stand.ang");
+
+currentTime 40;
+exportJointsAngelsFile("joint1", "C:/Users/root/IdeaProjects/callie/callie-scala/src/main/resources/data/char/anim/pistol/aim.ang");
+
+currentTime 5;
+exportJointsAngelsFile("joint1", "C:/Users/root/IdeaProjects/callie/callie-scala/src/main/resources/data/char/anim/pistol/takeDown.ang");
+
+currentTime 10;
+exportJointsAngelsFile("joint1", "C:/Users/root/IdeaProjects/callie/callie-scala/src/main/resources/data/char/anim/pistol/takeUp.ang");
+
+// run
 
 currentTime 0;
 exportJointsAngelsFile("run:cc:joint1", "C:/Users/root/IdeaProjects/callie/callie-scala/src/main/resources/data/char/anim/run/run1.ang");
