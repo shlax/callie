@@ -65,10 +65,10 @@ class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame
   val runTransitionInvInter = 1f/runTransitionInterval
 
   var transition = false
+  var frameInd = 0
+
   var act = AnimState.STAND
   var acc = 0f
-
-  var frameInd = 0
 
   val pistolTakeInterval = 0.2f
   val pistolTakeIntervalInv = 1f/pistolTakeInterval
