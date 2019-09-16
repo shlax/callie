@@ -164,15 +164,15 @@ class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame
             pistolTakeUp.apply()
             pistolTakeIntervalInv
           }else{
-            Camera.side = -0.2f
+            Camera.side = -0.25f
 
             pistol = PistolState.PISTOL
             pistolStand.apply()
             pistolStandInvInter
           }
         }else {
-          var iv = (-0.1f * acc) / pistolTakeInterval
-          if(frameInd == 1) iv -= 0.1f
+          var iv = (-0.125f * acc) / pistolTakeInterval
+          if(frameInd == 1) iv -= 0.125f
           Camera.side = iv
 
           pistolTakeIntervalInv
