@@ -158,6 +158,7 @@ class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame
           acc = delta
 
           if(frameInd == 0) {
+            Camera.side = -0.125f
             pistolAttch.update(true)
             frameInd = 1
 
@@ -165,8 +166,8 @@ class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame
             pistolTakeIntervalInv
           }else{
             Camera.side = -0.25f
-
             pistol = PistolState.PISTOL
+
             pistolStand.apply()
             pistolStandInvInter
           }
