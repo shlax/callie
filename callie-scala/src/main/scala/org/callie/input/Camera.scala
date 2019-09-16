@@ -101,7 +101,9 @@ object Camera {
 
   val lightDirectionAr = new Array[Float](3)
 
-  var cnt = 0
+  //var cnt = 0
+  var side = 0f // -0.3f
+
 
   // mat4 normalMatrix = transpose(inverse(modelView));
   def update():Unit={
@@ -126,7 +128,7 @@ object Camera {
 //    modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position))
     //modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position)) //.mul(tmp.set(off), modMat)
     //projection.mul(modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY()+1.5f)).mul(tmp.set(target.position)), viewAr)
-    modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position))
+    modMat.set(off.x + side, off.y, off.z).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position))
     modMat.mul(projection, modMat)
     //for(i <- viewMatrix) Gl.glUniformMatrix4fv(i, true, viewAr)
 

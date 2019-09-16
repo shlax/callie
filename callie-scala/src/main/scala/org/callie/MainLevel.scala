@@ -22,7 +22,11 @@ object MainLevel extends App {
     val stand = KeyFrameLoader(joint, "/data/char/anim/stand.ang", 0.1f)
     val run = for (i <- 1 to 8) yield KeyFrameLoader(joint, "/data/char/anim/run/run" + i + ".ang", 0.1f)
 
-    val anim: JoinControl = JoinControl(camCtrl, joint, zero, stand, run: _*)
+    val pistolTakeDown = KeyFrameLoader(joint, "/data/char/anim/pistol/takeDown.ang", 0.1f)
+    val pistolTakeUp = KeyFrameLoader(joint, "/data/char/anim/pistol/takeUp.ang", 0.1f)
+
+    val pistolStand = KeyFrameLoader(joint, "/data/char/anim/pistol/stand.ang", 0.1f)
+    val pistolAim = KeyFrameLoader(joint, "/data/char/anim/pistol/aim.ang", 0.1f)
 
     //    val leg = joint.lookup("joint752").get.asInstanceOf[JointAttachment]
     //    val hand = joint.lookup("joint714").get.asInstanceOf[JointAttachment]
@@ -67,6 +71,10 @@ object MainLevel extends App {
       JointAttachment(joint, "joint714", -0.1088f, -0.0211f, 0.0357f, 90.786f, -3.232f, -90.099f),
       StaticObject(gl, Model("/data/char/pistol/revolver.mod").scale(0.1f))
     )
+
+    val anim = JoinControl(camCtrl, joint, zero, stand, run.toArray,
+                            revolver,
+                            pistolTakeDown, pistolTakeUp, pistolStand, pistolAim)
 
     val attachments = TextureGroup(gl, "/data/char/pistol/revolver.png", Gl.GL_TEXTURE0,
       JointAttachment(camProg, joint, "joint752",

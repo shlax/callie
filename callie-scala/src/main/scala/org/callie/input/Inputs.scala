@@ -4,6 +4,8 @@ object Inputs{
 
   var w = false
 
+  var mouse2 = false
+
   var mouseX = 0
   var mouseY = 0
   var mouseZ = 0
