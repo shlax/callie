@@ -79,12 +79,11 @@ class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame
   var pistol = PistolState.STAND
 
   def apply(delta:Float):Unit={
-    val ns = cntrl.apply(delta)
-
-    //acc += delta
-    //val next = acc > interval
     val invInter : Float = pistol match {
+
       case PistolState.STAND =>
+        val ns = cntrl.apply(delta)
+
         act match {
           case AnimState.STAND =>
             ns match {
@@ -172,9 +171,9 @@ class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame
             pistolStandInvInter
           }
         }else {
-          var intr = (-0.1f * acc) / pistolTakeInterval
-          if(frameInd == 1) intr -= 0.1f
-          Camera.side = intr
+          var iv = (-0.1f * acc) / pistolTakeInterval
+          if(frameInd == 1) iv -= 0.1f
+          Camera.side = iv
 
           pistolTakeIntervalInv
         }
