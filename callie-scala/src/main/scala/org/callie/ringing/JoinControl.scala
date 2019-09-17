@@ -194,17 +194,18 @@ class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame
           }
         }else{
           if (acc > pistolTakeInterval) {
-            acc -= pistolTakeInterval
-
             if(frameInd == 1){
-              frameInd = 2
+              acc -= pistolTakeInterval
               pistolAttch.update(false)
+
+              frameInd = 2
               stand.apply()
             }else{
-              frameInd = 3
-              global = GlobalState.NORMAL
-              stand.apply()
               acc = 0f
+              global = GlobalState.NORMAL
+
+              frameInd = 3
+              stand.apply()
             }
           }
 
