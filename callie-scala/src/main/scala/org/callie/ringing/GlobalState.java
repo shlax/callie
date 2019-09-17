@@ -1,6 +1,6 @@
 package org.callie.ringing;
 
-public enum PistolState {
+public enum GlobalState {
 
     STAND, PISTOL, TAKE, DROP
 

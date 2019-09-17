@@ -8,7 +8,7 @@ trait JoinState extends Transformation{
 
   def toSpeed(v:Float):Unit
 
-  def apply(delta:Float):AnimState
+  def apply(delta:Float):MovingState
 }
 
 case class OffsetFrame(offset: Vector3, frame:KeyFrame)
@@ -67,7 +67,9 @@ class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame
   var transition = false
   var frameInd = 0
 
-  var act = AnimState.STAND
+  var global = GlobalState.STAND
+  var moving = MovingState.STAND
+
   var acc = 0f
 
   val pistolTakeInterval = 0.2f
@@ -76,118 +78,107 @@ class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame
   val pistolStandInterval = 0.45f
   val pistolStandInvInter = 1f/pistolStandInterval
 
-  var pistol = PistolState.STAND
-
   def apply(delta:Float):Unit={
-    val invInter : Float = pistol match {
+    acc += delta
 
-      case PistolState.STAND =>
+    val invInter : Float = global match {
+
+      case GlobalState.STAND =>
         val ns = cntrl.apply(delta)
 
-        act match {
-          case AnimState.STAND =>
+        moving match {
+          case MovingState.RUN =>
             ns match {
-              case AnimState.STAND => // STAND -> STAND
-                if(Inputs.mouse2){ // take weapon
-                  pistol = PistolState.TAKE
-                  frameInd = 0
 
-                  pistolTakeDown.apply()
-                  acc = delta
-
-                  pistolTakeIntervalInv
-                }else {
-                  acc += delta
-                  if (acc > standInterval) {
-                    stand.apply()
-                    acc = delta
-                  }
-
-                  standInvInter
-                }
-
-              case AnimState.RUN => // STAND -> RUN
-                transition = true
-
-                frameInd = 0
-                run(0).apply()
-                acc = delta
-                act = ns
-
-                standInvInter
-              case _ =>
-                standInvInter
-            }
-
-          case AnimState.RUN =>
-            ns match {
-              case AnimState.STAND => //  RUN -> STAND
-                stand.apply()
-                acc = delta
-                act = ns
-
-                standInvInter
-
-              case AnimState.RUN => // RUN -> RUN
-                acc += delta
-
+              case MovingState.RUN => // RUN -> RUN
                 val current = if(transition) runTransitionInterval else runInterval
 
                 if(acc > current){
+                  acc -= current
                   transition = false
 
                   frameInd += 1
                   if(frameInd >= run.length) frameInd = 0
 
                   run(frameInd).apply()
-                  acc = delta
                 }
 
                 if(transition) runTransitionInvInter else runInvInter
-              case _ =>
+
+              case _ => //  RUN -> STAND
+                acc = 0
+                stand.apply()
+                moving = ns
+
                 standInvInter
             }
 
-          case _ =>
-            standInvInter
+          case _ => // AnimState.STAND
+            ns match {
+              case MovingState.RUN => // STAND -> RUN
+                transition = true
+                frameInd = 0
+
+                acc = 0
+                run(0).apply()
+
+                moving = ns
+
+                standInvInter
+
+              case _ => // STAND -> STAND
+                if(Inputs.mouse2){ // take weapon
+                  global = GlobalState.TAKE
+                  frameInd = 0
+
+                  acc = 0
+                  pistolTakeDown.apply()
+
+                  pistolTakeIntervalInv
+                }else {
+                  if (acc > standInterval) {
+                    acc -= standInterval
+                    stand.apply()
+                  }
+
+                  standInvInter
+                }
+            }
         }
 
-      case PistolState.TAKE =>
-        acc += delta
+      case GlobalState.TAKE =>
         if (acc > pistolTakeInterval) {
-          acc = delta
+          acc -= pistolTakeInterval
 
           if(frameInd == 0) {
-            Camera.side = -0.125f
             pistolAttch.update(true)
-            frameInd = 1
-
             pistolTakeUp.apply()
-            pistolTakeIntervalInv
           }else{
-            Camera.side = -0.25f
-            pistol = PistolState.PISTOL
-
+            global = GlobalState.PISTOL
             pistolStand.apply()
-            pistolStandInvInter
           }
-        }else {
-          var iv = (-0.125f * acc) / pistolTakeInterval
-          if(frameInd == 1) iv -= 0.125f
-          Camera.side = iv
 
-          pistolTakeIntervalInv
+          frameInd += 1
         }
 
-      case PistolState.DROP =>
+        if(frameInd == 2) {
+          Camera.side = -0.25f
+        }else{
+          var iv = (-0.125f * acc) / pistolTakeInterval
+          if (frameInd == 1) iv -= 0.125f
+          Camera.side = iv
+        }
+
+        pistolTakeIntervalInv
+
+      case GlobalState.DROP =>
 
 
         pistolTakeIntervalInv
-      case PistolState.PISTOL =>
-        acc += delta
+      case GlobalState.PISTOL =>
         if (acc > pistolStandInterval) {
+          acc -= pistolStandInterval
           pistolStand.apply()
-          acc = delta
         }
 
         pistolStandInvInter
