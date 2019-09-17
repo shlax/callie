@@ -2,8 +2,10 @@ package org.callie.input
 
 object Inputs{
 
-  var w = false
+  var keyW = false
+  var keyTab = false
 
+  var mouse1 = false
   var mouse2 = false
 
   var mouseX = 0

@@ -40,6 +40,9 @@ object LwglFrame{
       if (button == GLFW_MOUSE_BUTTON_2) {
         if (action == GLFW_PRESS) Inputs.mouse2 = true
         else if (action == GLFW_RELEASE) Inputs.mouse2 = false
+      }else if (button == GLFW_MOUSE_BUTTON_1) {
+        if (action == GLFW_PRESS) Inputs.mouse1 = true
+        else if (action == GLFW_RELEASE) Inputs.mouse1 = false
       }
     })
 
@@ -51,8 +54,11 @@ object LwglFrame{
 
     glfwSetKeyCallback(window, (_: Long, key: Int, _: Int, action: Int, _: Int) => {
       if (key == GLFW_KEY_W){
-        if (action == GLFW_PRESS) Inputs.w = true
-        else if (action == GLFW_RELEASE) Inputs.w = false
+        if (action == GLFW_PRESS) Inputs.keyW = true
+        else if (action == GLFW_RELEASE) Inputs.keyW = false
+      }else if (key == GLFW_KEY_TAB){
+        if (action == GLFW_PRESS) Inputs.keyTab = true
+        else if (action == GLFW_RELEASE) Inputs.keyTab = false
       }
     })
 

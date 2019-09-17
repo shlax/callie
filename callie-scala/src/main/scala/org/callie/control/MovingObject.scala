@@ -47,7 +47,7 @@ class MovingObject(map:Map25, height:Float, pos2D: Vector2 = Vector2(), lookFrom
 
   override def apply(delta:Float):MovingState={
     var state = MovingState.STAND
-    if(Inputs.w){ // accelerate
+    if(Inputs.keyW){ // accelerate
       val ar = angle.rotateTo(Camera.angY, delta * epsilon)
       if(ar != AngleRotation.ZERO){
         normalTransformation.rotY(Angle.PI1 - angle())
