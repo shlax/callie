@@ -128,7 +128,8 @@ object Camera {
 //    modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position))
     //modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position)) //.mul(tmp.set(off), modMat)
     //projection.mul(modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY()+1.5f)).mul(tmp.set(target.position)), viewAr)
-    modMat.set(off.x + side, off.y, off.z).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position))
+    val pos = target.position
+    modMat.set(off.x + side, off.y, off.z).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(-pos.x, -pos.y, -pos.z))
     modMat.mul(projection, modMat)
     //for(i <- viewMatrix) Gl.glUniformMatrix4fv(i, true, viewAr)
 

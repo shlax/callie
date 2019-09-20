@@ -43,9 +43,7 @@ class MovingObject(map:Map25, height:Float, pos2D: Vector2 = Vector2(), lookFrom
     transformation.set(position)
     transformation.mul(normalTransformation)
 
-    position.x *= -1f
-    position.y = (-1f * z) - height
-    position.z *= -1f
+    position.y += height
   }
 
   def calculate():Unit={
@@ -66,7 +64,7 @@ class MovingObject(map:Map25, height:Float, pos2D: Vector2 = Vector2(), lookFrom
       }
     }
 
-    if(Inputs.keyW) {
+    if(Inputs.keyW && maxSpeed != 0f) {
       speed += delta * acceleration
       if(speed > maxSpeed) speed = maxSpeed
     }else if(speed > 0f){  // stop
@@ -74,7 +72,7 @@ class MovingObject(map:Map25, height:Float, pos2D: Vector2 = Vector2(), lookFrom
       if(speed < 0f) speed = 0f
     }
 
-    if(speed > 0f) {
+    if(speed != 0f) {
       val rot = angle()
 
       val sd = speed * delta
