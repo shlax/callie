@@ -30,9 +30,12 @@ class MovingObject(map:Map25, height:Float, pos2D: Vector2 = Vector2(), lookFrom
   override val normalTransformation = Matrix4()
 
   normalTransformation.rotY(Angle.PI1 - angle())
-  calculate(map.apply(pos2D))
+  var lastZ:Float = map.apply(pos2D)
+  calculate(lastZ)
 
   def calculate(z:Float):Unit={
+    lastZ = z
+
     position.x = pos2D.x
     position.y = z
     position.z = pos2D.y
@@ -41,22 +44,31 @@ class MovingObject(map:Map25, height:Float, pos2D: Vector2 = Vector2(), lookFrom
     transformation.mul(normalTransformation)
 
     position.x *= -1f
-    position.y = (-1f * position.y) - height
+    position.y = (-1f * z) - height
     position.z *= -1f
+  }
+
+  def calculate():Unit={
+    transformation.set(pos2D.x, lastZ, pos2D.y)
+    transformation.mul(normalTransformation)
   }
 
   override def apply(delta:Float):MovingState={
     var state = MovingState.STAND
-    if(Inputs.keyW){ // accelerate
-      val ar = angle.rotateTo(Camera.angY, delta * epsilon)
-      if(ar != AngleRotation.ZERO){
-        normalTransformation.rotY(Angle.PI1 - angle())
-        state = if(ar == AngleRotation.POSITIVE) MovingState.ROTATE_POSITIVE else MovingState.ROTATE_NEGATIVE
-      }
+    var rotate = false
 
+    if(Inputs.keyW || Inputs.mouse2) { // accelerate
+      val ar = angle.rotateTo(Camera.angY, delta * epsilon)
+      if (ar != AngleRotation.ZERO) {
+        rotate = true
+        normalTransformation.rotY(Angle.PI1 - angle())
+        state = if (ar == AngleRotation.POSITIVE) MovingState.ROTATE_POSITIVE else MovingState.ROTATE_NEGATIVE
+      }
+    }
+
+    if(Inputs.keyW) {
       speed += delta * acceleration
       if(speed > maxSpeed) speed = maxSpeed
-
     }else if(speed > 0f){  // stop
       speed -= delta * deAcceleration
       if(speed < 0f) speed = 0f
@@ -78,6 +90,8 @@ class MovingObject(map:Map25, height:Float, pos2D: Vector2 = Vector2(), lookFrom
 
         speed = 0f
       }
+    }else if(rotate){
+      calculate()
     }
 
     if(speed > 0f) MovingState.RUN
