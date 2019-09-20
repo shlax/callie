@@ -105,7 +105,7 @@ trait Vector3 extends Translation{
 }
 
 object Vector3{
-  def apply() : Vector3 = new VectorVar(0, 0, 0)
+  def apply() : Vector3 = new VectorVar(0f, 0f, 0f)
   def apply(v:Vector3) : Vector3 = new VectorVar(v.x, v.y, v.z)
 
   def apply(v : (Float, Float, Float)) : Vector3 = new VectorVar(v._1, v._2, v._3)
@@ -137,7 +137,7 @@ object Vector3{
 
 class VectorVar(override var x : Float, override var y : Float, override var z : Float) extends Vector3 {
 	
-  def this() = this(0, 0, 0)
+  def this() = this(0f, 0f, 0f)
   def this(s : Float) = this(s, s, s)
   
 }

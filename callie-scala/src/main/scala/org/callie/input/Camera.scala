@@ -179,5 +179,5 @@ trait TrackingObject{
 }
 
 object ZeroTrackingObject extends TrackingObject{
-  override val position = Vector3(0,0,0)
+  override val position = Vector3()
 }
