@@ -6,9 +6,11 @@ import org.callie.math.{Angle, Matrix4, Vector3}
 // http://www.gamedev.net/topic/617711-glulookat-replacement/
 object Camera {
   var target:TrackingObject = ZeroTrackingObject
+  var pos = target.position
 
   def lookAt(t:TrackingObject):Unit={
     target = t
+    pos = t.position
   }
 
 //  var position = Vector3(0, 0, -1f)
@@ -128,7 +130,6 @@ object Camera {
 //    modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position))
     //modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position)) //.mul(tmp.set(off), modMat)
     //projection.mul(modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY()+1.5f)).mul(tmp.set(target.position)), viewAr)
-    val pos = target.position
     modMat.set(off.x + side, off.y, off.z).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(-pos.x, -pos.y, -pos.z))
     modMat.mul(projection, modMat)
     //for(i <- viewMatrix) Gl.glUniformMatrix4fv(i, true, viewAr)
