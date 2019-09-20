@@ -3,7 +3,7 @@ package org.callie.input
 object Inputs{
 
   var keyW = false
-  var keyTab = false
+  var key2 = false
 
   var mouse1 = false
   var mouse2 = false
