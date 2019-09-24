@@ -1,12 +1,12 @@
 package org.callie
 
-import org.callie.control.MovingObject
+import org.callie.control.{JoinControl, MovingObject}
 import org.callie.input.Camera
 import org.callie.ogl.{Gl, GlEventListener, LwglFrame}
 import org.callie.map.Map25
 import org.callie.math.Vector3
 import org.callie.model.{GlObject, Model, MorfingObject, StaticObject, TextureGroup}
-import org.callie.ringing.{JoinControl, Joint, JointAttachment, KeyFrameLoader, Node}
+import org.callie.ringing.{Joint, JointAttachment, KeyFrameLoader, Node}
 
 object MainLevel extends App {
 

@@ -1,8 +1,9 @@
-package org.callie.ringing
+package org.callie.control
 
 import org.callie.input.{Camera, Inputs}
-import org.callie.math.{Axis, Vector3}
 import org.callie.math.intr.Accl
+import org.callie.math.{Axis, Vector3}
+import org.callie.ringing._
 
 trait JoinState extends Transformation{
 
@@ -11,7 +12,7 @@ trait JoinState extends Transformation{
   def apply(delta:Float):MovingState
 }
 
-case class OffsetFrame(offset: Vector3, frame:KeyFrame)
+
 
 object JoinControl{
   val runSpeed = 2.5f

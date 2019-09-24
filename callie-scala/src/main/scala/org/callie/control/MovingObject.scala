@@ -3,7 +3,6 @@ package org.callie.control
 import org.callie.input.{Camera, Inputs, TrackingObject}
 import org.callie.map.Map25
 import org.callie.math.{Angle, AngleRotation, Matrix4, Vector2, Vector3}
-import org.callie.ringing.{MovingState, JoinState}
 import java.lang.{Float => jFloat}
 
 object MovingObject{

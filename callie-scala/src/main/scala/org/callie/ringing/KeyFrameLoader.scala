@@ -1,5 +1,6 @@
 package org.callie.ringing
 
+import org.callie.control
 import org.callie.math.{Axis, Vector3}
 
 import scala.util.parsing.combinator.RegexParsers

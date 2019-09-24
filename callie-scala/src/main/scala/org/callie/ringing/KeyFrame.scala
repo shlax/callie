@@ -1,6 +1,6 @@
 package org.callie.ringing
 
-import org.callie.math.Axis
+import org.callie.math.{Axis, Vector3}
 import org.callie.math.intr.Intr
 
 class KeyValue(val joint:String, val axis: Axis, i:Intr, val value:Float){
@@ -24,3 +24,5 @@ class KeyFrame(val intrs:Array[KeyValue]) {
   }
 
 }
+
+case class OffsetFrame(offset: Vector3, frame:KeyFrame)
