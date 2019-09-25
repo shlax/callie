@@ -36,7 +36,7 @@ object LwglFrame{
       Inputs.mouseZ += yoffset.toInt
     })
 
-    glfwSetMouseButtonCallback(window, (window: Long, button: Int, action: Int, mods: Int) => {
+    glfwSetMouseButtonCallback(window, (_: Long, button: Int, action: Int, _: Int) => {
       if (button == GLFW_MOUSE_BUTTON_2) {
         if (action == GLFW_PRESS) Inputs.mouse2 = true
         else if (action == GLFW_RELEASE) Inputs.mouse2 = false
@@ -56,9 +56,9 @@ object LwglFrame{
       if (key == GLFW_KEY_W){
         if (action == GLFW_PRESS) Inputs.keyW = true
         else if (action == GLFW_RELEASE) Inputs.keyW = false
-      }else if (key == GLFW_KEY_2){
-        if (action == GLFW_PRESS) Inputs.key2 = true
-        else if (action == GLFW_RELEASE) Inputs.key2 = false
+      }else if (key == GLFW_KEY_1){
+        if (action == GLFW_PRESS) Inputs.key1 = true
+        else if (action == GLFW_RELEASE) Inputs.key1 = false
       }
     })
 

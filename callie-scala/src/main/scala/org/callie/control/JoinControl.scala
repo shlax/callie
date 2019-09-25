@@ -68,6 +68,8 @@ class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyF
   val pistolTakeInvInter = 1f/pistolTakeInterval
 
   val pistolStandInterval = 0.45f
+  val pistolStandTransitionInterval = pistolStandInterval/3f
+
   val pistolStandInvInter = 1f/pistolStandInterval
 
   def apply(delta:Float):Unit={
@@ -119,7 +121,7 @@ class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyF
                 standInvInter
 
               case _ => // STAND -> STAND
-                if(Inputs.key2){ // take weapon
+                if(Inputs.key1){ // take weapon
                   global = GlobalState.PISTOL_TAKE
                   frameInd = 0
 
@@ -150,6 +152,7 @@ class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyF
             pistolTakeUp.apply()
           }else{
             global = GlobalState.PISTOL
+            transition = true
 
             acc = 0f
             pistolStand.apply()
@@ -159,6 +162,7 @@ class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyF
         }
 
         if(frameInd == 2) {
+          cntrl.toSpeed(0f)
           Camera.side = -0.25f
 
           pistolStandInvInter
@@ -202,7 +206,9 @@ class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyF
           }
 
           if(frameInd == 3) {
+            cntrl.toSpeed(JoinControl.runSpeed)
             Camera.side = 0f
+
           }else {
             var iv = (0.125f * acc) / pistolTakeInterval
 
@@ -219,18 +225,49 @@ class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyF
         }
 
       case GlobalState.PISTOL =>
-        if(Inputs.key2){
-          global = GlobalState.PISTOL_AWAY
-          frameInd = 0
-
-          acc = 0f
-          pistolTakeUp.apply()
-
-        }else {
+        if(transition){
           acc += delta
-          if (acc > pistolStandInterval) {
-            acc -= pistolStandInterval
-            pistolStand.apply()
+
+          if (acc > pistolStandTransitionInterval) {
+            transition = false
+            frameInd = 0
+          }
+        }else {
+          if (Inputs.mouse2) {
+            cntrl.apply(delta)
+
+            if(frameInd == 0){
+              frameInd = 1
+              pistolAim.apply()
+              acc = 0f
+            }else{
+              acc += delta
+              if (acc > pistolStandInterval) {
+                frameInd = 2
+                pistolAim.apply()
+                acc -= pistolStandInterval
+              }
+            }
+          } else {
+            if(frameInd != 0){
+              pistolStand.apply()
+              frameInd = 0
+              acc = 0f
+            }else {
+              if (Inputs.key1) {
+                global = GlobalState.PISTOL_AWAY
+
+                acc = 0f
+                pistolTakeUp.apply()
+
+              } else {
+                acc += delta
+                if (acc > pistolStandInterval) {
+                  acc -= pistolStandInterval
+                  pistolStand.apply()
+                }
+              }
+            }
           }
         }
 
