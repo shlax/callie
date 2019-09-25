@@ -150,23 +150,24 @@ class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyF
           if(frameInd == 0) {
             pistolAttch.update(true)
             pistolTakeUp.apply()
+            frameInd = 1
+
+            pistolTakeInvInter
           }else{
             global = GlobalState.PISTOL
             transition = true
+            frameInd = 0
 
-            acc = 0f
+            Camera.side = -0.25f
+            cntrl.toSpeed(0f)
+
             pistolStand.apply()
+            acc = 0f
+
+            pistolStandInvInter
           }
 
-          frameInd += 1
-        }
-
-        if(frameInd == 2) {
-          cntrl.toSpeed(0f)
-          Camera.side = -0.25f
-
-          pistolStandInvInter
-        }else{
+        }else {
           var iv = (-0.125f * acc) / pistolTakeInterval
           if (frameInd == 1) iv -= 0.125f
           Camera.side = iv
@@ -230,15 +231,15 @@ class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyF
 
           if (acc > pistolStandTransitionInterval) {
             transition = false
-            frameInd = 0
           }
         }else {
           if (Inputs.mouse2) {
             cntrl.apply(delta)
 
             if(frameInd == 0){
-              frameInd = 1
               pistolAim.apply()
+              transition = true
+              frameInd = 1
               acc = 0f
             }else{
               acc += delta
@@ -251,6 +252,7 @@ class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyF
           } else {
             if(frameInd != 0){
               pistolStand.apply()
+              transition = true
               frameInd = 0
               acc = 0f
             }else {

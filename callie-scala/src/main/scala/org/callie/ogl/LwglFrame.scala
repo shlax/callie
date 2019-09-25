@@ -56,7 +56,7 @@ object LwglFrame{
       if (key == GLFW_KEY_W){
         if (action == GLFW_PRESS) Inputs.keyW = true
         else if (action == GLFW_RELEASE) Inputs.keyW = false
-      }else if (key == GLFW_KEY_1){
+      }else if (key == GLFW_KEY_2){
         if (action == GLFW_PRESS) Inputs.key2 = true
         else if (action == GLFW_RELEASE) Inputs.key2 = false
       }
