@@ -121,7 +121,7 @@ class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyF
                 standInvInter
 
               case _ => // STAND -> STAND
-                if(Inputs.key1){ // take weapon
+                if(Inputs.key2){ // take weapon
                   global = GlobalState.PISTOL_TAKE
                   frameInd = 0
 
@@ -254,7 +254,7 @@ class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyF
               frameInd = 0
               acc = 0f
             }else {
-              if (Inputs.key1) {
+              if (Inputs.key2) {
                 global = GlobalState.PISTOL_AWAY
 
                 acc = 0f
