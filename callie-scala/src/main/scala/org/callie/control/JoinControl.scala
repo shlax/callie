@@ -5,19 +5,10 @@ import org.callie.math.intr.Accl
 import org.callie.math.{Axis, Vector3}
 import org.callie.ringing._
 
-trait JoinState extends Transformation{
-
-  def toSpeed(v:Float):Unit
-
-  def apply(delta:Float):MovingState
-}
-
-
-
 object JoinControl{
   val runSpeed = 2.5f
 
-  def apply(cntrl:JoinState, j: Joint, zero:Vector3, stand: OffsetFrame, run: Array[OffsetFrame],
+  def apply(cntrl:MovingControl, j: Joint, zero:Vector3, stand: OffsetFrame, run: Array[OffsetFrame],
               pistol: JointAttachmentIf,
               pistolTakeDown: OffsetFrame, pistolTakeUp: OffsetFrame, pistolStand:OffsetFrame, pistolAim:OffsetFrame):JoinControl = {
     val ax = new Accl()
@@ -52,7 +43,7 @@ object JoinControl{
 }
 
 /** animacia nad JoinState */
-class JoinControl(cntrl:JoinState, j:Joint, stand: KeyFrame, run: Array[KeyFrame],
+class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyFrame],
                     pistolAttch: JointAttachmentIf,
                     pistolTakeDown: KeyFrame, pistolTakeUp: KeyFrame, pistolStand:KeyFrame, pistolAim:KeyFrame) {
 

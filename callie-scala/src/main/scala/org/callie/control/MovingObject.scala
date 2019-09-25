@@ -5,11 +5,20 @@ import org.callie.map.Map25
 import org.callie.math.{Angle, AngleRotation, Matrix4, Vector2, Vector3}
 import java.lang.{Float => jFloat}
 
+import org.callie.ringing.Transformation
+
+trait MovingControl extends Transformation{
+
+  def toSpeed(v:Float):Unit
+
+  def apply(delta:Float):MovingState
+}
+
 object MovingObject{
   def apply(map:Map25, height:Float, pos2D: Vector2 = Vector2(), lookFrom:Float = 0f): MovingObject = new MovingObject(map, height, pos2D, lookFrom)
 }
 
-class MovingObject(map:Map25, height:Float, pos2D: Vector2 = Vector2(), lookFrom:Float = 0f) extends TrackingObject with JoinState{
+class MovingObject(map:Map25, height:Float, pos2D: Vector2 = Vector2(), lookFrom:Float = 0f) extends TrackingObject with MovingControl{
   val epsilon = 10f
   val angle = Angle(lookFrom)
 
