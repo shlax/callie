@@ -19,7 +19,7 @@ object MovingObject{
 }
 
 class MovingObject(map:Map25, height:Float, pos2D: Vector2 = Vector2(), lookFrom:Float = 0f) extends TrackingObject with MovingControl{
-  val epsilon = 10f
+  val epsilon = 5f
   val angle = Angle(lookFrom)
 
   val acceleration = 15f

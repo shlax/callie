@@ -22,6 +22,8 @@ object MainLevel extends App {
     val stand = KeyFrameLoader(joint, "/data/char/anim/stand.ang", 0.1f)
     val run = for (i <- 1 to 8) yield KeyFrameLoader(joint, "/data/char/anim/run/run" + i + ".ang", 0.1f)
 
+    val rotate = for (i <- 1 to 2) yield KeyFrameLoader(joint, "/data/char/anim/rotate" + i + ".ang", 0.1f)
+
     val pistolTakeDown = KeyFrameLoader(joint, "/data/char/anim/pistol/takeDown.ang", 0.1f)
     val pistolTakeUp = KeyFrameLoader(joint, "/data/char/anim/pistol/takeUp.ang", 0.1f)
 
@@ -72,7 +74,7 @@ object MainLevel extends App {
       StaticObject(gl, Model("/data/char/pistol/revolver.mod").scale(0.1f))
     )
 
-    val anim = JoinControl(camCtrl, joint, zero, stand, run.toArray,
+    val anim = JoinControl(camCtrl, joint, zero, stand, run.toArray, rotate.toArray,
                             revolver,
                             pistolTakeDown, pistolTakeUp, pistolStand, pistolAim)
 

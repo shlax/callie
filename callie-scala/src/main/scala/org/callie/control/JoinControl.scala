@@ -8,7 +8,7 @@ import org.callie.ringing._
 object JoinControl{
   val runSpeed = 2.5f
 
-  def apply(cntrl:MovingControl, j: Joint, zero:Vector3, stand: OffsetFrame, run: Array[OffsetFrame],
+  def apply(cntrl:MovingControl, j: Joint, zero:Vector3, stand: OffsetFrame, run: Array[OffsetFrame], rotate: Array[OffsetFrame],
               pistol: JointAttachmentIf,
               pistolTakeDown: OffsetFrame, pistolTakeUp: OffsetFrame, pistolStand:OffsetFrame, pistolAim:OffsetFrame):JoinControl = {
     val ax = new Accl()
@@ -30,12 +30,15 @@ object JoinControl{
     val oj = new OffsetJoint(name, ax, ay, az, j)
     oj.apply(cntrl, 1f)
 
-    val runCycle = run.map(remap)
-    for(i <- 0 until (runCycle.length - 1)) runCycle(i).next(runCycle(i+1))
-    runCycle.last.next(runCycle.head)
+    def cycle(of:Array[OffsetFrame]):Array[KeyFrame] = {
+      val kf = of.map(remap)
+      for(i <- 0 until (kf.length - 1)) kf(i).next(kf(i+1))
+      kf.last.next(kf.head)
+      kf
+    }
 
     cntrl.toSpeed(runSpeed)
-    new JoinControl(cntrl, oj, s, runCycle,
+    new JoinControl(cntrl, oj, s, cycle(run), cycle(rotate),
       pistol,
       remap(pistolTakeDown), remap(pistolTakeUp), remap(pistolStand), remap(pistolAim))
   }
@@ -43,7 +46,7 @@ object JoinControl{
 }
 
 /** animacia nad JoinState */
-class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyFrame],
+class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyFrame], rotate: Array[KeyFrame],
                     pistolAttch: JointAttachmentIf,
                     pistolTakeDown: KeyFrame, pistolTakeUp: KeyFrame, pistolStand:KeyFrame, pistolAim:KeyFrame) {
 
@@ -52,6 +55,9 @@ class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyF
 
   val runInterval = 0.35f / JoinControl.runSpeed
   val runInvInter = 1f/runInterval
+
+  val rotateInterval = 0.25f
+  val rotateInvInter = 1f/rotateInterval
 
   val runTransitionInterval = runInterval * 2f
   val runTransitionInvInter = 1f/runTransitionInterval
@@ -68,9 +74,9 @@ class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyF
   val pistolTakeInvInter = 1f/pistolTakeInterval
 
   val pistolStandInterval = 0.45f
-  val pistolStandTransitionInterval = pistolStandInterval/3f
-
   val pistolStandInvInter = 1f/pistolStandInterval
+
+  val pistolStandTransitionInterval = pistolStandInterval/3f
 
   def apply(delta:Float):Unit={
 
@@ -93,13 +99,56 @@ class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyF
 
                   frameInd += 1
                   if(frameInd >= run.length) frameInd = 0
-
                   run(frameInd).apply()
                 }
 
                 if(transition) runTransitionInvInter else runInvInter
 
+              case MovingState.ROTATE_NEGATIVE | MovingState.ROTATE_POSITIVE => // //  RUN -> ROTATE
+                acc = 0f
+
+                rotate(0).apply()
+                frameInd = 0
+
+                moving = ns
+
+                rotateInvInter
+
               case _ => //  RUN -> STAND
+                acc = 0f
+                stand.apply()
+                moving = ns
+
+                standInvInter
+            }
+
+          case MovingState.ROTATE_NEGATIVE | MovingState.ROTATE_POSITIVE =>
+            ns match {
+              case MovingState.ROTATE_NEGATIVE | MovingState.ROTATE_POSITIVE => // ROTATE -> ROTATE
+
+                acc += delta
+                if(acc > rotateInterval){
+                  acc -= rotateInterval
+
+                  frameInd += 1
+                  if(frameInd >= rotate.length) frameInd = 0
+                  rotate(frameInd).apply()
+                }
+
+                rotateInvInter
+
+              case MovingState.RUN => // ROTATE -> RUN
+                transition = true
+                frameInd = 0
+
+                acc = 0f
+                run(0).apply()
+
+                moving = ns
+
+                runTransitionInvInter
+
+              case _ =>  // ROTATE -> STAND
                 acc = 0f
                 stand.apply()
                 moving = ns
@@ -118,7 +167,17 @@ class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyF
 
                 moving = ns
 
-                standInvInter
+                runTransitionInvInter
+
+              case MovingState.ROTATE_NEGATIVE | MovingState.ROTATE_POSITIVE => // //  STAND -> ROTATE
+                acc = 0f
+
+                rotate(0).apply()
+                frameInd = 0
+
+                moving = ns
+
+                rotateInvInter
 
               case _ => // STAND -> STAND
                 if(Inputs.key2){ // take weapon
