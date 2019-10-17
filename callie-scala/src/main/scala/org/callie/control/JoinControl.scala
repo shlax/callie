@@ -76,7 +76,7 @@ class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyF
   val pistolStandInterval = 0.45f
   val pistolStandInvInter = 1f/pistolStandInterval
 
-  val pistolStandTransitionInterval = pistolStandInterval/3f
+  val pistolStandTransitionInterval = pistolStandInterval/2.5f
 
   def apply(delta:Float):Unit={
 
