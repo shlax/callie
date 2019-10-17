@@ -6,6 +6,9 @@ package org.callie.math.intr
 
     s1 = v0/2 + a1/8
     s2 = s1 + v1/2 + a2/8
+
+    P(t) = (1 - t)^3 * P0 + 3t(1-t)^2 * P1 + 3t^2 (1-t) * P2 + t^3 * P3
+    dP(t) / dt =  -3(1-t)^2 * P0 + 3(1-t)^2 * P1 - 6t(1-t) * P1 - 3t^2 * P2 + 6t(1-t) * P2 + 3t^2 * P3
 */
 class Accl extends Intr{
   var lastS = 0f
