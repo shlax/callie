@@ -293,7 +293,9 @@ class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyF
           }
         }else {
           if (Inputs.mouse2) {
-            cntrl.apply(delta)
+            if(frameInd !=2 ) {
+              cntrl.apply(delta)
+            }
 
             if(frameInd == 0){
               pistolAim.apply()
