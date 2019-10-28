@@ -118,7 +118,6 @@ object Map25 extends RegexParsers {
     val pi = parseAll(pointInd, r).get
 
     val pts = pi._1.map(Vector3(_))
-
     val test = predicate.apply(pts)
 
     val inds = pi._2.map(i => new TriangleBuilder(i._1, i._2, i._3)).zipWithIndex
