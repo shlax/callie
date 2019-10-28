@@ -26,7 +26,7 @@ trait Vector3 extends Translation{
   def z_=(v:Float):Unit
 
   def len2 = x*x + y*y + z*z
-  def len = Math.sqrt(len2).asInstanceOf[Float]
+  def len = Math.sqrt(len2).toFloat
 
   def normalize() = {
     val l = len
@@ -121,6 +121,18 @@ object Vector3{
   def add(a:Vector3, b:Vector3) = new VectorVar(a.x + b.x, a.y + b.y, a.z + b.z)
 
   def sub(a:Vector3, b:Vector3) = new VectorVar(a.x - b.x, a.y - b.y, a.z - b.z)
+
+  def len2(a:Vector3, b:Vector3) = {
+    val x = a.x - b.x
+    val y = a.y - b.y
+    val z = a.z - b.z
+
+    x*x + y*y + z*z
+  }
+
+  def len(a:Vector3, b:Vector3) = {
+    Math.sqrt(len2(a, b)).toFloat
+  }
 
   def dot(a: Vector3, b: Vector3) = a.x * b.x + a.y * b.y + a.z * b.z
 
