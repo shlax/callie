@@ -6,7 +6,6 @@ import scala.collection.mutable
 import scala.io.Source
 import scala.util.parsing.combinator.RegexParsers
 import java.lang.{Float => jFloat}
-import java.util.function.Predicate
 
 class Triangle25(val a : Vector3, val b : Vector3, val c : Vector3, val near: Array[Triangle25], val far: Array[Triangle25]) {
 
