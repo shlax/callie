@@ -6,6 +6,7 @@ import scala.collection.mutable
 import scala.io.Source
 import scala.util.parsing.combinator.RegexParsers
 import java.lang.{Float => jFloat}
+import java.util.function.Predicate
 
 class Triangle25(val a : Vector3, val b : Vector3, val c : Vector3, val near: Array[Triangle25], val far: Array[Triangle25]) {
 
@@ -95,32 +96,48 @@ object Map25 extends RegexParsers {
   def load(nm:String) = {
     import org.callie._
     Source.fromInputStream(getClass.getResourceAsStream(nm), "UTF-8")|{ s =>
-      apply(s.mkString)
+      apply(s.mkString){ _ : List[Vector3] => (t: (Int, Int)) => t._1 == t._2 }
     }
   }
 
-  def apply(r:CharSequence) = {
-    val pi = parseAll(pointInd, r).get
-
-    val inds = pi._2.map(i => (i, new mutable.ListBuffer[Int], new mutable.ListBuffer[Int])).zipWithIndex
-    for(i <- inds; j <- inds if i._2 != j._2){
-      var k = 0
-      for(a <- i._1._1.productIterator; b <- j._1._1.productIterator if a == b) k += 1
-      if(k == 2) i._1._2 += j._2
-      else if(k == 1) i._1._3 += j._2
+  def load(nm:String)(predicate:MapBuilder): Map25 = {
+    import org.callie._
+    Source.fromInputStream(getClass.getResourceAsStream(nm), "UTF-8")|{ s =>
+      apply(s.mkString)(predicate)
     }
+  }
+
+  class TriangleBuilder(val a:Int, val b:Int, val c:Int){
+    val near = new mutable.ListBuffer[Int]
+    val far = new mutable.ListBuffer[Int]
+
+    def vertexes() = Seq(a, b, c)
+  }
+
+  def apply(r:CharSequence)(predicate:MapBuilder): Map25 = {
+    val pi = parseAll(pointInd, r).get
 
     val pts = pi._1.map(Vector3(_))
 
+    val test = predicate.apply(pts)
+
+    val inds = pi._2.map(i => new TriangleBuilder(i._1, i._2, i._3)).zipWithIndex
+    for(i <- inds; j <- inds if i._2 != j._2){
+      var k = 0
+      for(a <- i._1.vertexes(); b <- j._1.vertexes() if test.test(a, b)) k += 1
+      if(k == 2) i._1.near += j._2
+      else if(k == 1) i._1.far += j._2
+    }
+
     val trgs = inds.map{ i =>
-      val ind = i._1._1
-      new Triangle25(pts(ind._1), pts(ind._2), pts(ind._3), new Array[Triangle25](i._1._2.size), new Array[Triangle25](i._1._3.size))
+      val ind = i._1
+      new Triangle25(pts(ind.a), pts(ind.b), pts(ind.c), new Array[Triangle25](i._1.near.size), new Array[Triangle25](i._1.far.size))
     }
 
     for(i <- inds){ // connect map
       val t = trgs(i._2)
-      for(j <- i._1._2.zipWithIndex) t.near(j._2) = trgs(j._1)
-      for(j <- i._1._3.zipWithIndex) t.far(j._2) = trgs(j._1)
+      for(j <- i._1.near.zipWithIndex) t.near(j._2) = trgs(j._1)
+      for(j <- i._1.far.zipWithIndex) t.far(j._2) = trgs(j._1)
     }
 
     new Map25(trgs.toArray, trgs.head)

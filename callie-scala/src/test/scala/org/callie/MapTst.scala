@@ -12,7 +12,7 @@ object MapTst extends App{
 
   val s = Source.fromFile("data/floorMap.mod")
 
-  val m = Map25(s.mkString)
+  val m = Map25.apply(s.mkString){ _ : List[Vector3] => (t: (Int, Int)) => t._1 == t._2 }
   val t = m(Vector2(0, 0))
 
   println(t) // 0
