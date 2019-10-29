@@ -96,11 +96,19 @@ trait Vector3 extends Translation{
 
   override def toString = "{"+x+", "+y+", "+z+"}"
 
-  override def hashCode() = x.hashCode() + y.hashCode() + z.hashCode()
+  override def hashCode() = {
+    var result = x.hashCode()
+    result = 31 * result + y.hashCode()
+    result = 31 * result + z.hashCode()
+    result
+  }
 
-  override def equals(obj: Any) = obj match {
-    case v: Vector3 => v.x == x && v.y == y && v.z == z
-    case _ => false
+  override def equals(obj: Any) = {
+    if(super.equals(obj)) true
+    else obj match {
+      case v: Vector3 => v.x == x && v.y == y && v.z == z
+      case _ => false
+    }
   }
 }
 
