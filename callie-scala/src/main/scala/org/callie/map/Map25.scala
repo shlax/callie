@@ -18,7 +18,7 @@ class Triangle25(val a : Vector3, val b : Vector3, val c : Vector3, val near: Ar
 	  (tmp.x, tmp.y, tmp.z, -((tmp.x*c.x)+(tmp.y*c.y)+(tmp.z*c.z)))
   }
   
-  def apply(p : Vector2) = {
+  def apply(p : Vector2):Float = {
     val na = ((p.x-a.x)*ab.y)-(ab.x*(p.y-a.z))
 	  val nb = ((p.x-b.x)*bc.y)-(bc.x*(p.y-b.z))
 	  val nc = ((p.x-c.x)*ca.y)-(ca.x*(p.y-c.z))
