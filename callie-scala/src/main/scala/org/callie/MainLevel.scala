@@ -1,7 +1,7 @@
 package org.callie
 
 import org.callie.control.{JoinControl, MovingObject}
-import org.callie.input.Camera
+import org.callie.input.{Camera, CameraProgram}
 import org.callie.ogl.{Gl, GlEventListener, LwglFrame}
 import org.callie.map.Map25
 import org.callie.math.Vector3
@@ -64,7 +64,7 @@ object MainLevel extends App {
     //char.init(gl)
 
     //sphere.init(gl)
-    val camProg = Camera(prog)
+    val camProg = CameraProgram(prog)
 
     //joint752 x: -0.031, y: 0.8684, z: -0.0056, rx: 102.311, ry: 1.413, rz: 6.938
     //joint714 x: 0, y: 1.2088, z: 0.3247, rx: 0, ry: 0, rz: 0

@@ -1,6 +1,5 @@
 package org.callie.input
 
-import org.callie.ogl.Gl
 import org.callie.math.{Angle, Matrix4, Vector3}
 
 // http://www.gamedev.net/topic/617711-glulookat-replacement/
@@ -26,13 +25,6 @@ object Camera {
 //
 //  var lightDirectionVec: Array[Int] = _
   //val identityMatrix = Matrix4().toArray
-
-  def apply(id: Int, view:String="viewMatrix", normal:String = "normalMatrix", lightDirection:String="lightDirection"):CameraProgram={
-    val viewMatrix = Gl.glGetUniformLocation(id, view)
-    val normalMatrix = Gl.glGetUniformLocation(id, normal)
-    val lightDirectionVec = Gl.glGetUniformLocation(id, lightDirection)
-    new CameraProgram(viewMatrix, normalMatrix, lightDirectionVec)
-  }
 
   // http://gamedev.stackexchange.com/questions/56609/how-to-create-a-projection-matrix-in-opengl-es-2-0
   // http://stackoverflow.com/questions/14713343/projection-theory-implimented-in-glsl
@@ -135,41 +127,6 @@ object Camera {
     //for(i <- viewMatrix) Gl.glUniformMatrix4fv(i, true, viewAr)
 
     //println("viewMatrix "+modMat)
-  }
-
-}
-
-object CameraProgram{
-  val identityMatrix = Matrix4().toArray
-  val matrixArray = new Array[Float](16)
-}
-
-class CameraProgram(view: Int, normal:Int, lightDirectionVec:Int){
-
-  val lightDirectionAr = Camera.lightDirectionAr
-
-  def light() : Unit= {
-    Gl.glUniform3fv(lightDirectionVec, lightDirectionAr)
-  }
-
-  val matrixArray = CameraProgram.matrixArray
-  val modMat = Camera.modMat
-
-  def update(model:Matrix4, norm:Matrix4):Unit={
-    norm.toArray(matrixArray)
-    Gl.glUniformMatrix4fv(normal, true, matrixArray)
-
-    modMat.mul(model, matrixArray)
-    Gl.glUniformMatrix4fv(view, true, matrixArray)
-  }
-
-  val identityMatrix = CameraProgram.identityMatrix
-
-  def identity():Unit={
-    modMat.toArray(matrixArray)
-    Gl.glUniformMatrix4fv(view, true, matrixArray)
-
-    Gl.glUniformMatrix4fv(normal, true, identityMatrix)
   }
 
 }
