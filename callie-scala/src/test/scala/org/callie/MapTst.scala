@@ -1,6 +1,6 @@
 package org.callie
 
-import org.callie.map.{Map25, Triangle25}
+import org.callie.map.{Map25, MapBuilder, Triangle25}
 import org.callie.math.{Vector2, Vector3}
 
 import scala.io.Source
@@ -12,7 +12,8 @@ object MapTst extends App{
 
   val s = Source.fromFile("data/floorMap.mod")
 
-  val m = Map25.apply(s.mkString){ _ : List[Vector3] => (t: (Int, Int)) => t._1 == t._2 }
+  val m = Map25.apply(s.mkString)
+
   val t = m(Vector2(0, 0))
 
   println(t) // 0

@@ -87,7 +87,7 @@ class MovingObject(map:Map25, height:Float, pos2D: Vector2 = Vector2(), lookFrom
       pos2D.x += sd * Math.sin(rot).asInstanceOf[Float]
       pos2D.y -= sd * Math.cos(rot).asInstanceOf[Float]
 
-      val z = map.apply(pos2D)
+      val z = map.fast(pos2D)
 
       if (!jFloat.isNaN(z)) calculate(z)
       else { // collision

@@ -95,14 +95,14 @@ object Map25 extends RegexParsers {
   def load(nm:String) = {
     import org.callie._
     Source.fromInputStream(getClass.getResourceAsStream(nm), "UTF-8")|{ s =>
-      apply(s.mkString){ _ : List[Vector3] => (t: (Int, Int)) => t._1 == t._2 }
+      apply(s.mkString)
     }
   }
 
-  def load(nm:String)(predicate:MapBuilder): Map25 = {
+  def load(nm:String, predicate:MapBuilder): Map25 = {
     import org.callie._
     Source.fromInputStream(getClass.getResourceAsStream(nm), "UTF-8")|{ s =>
-      apply(s.mkString)(predicate)
+      apply(s.mkString, predicate)
     }
   }
 
@@ -110,19 +110,19 @@ object Map25 extends RegexParsers {
     val near = new mutable.ListBuffer[Int]
     val far = new mutable.ListBuffer[Int]
 
-    def vertexes() = Seq(a, b, c)
+    def vertexes = Seq(a, b, c)
   }
 
-  def apply(r:CharSequence)(predicate:MapBuilder): Map25 = {
+  def apply(r:CharSequence, predicate:MapBuilder = new MapBuilder): Map25 = {
     val pi = parseAll(pointInd, r).get
 
     val pts = pi._1.map(Vector3(_))
-    val test = predicate.apply(pts)
+    predicate.set(pts)
 
     val inds = pi._2.map(i => new TriangleBuilder(i._1, i._2, i._3)).zipWithIndex
     for(i <- inds; j <- inds if i._2 != j._2){
       var k = 0
-      for(a <- i._1.vertexes(); b <- j._1.vertexes() if test.test(a, b)) k += 1
+      for(a <- i._1.vertexes; b <- j._1.vertexes if predicate.test(a, b)) k += 1
       if(k == 2) i._1.near += j._2
       else if(k == 1) i._1.far += j._2
     }

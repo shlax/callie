@@ -1,11 +1,17 @@
 package org.callie.map
 
-import java.util.function.Predicate
-
 import org.callie.math.Vector3
 
-trait MapBuilder{
+class MapBuilder{
+  var points:List[Vector3] = Nil
 
-  def apply(points:List[Vector3]) : Predicate[(Int, Int)]
+  def set(p:List[Vector3]):Unit = {
+    points = p
+  }
+
+  def test(i:Int, j:Int):Boolean = {
+    i == j
+  }
+
 }
 
