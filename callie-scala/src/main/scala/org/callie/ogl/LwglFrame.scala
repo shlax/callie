@@ -72,8 +72,6 @@ object LwglFrame{
         var t = System.nanoTime()
 
         while (!glfwWindowShouldClose(window)) {
-          Camera.update()
-
           val tmp = System.nanoTime()
           val dt: Float = ((tmp - t) / 1e9d).asInstanceOf[Float]
           t = tmp

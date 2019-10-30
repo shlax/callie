@@ -35,7 +35,7 @@ object Camera {
   val angX = Angle()
   val angY = Angle()
 
-  val off = Vector3(0f, 0f, -5f)
+  val offset = Vector3(0f, 0f, -5f)
 
   val light = Vector3(0f, 0f, 1f)
   //val vecTmp = Vector3()
@@ -93,21 +93,19 @@ object Camera {
 
   //val matrixArray = new Array[Float](16)
 
-  val lightDirectionAr = new Array[Float](3)
+  val lightDirection = Vector3()
 
   //var cnt = 0
-  var side = 0f // -0.3f
-
 
   // mat4 normalMatrix = transpose(inverse(modelView));
   def update():Unit={
 
-    off.z += Inputs.zDiff() * 0.25f
+    offset.z += Inputs.zDiff() * 0.25f
     angX() += Inputs.yDiff() * 0.025f
     angY() += Inputs.xDiff() * 0.025f
 
     //modMat.rotX(angX()).mul(tmp.rotY((Math.PI/2d).asInstanceOf[Float] + angY()))
-    modMat.rotY(-1f * angY()).mul(tmp.rotX(-1f * angX())).apply(light, lightDirectionAr)
+    modMat.rotY(-1f * angY()).mul(tmp.rotX(-1f * angX())).apply(light, lightDirection)
 //    for(i <- lightDirectionVec) Gl.glUniform3fv(i, lightDirectionAr)
 
     //println("normalMatrix "+modMat)
@@ -122,7 +120,7 @@ object Camera {
 //    modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position))
     //modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position)) //.mul(tmp.set(off), modMat)
     //projection.mul(modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY()+1.5f)).mul(tmp.set(target.position)), viewAr)
-    modMat.set(off.x + side, off.y, off.z).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(-pos.x, -pos.y, -pos.z))
+    modMat.set(offset).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(-pos.x, -pos.y, -pos.z))
     modMat.mul(projection, modMat)
     //for(i <- viewMatrix) Gl.glUniformMatrix4fv(i, true, viewAr)
 

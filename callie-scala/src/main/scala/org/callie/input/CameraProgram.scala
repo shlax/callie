@@ -6,6 +6,7 @@ import org.callie.ogl.Gl
 object CameraProgram{
   val identityMatrix = Matrix4().toArray
   val matrixArray = new Array[Float](16)
+  val vectorArray = new Array[Float](3)
 
   def apply(id: Int, view:String="viewMatrix", normal:String = "normalMatrix", lightDirection:String="lightDirection"):CameraProgram={
     val viewMatrix = Gl.glGetUniformLocation(id, view)
@@ -17,10 +18,12 @@ object CameraProgram{
 
 class CameraProgram(view: Int, normal:Int, lightDirectionVec:Int){
 
-  val lightDirectionAr = Camera.lightDirectionAr
+  val vectorArray = CameraProgram.vectorArray
+  val lightDirection = Camera.lightDirection
 
   def light() : Unit= {
-    Gl.glUniform3fv(lightDirectionVec, lightDirectionAr)
+    lightDirection.toArray(vectorArray)
+    Gl.glUniform3fv(lightDirectionVec, vectorArray)
   }
 
   val matrixArray = CameraProgram.matrixArray

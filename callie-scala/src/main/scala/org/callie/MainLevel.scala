@@ -95,7 +95,9 @@ object MainLevel extends App {
     (dt:Float) => {
       Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT)
 
+      Camera.update()
       anim.apply(dt)
+
       //char.update(gl)
       //sphere.update(gl)
 
