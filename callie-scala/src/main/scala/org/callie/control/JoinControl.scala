@@ -78,6 +78,8 @@ class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyF
 
   val pistolStandTransitionInterval = pistolStandInterval/2.5f
 
+  val offset = Camera.offset
+
   def apply(delta:Float):Unit={
 
     val invInter : Float = global match {
@@ -217,7 +219,7 @@ class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyF
             transition = true
             frameInd = 0
 
-            Camera.offset.x = -0.25f
+            offset.x = -0.25f
             cntrl.toSpeed(0f)
 
             pistolStand.apply()
@@ -229,7 +231,7 @@ class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyF
         }else {
           var iv = (-0.125f * acc) / pistolTakeInterval
           if (frameInd == 1) iv -= 0.125f
-          Camera.offset.x = iv
+          offset.x = iv
 
           pistolTakeInvInter
         }
@@ -267,7 +269,7 @@ class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyF
 
           if(frameInd == 3) {
             cntrl.toSpeed(JoinControl.runSpeed)
-            Camera.offset.x = 0f
+            offset.x = 0f
 
           }else {
             var iv = (0.125f * acc) / pistolTakeInterval
@@ -278,7 +280,7 @@ class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyF
               iv = -0.125f + iv
             }
 
-            Camera.offset.x = iv
+            offset.x = iv
           }
 
           pistolTakeInvInter
