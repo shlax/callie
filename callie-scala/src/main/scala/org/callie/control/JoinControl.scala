@@ -299,7 +299,6 @@ class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyF
 
             if(frameInd == 0){
               pistolAim.apply()
-              transition = true
               frameInd = 1
               acc = 0f
             }else{
@@ -313,7 +312,6 @@ class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyF
           } else {
             if(frameInd != 0){
               pistolStand.apply()
-              transition = true
               frameInd = 0
               acc = 0f
             }else {
