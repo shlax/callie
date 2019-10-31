@@ -1,5 +1,6 @@
 package org.callie.control
 
+import org.callie.control.JoinControl.runSpeed
 import org.callie.input.{Camera, Inputs}
 import org.callie.math.intr.Accl
 import org.callie.math.{Axis, Vector3}
@@ -234,6 +235,7 @@ class JoinControl(cntrl:MovingControl, joint:Joint, standFrame: KeyFrame, runFra
           pistol.activate()
         }else{
           pistolAttch.update(true)
+          cntrl.toSpeed(0f)
           hold = true
 
           pistolTakeUpFrame.apply()
@@ -282,8 +284,9 @@ class JoinControl(cntrl:MovingControl, joint:Joint, standFrame: KeyFrame, runFra
       }else{
         if (acc > pistolTakeInterval) {
           pistolAttch.update(false)
-          normal.activate()
+          cntrl.toSpeed(runSpeed)
 
+          normal.activate()
         }else{
           joint.apply(cntrl, acc * pistolTakeInvInter)
         }
