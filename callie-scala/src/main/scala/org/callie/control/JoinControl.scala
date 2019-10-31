@@ -53,14 +53,14 @@ class JoinControl(cntrl:MovingControl, joint:Joint, standFrame: KeyFrame, runFra
   trait State{
     def activate():Unit
     def apply(delta:Float):Unit
+  }
+
+  val normal: State = new State{
 
     trait StateMoving{
       def activate():Unit
       def apply(delta:Float, ns:MovingState):Unit
     }
-  }
-
-  val normal: State = new State{
 
     val stand:StateMoving = new StateMoving{
       val standInterval = 0.35f
@@ -86,12 +86,16 @@ class JoinControl(cntrl:MovingControl, joint:Joint, standFrame: KeyFrame, runFra
             rotate.activate()
 
           case _ => // STAND -> STAND
-            acc += delta
-            if (acc > standInterval) {
-              acc -= standInterval
-              standFrame.apply()
+            if(Inputs.key2) { // take weapon
+              takePistol.activate()
+            }else {
+              acc += delta
+              if (acc > standInterval) {
+                acc -= standInterval
+                standFrame.apply()
+              }
+              joint.apply(cntrl, acc * standInvInter)
             }
-            joint.apply(cntrl, acc * standInvInter)
         }
       }
     }
@@ -204,9 +208,213 @@ class JoinControl(cntrl:MovingControl, joint:Joint, standFrame: KeyFrame, runFra
 
   }
 
+  val takePistol:State = new State {
+    val pistolTakeInterval = 0.2f
+    val pistolTakeInvInter = 1f/pistolTakeInterval
+
+    var hold = false
+    var acc = 0f
+
+    override def activate(): Unit = {
+      globalState = this
+      cursorSide = true
+
+      pistolTakeDownFrame.apply()
+      joint.apply(cntrl, 0f)
+
+      hold = false
+      acc = 0f
+    }
+
+    override def apply(delta: Float): Unit = {
+      acc += delta
+
+      if (acc > pistolTakeInterval) {
+        if(hold){
+          pistol.activate()
+        }else{
+          pistolAttch.update(true)
+          hold = true
+
+          pistolTakeUpFrame.apply()
+          acc = 0f
+        }
+      }else{
+        joint.apply(cntrl, acc * pistolTakeInvInter)
+      }
+    }
+  }
+
+  val awayPistol:State = new State {
+    val pistolTakeInterval = 0.2f
+    val pistolTakeInvInter = 1f/pistolTakeInterval
+
+    val pistolStandInterval = 0.45f
+    val pistolStandInvInter = 1f/pistolStandInterval
+
+    var hold = true
+    var acc = 0f
+
+    override def activate(): Unit = {
+      globalState = this
+      cursorSide = false
+
+      pistolTakeUpFrame.apply()
+      joint.apply(cntrl, 0f)
+
+      hold = true
+      acc = 0f
+    }
+
+    override def apply(delta: Float): Unit = {
+      acc += delta
+
+      if(hold){
+        if (acc > pistolStandInterval) {
+          pistolTakeDownFrame.apply()
+          joint.apply(cntrl, 0f)
+
+          acc = 0f
+          hold = false
+        }else {
+          joint.apply(cntrl, acc * pistolStandInvInter)
+        }
+      }else{
+        if (acc > pistolTakeInterval) {
+          pistolAttch.update(false)
+          normal.activate()
+
+        }else{
+          joint.apply(cntrl, acc * pistolTakeInvInter)
+        }
+      }
+
+    }
+  }
+
+  val pistol:State = new State {
+
+    val pistolStandInterval = 0.45f
+    val pistolStandInvInter = 1f/pistolStandInterval
+
+    val pistolStandTransitionInterval = pistolStandInterval/2.5f
+
+    var transition = true
+
+    var aiming = false
+    var aimed = false
+
+    var acc = 0f
+
+    override def activate(): Unit = {
+      globalState = this
+
+      pistolStandFrame.apply()
+      joint.apply(cntrl, 0f)
+
+      transition = true
+
+      aiming = false
+      aimed = false
+
+      acc = 0f
+    }
+
+    override def apply(delta: Float): Unit = {
+      if(transition){
+        acc += delta
+        if (acc > pistolStandTransitionInterval) {
+          transition = false
+        }
+
+        joint.apply(cntrl, acc * pistolStandInvInter)
+      }else {
+
+        if(aiming){
+
+          if (Inputs.mouse2) {
+            acc += delta
+
+            if (aimed) {
+              if (acc > pistolStandInterval) {
+                pistolAimFrame.apply()
+                acc -= pistolStandInterval
+              }
+            } else {
+              cntrl.apply(delta) // rotate
+
+              if (acc > pistolStandInterval) {
+                aimed = true
+
+                pistolAimFrame.apply()
+                acc -= pistolStandInterval
+              }
+            }
+
+            joint.apply(cntrl, acc * pistolStandInvInter)
+          }else{
+            pistolStandFrame.apply()
+            joint.apply(cntrl, 0f)
+
+            aiming = false
+            aimed = false
+
+            acc = 0f
+          }
+
+        }else{
+          if (Inputs.key2) {
+            awayPistol.activate()
+          }else{
+            if (Inputs.mouse2) {
+              pistolAimFrame.apply()
+              joint.apply(cntrl, 0f)
+
+              aiming = true
+              aimed = false
+
+              acc = 0f
+            }else{
+              acc += delta
+              if (acc > pistolStandInterval) {
+                acc -= pistolStandInterval
+                pistolStandFrame.apply()
+              }
+              joint.apply(cntrl, acc * pistolStandInvInter)
+            }
+          }
+        }
+
+      }
+    }
+  }
+
+  var cursorSide = false
+  val offset = Camera.offset
+
+  var cursorSideValue = 0.13f
+  var actCursorSide = 0f
+
   var globalState : State = normal
   def apply(delta:Float):Unit={
     globalState.apply(delta)
+
+    if(cursorSide){
+      if(actCursorSide != cursorSideValue){
+        actCursorSide += delta * 0.2f
+        if(actCursorSide > cursorSideValue) actCursorSide = cursorSideValue
+
+        offset.x = -actCursorSide
+      }
+    }else{
+      if(actCursorSide != 0f){
+        actCursorSide -= delta * 0.2f
+        if(actCursorSide < 0) actCursorSide = 0f
+
+        offset.x = -actCursorSide
+      }
+    }
+
   }
 
   globalState.activate()
