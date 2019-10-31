@@ -1,7 +1,7 @@
-package org.callie.map
+package org.callie.polar
 
+import org.callie.map.{Map25, MapBuilder}
 import org.callie.math.{Matrix4, Vector2, Vector3}
-import scala.math.Ordering.Float.TotalOrdering
 
 class CylinderMap(m:Map25, min:Float, max:Float){
   val pi = Math.PI.asInstanceOf[Float]
