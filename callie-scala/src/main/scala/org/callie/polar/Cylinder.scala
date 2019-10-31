@@ -36,6 +36,7 @@ class CylinderMap(m:Map25, min:Float, max:Float){
 }
 
 class CylinderBuilder extends MapBuilder{
+  import Ordering.Float.TotalOrdering
 
   var min:Float = 0f
   var max:Float = 0f

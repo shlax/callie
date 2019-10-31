@@ -46,300 +46,171 @@ object JoinControl{
 }
 
 /** animacia nad JoinState */
-class JoinControl(cntrl:MovingControl, j:Joint, stand: KeyFrame, run: Array[KeyFrame], rotate: Array[KeyFrame],
-                    pistolAttch: JointAttachmentIf,
-                    pistolTakeDown: KeyFrame, pistolTakeUp: KeyFrame, pistolStand:KeyFrame, pistolAim:KeyFrame) {
+class JoinControl(cntrl:MovingControl, joint:Joint, standFrame: KeyFrame, runFrames: Array[KeyFrame], rotateFrames: Array[KeyFrame],
+                  pistolAttch: JointAttachmentIf,
+                  pistolTakeDownFrame: KeyFrame, pistolTakeUpFrame: KeyFrame, pistolStandFrame:KeyFrame, pistolAimFrame:KeyFrame) {
 
-  val standInterval = 0.35f
-  val standInvInter = 1f/standInterval
+  trait State{
+    def activate():Unit
+    def apply(delta:Float):Unit
 
-  val runInterval = 0.35f / JoinControl.runSpeed
-  val runInvInter = 1f/runInterval
+    trait StateMoving{
+      def activate():Unit
+      def apply(delta:Float, ns:MovingState):Unit
+    }
+  }
 
-  val rotateInterval = 0.25f
-  val rotateInvInter = 1f/rotateInterval
+  val normal: State = new State{
 
-  val runTransitionInterval = runInterval * 2f
-  val runTransitionInvInter = 1f/runTransitionInterval
+    val stand:StateMoving = new StateMoving{
+      val standInterval = 0.35f
+      val standInvInter = 1f/standInterval
 
-  var transition = false
-  var frameInd = 0
+      var acc = 0f
 
-  var global = GlobalState.NORMAL
-  var moving = MovingState.STAND
+      override def activate(): Unit = {
+        localState = this
 
-  var acc = 0f
+        standFrame.apply()
+        joint.apply(cntrl, 0f)
 
-  val pistolTakeInterval = 0.2f
-  val pistolTakeInvInter = 1f/pistolTakeInterval
+        acc = 0f
+      }
 
-  val pistolStandInterval = 0.45f
-  val pistolStandInvInter = 1f/pistolStandInterval
+      override def apply(delta: Float, ns: MovingState): Unit = {
+        ns match {
+          case MovingState.RUN => // STAND -> RUN
+            run.activate()
 
-  val pistolStandTransitionInterval = pistolStandInterval/2.5f
+          case MovingState.ROTATE_NEGATIVE | MovingState.ROTATE_POSITIVE => // //  STAND -> ROTATE
+            rotate.activate()
 
-  val offset = Camera.offset
-
-  def apply(delta:Float):Unit={
-
-    val invInter : Float = global match {
-
-      case GlobalState.NORMAL =>
-        val ns = cntrl.apply(delta)
-
-        moving match {
-          case MovingState.RUN =>
-            ns match {
-
-              case MovingState.RUN => // RUN -> RUN
-                val current = if(transition) runTransitionInterval else runInterval
-
-                acc += delta
-                if(acc > current){
-                  acc -= current
-                  transition = false
-
-                  frameInd += 1
-                  if(frameInd >= run.length) frameInd = 0
-                  run(frameInd).apply()
-                }
-
-                if(transition) runTransitionInvInter else runInvInter
-
-              case MovingState.ROTATE_NEGATIVE | MovingState.ROTATE_POSITIVE => // //  RUN -> ROTATE
-                acc = 0f
-
-                rotate(0).apply()
-                frameInd = 0
-
-                moving = ns
-
-                rotateInvInter
-
-              case _ => //  RUN -> STAND
-                acc = 0f
-                stand.apply()
-                moving = ns
-
-                standInvInter
+          case _ => // STAND -> STAND
+            acc += delta
+            if (acc > standInterval) {
+              acc -= standInterval
+              standFrame.apply()
             }
-
-          case MovingState.ROTATE_NEGATIVE | MovingState.ROTATE_POSITIVE =>
-            ns match {
-              case MovingState.ROTATE_NEGATIVE | MovingState.ROTATE_POSITIVE => // ROTATE -> ROTATE
-
-                acc += delta
-                if(acc > rotateInterval){
-                  acc -= rotateInterval
-
-                  frameInd += 1
-                  if(frameInd >= rotate.length) frameInd = 0
-                  rotate(frameInd).apply()
-                }
-
-                rotateInvInter
-
-              case MovingState.RUN => // ROTATE -> RUN
-                transition = true
-                frameInd = 0
-
-                acc = 0f
-                run(0).apply()
-
-                moving = ns
-
-                runTransitionInvInter
-
-              case _ =>  // ROTATE -> STAND
-                acc = 0f
-                stand.apply()
-                moving = ns
-
-                standInvInter
-            }
-
-          case _ => // AnimState.STAND
-            ns match {
-              case MovingState.RUN => // STAND -> RUN
-                transition = true
-                frameInd = 0
-
-                acc = 0f
-                run(0).apply()
-
-                moving = ns
-
-                runTransitionInvInter
-
-              case MovingState.ROTATE_NEGATIVE | MovingState.ROTATE_POSITIVE => // //  STAND -> ROTATE
-                acc = 0f
-
-                rotate(0).apply()
-                frameInd = 0
-
-                moving = ns
-
-                rotateInvInter
-
-              case _ => // STAND -> STAND
-                if(Inputs.key2){ // take weapon
-                  global = GlobalState.PISTOL_TAKE
-                  frameInd = 0
-
-                  acc = 0f
-                  pistolTakeDown.apply()
-
-                  pistolTakeInvInter
-                }else {
-                  acc += delta
-                  if (acc > standInterval) {
-                    acc -= standInterval
-                    stand.apply()
-                  }
-
-                  standInvInter
-                }
-            }
+            joint.apply(cntrl, acc * standInvInter)
         }
-
-      case GlobalState.PISTOL_TAKE =>
-        acc += delta
-
-        if (acc > pistolTakeInterval) {
-          acc -= pistolTakeInterval
-
-          if(frameInd == 0) {
-            pistolAttch.update(true)
-            pistolTakeUp.apply()
-            frameInd = 1
-
-            pistolTakeInvInter
-          }else{
-            global = GlobalState.PISTOL
-            transition = true
-            frameInd = 0
-
-            offset.x = -0.25f
-            cntrl.toSpeed(0f)
-
-            pistolStand.apply()
-            acc = 0f
-
-            pistolStandInvInter
-          }
-
-        }else {
-          var iv = (-0.125f * acc) / pistolTakeInterval
-          if (frameInd == 1) iv -= 0.125f
-          offset.x = iv
-
-          pistolTakeInvInter
-        }
-
-      case GlobalState.PISTOL_AWAY =>
-        acc += delta
-
-        if(frameInd == 0){
-          if (acc > pistolStandInterval) {
-            acc -= pistolStandInterval
-
-            pistolTakeDown.apply()
-            frameInd = 1
-
-            pistolTakeInvInter
-          }else{
-            pistolStandInvInter
-          }
-        }else{
-          if (acc > pistolTakeInterval) {
-            if(frameInd == 1){
-              acc -= pistolTakeInterval
-              pistolAttch.update(false)
-
-              frameInd = 2
-              stand.apply()
-            }else{
-              acc = 0f
-              global = GlobalState.NORMAL
-
-              frameInd = 3
-              stand.apply()
-            }
-          }
-
-          if(frameInd == 3) {
-            cntrl.toSpeed(JoinControl.runSpeed)
-            offset.x = 0f
-
-          }else {
-            var iv = (0.125f * acc) / pistolTakeInterval
-
-            if(frameInd == 1){
-              iv = -0.25f + iv
-            }else{
-              iv = -0.125f + iv
-            }
-
-            offset.x = iv
-          }
-
-          pistolTakeInvInter
-        }
-
-      case GlobalState.PISTOL =>
-        if(transition){
-          acc += delta
-
-          if (acc > pistolStandTransitionInterval) {
-            transition = false
-          }
-        }else {
-          if (Inputs.mouse2) {
-            if(frameInd !=2 ) {
-              cntrl.apply(delta)
-            }
-
-            if(frameInd == 0){
-              pistolAim.apply()
-              frameInd = 1
-              acc = 0f
-            }else{
-              acc += delta
-              if (acc > pistolStandInterval) {
-                frameInd = 2
-                pistolAim.apply()
-                acc -= pistolStandInterval
-              }
-            }
-          } else {
-            if(frameInd != 0){
-              pistolStand.apply()
-              frameInd = 0
-              acc = 0f
-            }else {
-              if (Inputs.key2) {
-                global = GlobalState.PISTOL_AWAY
-
-                acc = 0f
-                pistolTakeUp.apply()
-
-              } else {
-                acc += delta
-                if (acc > pistolStandInterval) {
-                  acc -= pistolStandInterval
-                  pistolStand.apply()
-                }
-              }
-            }
-          }
-        }
-
-        pistolStandInvInter
+      }
     }
 
-    j.apply(cntrl, acc * invInter)
-    //act = ns
+    val rotate:StateMoving = new StateMoving{
+      val rotateInterval = 0.25f
+      val rotateInvInter = 1f/rotateInterval
+
+      var acc = 0f
+      var frameInd = 0
+
+      override def activate(): Unit = {
+        localState = this
+
+        rotateFrames(0).apply()
+        joint.apply(cntrl, 0f)
+
+        acc = 0f
+        frameInd = 0
+      }
+
+      override def apply(delta: Float, ns: MovingState): Unit = {
+        ns match {
+          case MovingState.ROTATE_NEGATIVE | MovingState.ROTATE_POSITIVE => // ROTATE -> ROTATE
+            acc += delta
+            if(acc > rotateInterval){
+              acc -= rotateInterval
+
+              frameInd += 1
+              if(frameInd >= rotateFrames.length) frameInd = 0
+              rotateFrames(frameInd).apply()
+            }
+            joint.apply(cntrl, acc * rotateInvInter)
+
+          case MovingState.RUN => // ROTATE -> RUN
+            run.activate()
+
+          case _ =>  // ROTATE -> STAND
+            stand.activate()
+        }
+      }
+    }
+
+    val run:StateMoving = new StateMoving{
+      val runInterval = 0.35f / JoinControl.runSpeed
+      val runInvInter = 1f/runInterval
+
+      val runTransitionInterval = runInterval * 2f
+      val runTransitionInvInter = 1f/runTransitionInterval
+
+      var transition = true
+      var frameInd = 0
+      var acc = 0f
+
+      override def activate(): Unit = {
+        localState = this
+
+        runFrames(0).apply()
+        joint.apply(cntrl, 0f)
+
+        transition = true
+        frameInd = 0
+        acc = 0f
+      }
+
+      override def apply(delta: Float, ns: MovingState): Unit = {
+        ns match{
+          case MovingState.RUN => // RUN -> RUN
+            acc += delta
+
+            if(transition){
+              if(acc > runTransitionInterval){
+                acc -= runTransitionInterval
+                transition = false
+
+                frameInd += 1
+                if(frameInd >= runFrames.length) frameInd = 0
+                runFrames(frameInd).apply()
+              }
+              joint.apply(cntrl, acc * runTransitionInvInter)
+            }else{
+              if(acc > runInterval){
+                acc -= runInterval
+
+                frameInd += 1
+                if(frameInd >= runFrames.length) frameInd = 0
+                runFrames(frameInd).apply()
+              }
+              joint.apply(cntrl, acc * runInvInter)
+            }
+
+          case MovingState.ROTATE_NEGATIVE | MovingState.ROTATE_POSITIVE => // //  RUN -> ROTATE
+            rotate.activate()
+
+          case _ => //  RUN -> STAND
+            stand.activate()
+        }
+      }
+    }
+
+    override def activate(): Unit = {
+      globalState = this
+      stand.activate()
+    }
+
+    var localState : StateMoving = stand
+    override def apply(delta: Float): Unit = {
+      localState.apply(delta, cntrl.apply(delta))
+    }
 
   }
 
+  var globalState : State = normal
+  def apply(delta:Float):Unit={
+    globalState.apply(delta)
+  }
+
+  globalState.activate()
+
 }
+
+
