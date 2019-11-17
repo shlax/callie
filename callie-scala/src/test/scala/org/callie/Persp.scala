@@ -19,7 +19,7 @@ object Persp extends App{
   val b = -1f * yy
   val t = 1f * yy
 //
-  val f = 1000f
+  val f = 5000f
   val n = 1f
 
   val pm = Matrix4(2f * n / (r - l), 0f, (r + l) / (r - l), 0f,
