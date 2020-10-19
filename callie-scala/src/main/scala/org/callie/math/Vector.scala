@@ -85,6 +85,13 @@ trait Vector3 extends Translation{
     this
   }
 
+  def zero() ={
+    x = 0
+    y = 0
+    z = 0
+    this
+  }
+
   def toArray(a:Array[Float]) = {
     a(0) = x; a(1) = y; a(2) = z
     a

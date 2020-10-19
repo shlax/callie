@@ -1,7 +1,7 @@
 package org.callie.ringing
 
 import org.callie.input.CameraProgram
-import org.callie.math.{Angle, Matrix4}
+import org.callie.math.{Angle, Matrix4, Vector3}
 import org.callie.model.{GlObject, ObjectGroup}
 
 object JointAttachment{
@@ -39,6 +39,35 @@ object JointAttachment{
 }
 
 class AttachmentJointMatrix(val joint:AttachmentJoint, val model:Matrix4, val normal:Matrix4)
+
+class AimZAttachment(prog:CameraProgram, from:AttachmentJointMatrix, to:AttachmentJointMatrix, obj:GlObject*) extends ObjectGroup(obj:_*){
+
+  val fromModel = from.joint.model
+  val fromNormal = from.joint.normal
+
+  val fromModelTransform = from.model
+  val fromNormalTransform = from.normal
+
+  val toModel = to.joint.model
+
+  val transform = Matrix4()
+  val normal = Matrix4()
+
+  val target = Vector3()
+
+  override def update():Unit={
+    toModel.apply(target.zero())
+
+    transform.mul(fromModel, fromModelTransform).inverse()
+    transform.apply(target)
+
+
+
+    prog.update(transform, normal)
+    super.update()
+  }
+
+}
 
 class JointAttachmentIf(prog:CameraProgram, primary:AttachmentJointMatrix, secondary:AttachmentJointMatrix, obj:GlObject*) extends ObjectGroup(obj:_*){
   var sec = false
