@@ -119,6 +119,13 @@ class Matrix4(var m00: Float, var m01: Float, var m02: Float, var m03: Float,   
     out
   }
 
+  def identity() = {
+    m00 = 1f; m01 = 0f; m02 = 0f; m03 = 0f
+    m10 = 0f; m11 = 1f; m12 = 0f; m13 = 0f
+    m20 = 0f; m21 = 0f; m22 = 1f; m23 = 0f
+    m30 = 0f; m31 = 0f; m32 = 0f; m33 = 1f
+  }
+
   def mul (m : Matrix4) : Matrix4 = mul(this, m)
   
   def mul(m : Matrix4, n : Matrix4) = {

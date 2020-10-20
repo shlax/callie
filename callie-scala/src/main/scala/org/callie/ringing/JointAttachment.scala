@@ -40,7 +40,7 @@ object JointAttachment{
 
 class AttachmentJointMatrix(val joint:AttachmentJoint, val model:Matrix4, val normal:Matrix4)
 
-class AimZAttachment(prog:CameraProgram, from:AttachmentJointMatrix, to:AttachmentJointMatrix, obj:GlObject*) extends ObjectGroup(obj:_*){
+class AimYAttachment(prog:CameraProgram, from:AttachmentJointMatrix, toJoint:AttachmentJoint, toPoint:Vector3, obj:GlObject*) extends ObjectGroup(obj:_*){
 
   val fromModel = from.joint.model
   val fromNormal = from.joint.normal
@@ -48,20 +48,51 @@ class AimZAttachment(prog:CameraProgram, from:AttachmentJointMatrix, to:Attachme
   val fromModelTransform = from.model
   val fromNormalTransform = from.normal
 
-  val toModel = to.joint.model
+  val toModel = toJoint.model
 
   val transform = Matrix4()
   val normal = Matrix4()
 
   val target = Vector3()
 
-  override def update():Unit={
-    toModel.apply(target.zero())
+  override def update():Unit = {
+    toModel.apply(toPoint, target)
 
     transform.mul(fromModel, fromModelTransform).inverse()
     transform.apply(target)
 
+    // axis = (0, 1, 0)
 
+    val dx = Math.abs(target.x) > 0.001f
+    val dz = Math.abs(target.z) > 0.001f
+
+    if(dz && dx){
+      val ax = Math.acos(target.y / target.z)
+      val az = Math.acos(target.y / target.x)
+
+      transform.rotZ(az.asInstanceOf[Float])
+      normal.rotX(ax.asInstanceOf[Float])
+
+      normal.mul(transform)
+
+      transform.mul(normal, fromModel).mul(fromModelTransform)
+      normal.mul(normal, fromNormal).mul(fromNormalTransform)
+    } else if(dz){
+      val a = Math.acos(target.y / target.z)
+      normal.rotX(a.asInstanceOf[Float])
+
+      transform.mul(normal, fromModel).mul(fromModelTransform)
+      normal.mul(normal, fromNormal).mul(fromNormalTransform)
+    }else  if(dx){
+      val a = Math.acos(target.y / target.x)
+      normal.rotZ(a.asInstanceOf[Float])
+
+      transform.mul(normal, fromModel).mul(fromModelTransform)
+      normal.mul(normal, fromNormal).mul(fromNormalTransform)
+    }else{
+      transform.mul(fromModel, fromModelTransform)
+      normal.mul(fromNormal, fromNormalTransform)
+    }
 
     prog.update(transform, normal)
     super.update()
