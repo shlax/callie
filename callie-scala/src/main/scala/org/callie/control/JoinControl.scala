@@ -86,7 +86,7 @@ class JoinControl(cntrl:MovingControl, joint:Joint, standFrame: KeyFrame, runFra
             rotate.activate()
 
           case _ => // STAND -> STAND
-            if(Inputs.key2) { // take weapon
+            if(Inputs.keyQ) { // take weapon
               takePistol.activate()
             }else {
               acc += delta
@@ -365,7 +365,7 @@ class JoinControl(cntrl:MovingControl, joint:Joint, standFrame: KeyFrame, runFra
           }
 
         }else{
-          if (Inputs.key2) {
+          if (Inputs.keyQ) {
             awayPistol.activate()
           }else{
             if (Inputs.mouse2) {

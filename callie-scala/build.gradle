@@ -3,7 +3,7 @@ apply plugin: 'scala'
 
 repositories {
     maven {
-        url('http://central.maven.org/maven2/')
+        url('https://repo1.maven.org/maven2/')
     }
 }
 
@@ -12,7 +12,7 @@ tasks.withType(ScalaCompile) {
 }
 
 dependencies {
-    compile 'org.scala-lang:scala-library:2.13.1'
+    compile 'org.scala-lang:scala-library:2.13.5'
     compile group: 'org.scala-lang.modules', name: 'scala-parser-combinators_2.13', version: '1.1.2'
 
 //    compile 'org.jogamp.gluegen:gluegen-rt-main:2.3.2'
@@ -32,8 +32,5 @@ dependencies {
     runtimeOnly "org.lwjgl:lwjgl-opengl:3.2.2:natives-windows"
 
     testCompile 'javax.vecmath:vecmath:1.5.2'
-
-    testCompile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.6'
-    testCompile group: 'commons-io', name: 'commons-io', version: '2.6'
-
+    
 }

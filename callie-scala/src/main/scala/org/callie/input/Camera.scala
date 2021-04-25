@@ -101,8 +101,8 @@ object Camera {
   def update():Unit={
 
     offset.z += Inputs.zDiff() * 0.25f
-    angX() += Inputs.yDiff() * 0.025f
-    angY() += Inputs.xDiff() * 0.025f
+    angX() += Inputs.yDiff() * 0.005f
+    angY() += Inputs.xDiff() * 0.005f
 
     //modMat.rotX(angX()).mul(tmp.rotY((Math.PI/2d).asInstanceOf[Float] + angY()))
     modMat.rotY(-1f * angY()).mul(tmp.rotX(-1f * angX())).apply(light, lightDirection)
