@@ -119,6 +119,13 @@ class Matrix4(var m00: Float, var m01: Float, var m02: Float, var m03: Float,   
     out
   }
 
+  def identity() = {
+    m00 = 1f; m01 = 0f; m02 = 0f; m03 = 0f
+    m10 = 0f; m11 = 1f; m12 = 0f; m13 = 0f
+    m20 = 0f; m21 = 0f; m22 = 1f; m23 = 0f
+    m30 = 0f; m31 = 0f; m32 = 0f; m33 = 1f
+  }
+
   def mul (m : Matrix4) : Matrix4 = mul(this, m)
   
   def mul(m : Matrix4, n : Matrix4) = {
@@ -204,23 +211,27 @@ class Matrix4(var m00: Float, var m01: Float, var m02: Float, var m03: Float,   
   }
 
   // http://stackoverflow.com/questions/1148309/inverting-a-4x4-matrix
-  def inverse() = {
-    val t00 =  m11*m22*m33 - m11*m23*m32 - m21*m12*m33 + m21*m13*m32 + m31*m12*m23 - m31*m13*m22
-    val t10 = -m10*m22*m33 + m10*m23*m32 + m20*m12*m33 - m20*m13*m32 - m30*m12*m23 + m30*m13*m22
-    val t20 =  m10*m21*m33 - m10*m23*m31 - m20*m11*m33 + m20*m13*m31 + m30*m11*m23 - m30*m13*m21
-    val t30 = -m10*m21*m32 + m10*m22*m31 + m20*m11*m32 - m20*m12*m31 - m30*m11*m22 + m30*m12*m21
-    val t01 = -m01*m22*m33 + m01*m23*m32 + m21*m02*m33 - m21*m03*m32 - m31*m02*m23 + m31*m03*m22
-    val t11 =  m00*m22*m33 - m00*m23*m32 - m20*m02*m33 + m20*m03*m32 + m30*m02*m23 - m30*m03*m22
-    val t21 = -m00*m21*m33 + m00*m23*m31 + m20*m01*m33 - m20*m03*m31 - m30*m01*m23 + m30*m03*m21
-    val t31 =  m00*m21*m32 - m00*m22*m31 - m20*m01*m32 + m20*m02*m31 + m30*m01*m22 - m30*m02*m21
-    val t02 =  m01*m12*m33 - m01*m13*m32 - m11*m02*m33 + m11*m03*m32 + m31*m02*m13 - m31*m03*m12
-    val t12 = -m00*m12*m33 + m00*m13*m32 + m10*m02*m33 - m10*m03*m32 - m30*m02*m13 + m30*m03*m12
-    val t22 =  m00*m11*m33 - m00*m13*m31 - m10*m01*m33 + m10*m03*m31 + m30*m01*m13 - m30*m03*m11
-    val t32 = -m00*m11*m32 + m00*m12*m31 + m10*m01*m32 - m10*m02*m31 - m30*m01*m12 + m30*m02*m11
-    val t03 = -m01*m12*m23 + m01*m13*m22 + m11*m02*m23 - m11*m03*m22 - m21*m02*m13 + m21*m03*m12
-    val t13 =  m00*m12*m23 - m00*m13*m22 - m10*m02*m23 + m10*m03*m22 + m20*m02*m13 - m20*m03*m12
-    val t23 = -m00*m11*m23 + m00*m13*m21 + m10*m01*m23 - m10*m03*m21 - m20*m01*m13 + m20*m03*m11
-    val t33 =  m00*m11*m22 - m00*m12*m21 - m10*m01*m22 + m10*m02*m21 + m20*m01*m12 - m20*m02*m11
+  def inverse(): Matrix4 = {
+    inverse(this)
+  }
+
+  def inverse(m:Matrix4): Matrix4 = {
+    val t00 =  m.m11*m.m22*m.m33 - m.m11*m.m23*m.m32 - m.m21*m.m12*m.m33 + m.m21*m.m13*m.m32 + m.m31*m.m12*m.m23 - m.m31*m.m13*m.m22
+    val t10 = -m.m10*m.m22*m.m33 + m.m10*m.m23*m.m32 + m.m20*m.m12*m.m33 - m.m20*m.m13*m.m32 - m.m30*m.m12*m.m23 + m.m30*m.m13*m.m22
+    val t20 =  m.m10*m.m21*m.m33 - m.m10*m.m23*m.m31 - m.m20*m.m11*m.m33 + m.m20*m.m13*m.m31 + m.m30*m.m11*m.m23 - m.m30*m.m13*m.m21
+    val t30 = -m.m10*m.m21*m.m32 + m.m10*m.m22*m.m31 + m.m20*m.m11*m.m32 - m.m20*m.m12*m.m31 - m.m30*m.m11*m.m22 + m.m30*m.m12*m.m21
+    val t01 = -m.m01*m.m22*m.m33 + m.m01*m.m23*m.m32 + m.m21*m.m02*m.m33 - m.m21*m.m03*m.m32 - m.m31*m.m02*m.m23 + m.m31*m.m03*m.m22
+    val t11 =  m.m00*m.m22*m.m33 - m.m00*m.m23*m.m32 - m.m20*m.m02*m.m33 + m.m20*m.m03*m.m32 + m.m30*m.m02*m.m23 - m.m30*m.m03*m.m22
+    val t21 = -m.m00*m.m21*m.m33 + m.m00*m.m23*m.m31 + m.m20*m.m01*m.m33 - m.m20*m.m03*m.m31 - m.m30*m.m01*m.m23 + m.m30*m.m03*m.m21
+    val t31 =  m.m00*m.m21*m.m32 - m.m00*m.m22*m.m31 - m.m20*m.m01*m.m32 + m.m20*m.m02*m.m31 + m.m30*m.m01*m.m22 - m.m30*m.m02*m.m21
+    val t02 =  m.m01*m.m12*m.m33 - m.m01*m.m13*m.m32 - m.m11*m.m02*m.m33 + m.m11*m.m03*m.m32 + m.m31*m.m02*m.m13 - m.m31*m.m03*m.m12
+    val t12 = -m.m00*m.m12*m.m33 + m.m00*m.m13*m.m32 + m.m10*m.m02*m.m33 - m.m10*m.m03*m.m32 - m.m30*m.m02*m.m13 + m.m30*m.m03*m.m12
+    val t22 =  m.m00*m.m11*m.m33 - m.m00*m.m13*m.m31 - m.m10*m.m01*m.m33 + m.m10*m.m03*m.m31 + m.m30*m.m01*m.m13 - m.m30*m.m03*m.m11
+    val t32 = -m.m00*m.m11*m.m32 + m.m00*m.m12*m.m31 + m.m10*m.m01*m.m32 - m.m10*m.m02*m.m31 - m.m30*m.m01*m.m12 + m.m30*m.m02*m.m11
+    val t03 = -m.m01*m.m12*m.m23 + m.m01*m.m13*m.m22 + m.m11*m.m02*m.m23 - m.m11*m.m03*m.m22 - m.m21*m.m02*m.m13 + m.m21*m.m03*m.m12
+    val t13 =  m.m00*m.m12*m.m23 - m.m00*m.m13*m.m22 - m.m10*m.m02*m.m23 + m.m10*m.m03*m.m22 + m.m20*m.m02*m.m13 - m.m20*m.m03*m.m12
+    val t23 = -m.m00*m.m11*m.m23 + m.m00*m.m13*m.m21 + m.m10*m.m01*m.m23 - m.m10*m.m03*m.m21 - m.m20*m.m01*m.m13 + m.m20*m.m03*m.m11
+    val t33 =  m.m00*m.m11*m.m22 - m.m00*m.m12*m.m21 - m.m10*m.m01*m.m22 + m.m10*m.m02*m.m21 + m.m20*m.m01*m.m12 - m.m20*m.m02*m.m11
 
     val det = 1f / (m00*t00 + m01*t10 + m02*t20 + m03*t30)
 
