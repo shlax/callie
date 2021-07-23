@@ -2,26 +2,24 @@
 apply plugin: 'scala'
 
 repositories {
-    maven {
-        url('https://repo1.maven.org/maven2/')
-    }
+    mavenCentral()
 }
 
-tasks.withType(ScalaCompile) {
-    targetCompatibility = 1.8
-}
+//tasks.withType(ScalaCompile) {
+//    targetCompatibility = 1.8
+//}
 
 dependencies {
-    compile 'org.scala-lang:scala-library:2.13.5'
-    compile group: 'org.scala-lang.modules', name: 'scala-parser-combinators_2.13', version: '1.1.2'
+    implementation 'org.scala-lang:scala-library:2.13.6'
+    implementation group: 'org.scala-lang.modules', name: 'scala-parser-combinators_2.13', version: '1.1.2'
 
 //    compile 'org.jogamp.gluegen:gluegen-rt-main:2.3.2'
 //    compile 'org.jogamp.jogl:jogl-all-main:2.3.2'
 
-    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version: '3.2.3'
-    compile group: 'org.lwjgl', name: 'lwjgl-opengl', version: '3.2.3'
+    implementation group: 'org.lwjgl', name: 'lwjgl-glfw', version: '3.2.3'
+    implementation group: 'org.lwjgl', name: 'lwjgl-opengl', version: '3.2.3'
 
-    compile group: 'org.l33tlabs.twl', name: 'pngdecoder', version: '1.0'
+    implementation group: 'org.l33tlabs.twl', name: 'pngdecoder', version: '1.0'
 
     runtimeOnly "org.lwjgl:lwjgl:3.2.2:natives-linux"
     runtimeOnly "org.lwjgl:lwjgl-glfw:3.2.2:natives-linux"
@@ -31,6 +29,6 @@ dependencies {
     runtimeOnly "org.lwjgl:lwjgl-glfw:3.2.2:natives-windows"
     runtimeOnly "org.lwjgl:lwjgl-opengl:3.2.2:natives-windows"
 
-    testCompile 'javax.vecmath:vecmath:1.5.2'
+    testImplementation 'javax.vecmath:vecmath:1.5.2'
     
 }
