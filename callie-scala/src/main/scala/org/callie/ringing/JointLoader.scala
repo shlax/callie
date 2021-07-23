@@ -57,6 +57,8 @@ class LinNode(name:String, ix:AxisValue, iy:AxisValue, iz:AxisValue, ind:Map[Str
   }
 }
 
+case class Group(nm:String, ind:java.util.Set[Integer])
+
 object Node extends RegexParsers {
   type F3 = (Float,Float,Float)
   type LinMap = (String, String)
