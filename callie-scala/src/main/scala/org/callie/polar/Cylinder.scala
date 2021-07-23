@@ -41,7 +41,7 @@ class CylinderBuilder extends MapBuilder{
   var min:Float = 0f
   var max:Float = 0f
 
-  override def set(p: List[Vector3]): Unit = {
+  override def set(p: Array[Vector3]): Unit = {
     super.set(p)
 
     min = points.map(_.x).min

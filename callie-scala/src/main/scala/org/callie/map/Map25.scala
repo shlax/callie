@@ -122,7 +122,7 @@ object Map25{ // extends RegexParsers {
     val pi = par.map().result
 
     val pts = pi.points
-    predicate.set(pts.toList)
+    predicate.set(pts)
 
     val inds = pi.indexes.map(i => new TriangleBuilder(i.i, i.j, i.k)).zipWithIndex
     for(i <- inds; j <- inds if i._2 != j._2){
