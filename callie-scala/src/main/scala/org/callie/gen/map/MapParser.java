@@ -93,7 +93,7 @@ public class MapParser extends Parser {
 	}
 
 	public static class MapContext extends ParserRuleContext {
-		public org.callie.gen.Float3Int3 result;
+		public org.callie.map.MapData result;
 		public Float3Context f;
 		public Float3Context fi;
 		public Int3Context i;
@@ -125,7 +125,7 @@ public class MapParser extends Parser {
 			{
 
 			        java.util.ArrayList<org.callie.math.Vector3> lf = new java.util.ArrayList<>();
-			        java.util.ArrayList<org.callie.gen.Int3> li = new java.util.ArrayList<>();
+			        java.util.ArrayList<org.callie.map.Triangle> li = new java.util.ArrayList<>();
 			     
 			setState(11);
 			match(T__0);
@@ -175,7 +175,7 @@ public class MapParser extends Parser {
 			}
 			setState(36);
 			match(T__4);
-			 ((MapContext)_localctx).result =  new org.callie.gen.Float3Int3(lf.toArray(new org.callie.math.Vector3[0]), li.toArray(new org.callie.gen.Int3[0])); 
+			 ((MapContext)_localctx).result =  new org.callie.map.MapData(lf.toArray(new org.callie.math.Vector3[0]), li.toArray(new org.callie.map.Triangle[0])); 
 			}
 		}
 		catch (RecognitionException re) {
@@ -190,7 +190,7 @@ public class MapParser extends Parser {
 	}
 
 	public static class Int3Context extends ParserRuleContext {
-		public org.callie.gen.Int3 r;
+		public org.callie.map.Triangle r;
 		public IntNumContext i;
 		public IntNumContext j;
 		public IntNumContext k;
@@ -226,7 +226,7 @@ public class MapParser extends Parser {
 			((Int3Context)_localctx).k = intNum();
 			setState(45);
 			match(T__6);
-			 ((Int3Context)_localctx).r =  new org.callie.gen.Int3(((Int3Context)_localctx).i.r, ((Int3Context)_localctx).j.r, ((Int3Context)_localctx).k.r); 
+			 ((Int3Context)_localctx).r =  new org.callie.map.Triangle(((Int3Context)_localctx).i.r, ((Int3Context)_localctx).j.r, ((Int3Context)_localctx).k.r); 
 			}
 		}
 		catch (RecognitionException re) {

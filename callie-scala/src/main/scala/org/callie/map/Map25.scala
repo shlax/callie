@@ -71,6 +71,10 @@ class Map25(val triangles : Array[Triangle25], var last:Triangle25){
 
 }
 
+case class Triangle(i:Int, j:Int, k:Int)
+
+case class MapData(points: Array[Vector3], indexes: Array[Triangle])
+
 object Map25{ // extends RegexParsers {
 //  type F3 = (Float,Float,Float)
 //  type I3 = (Int, Int, Int)
