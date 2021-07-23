@@ -74,7 +74,7 @@ class TextureGroup(ev: GlEventListener, ind: Int, texId : Int, objs:GlObject*) e
 }
 
 object StaticObject{
-  case class PointFace(point:Point3, normal:Point3, uv:List[Point2])
+  case class PointFace(point:Point3, normal:Point3, uv:Array[Point2])
 
   def apply(ev: GlEventListener, m:Model): StaticObject ={
 
@@ -142,7 +142,7 @@ class StaticObject(ev: GlEventListener, vao : Int, vbi : Int, size:Int) extends 
 
 object MorfingObject{
 
-  case class PointFace(point:Int, normal:Point3, uv:List[Point2])
+  case class PointFace(point:Int, normal:Point3, uv:Array[Point2])
 
   def apply(ev: GlEventListener, m:Model): MorfingObject = {
 
