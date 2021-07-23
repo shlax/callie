@@ -121,8 +121,8 @@ object Map25{ // extends RegexParsers {
     val par = new MapParser(new CommonTokenStream(new MapLexer(CharStreams.fromStream(r))))
     val pi = par.map().result
 
-    val pts = pi.points.toList
-    predicate.set(pts)
+    val pts = pi.points
+    predicate.set(pts.toList)
 
     val inds = pi.indexes.map(i => new TriangleBuilder(i.i, i.j, i.k)).zipWithIndex
     for(i <- inds; j <- inds if i._2 != j._2){
@@ -143,7 +143,7 @@ object Map25{ // extends RegexParsers {
       for(j <- i._1.far.zipWithIndex) t.far(j._2) = trgs(j._1)
     }
 
-    new Map25(trgs.toArray, trgs.head)
+    new Map25(trgs, trgs.head)
   }
 
 }
