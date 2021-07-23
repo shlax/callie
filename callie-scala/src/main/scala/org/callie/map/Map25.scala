@@ -1,10 +1,11 @@
 package org.callie.map
 
+import org.antlr.v4.runtime.{CharStreams, CommonTokenStream}
+import org.callie.gen.map.{MapLexer, MapParser}
 import org.callie.math.{Vector2, Vector3}
 
 import scala.collection.mutable
 import scala.io.Source
-import scala.util.parsing.combinator.RegexParsers
 import java.lang.{Float => jFloat}
 
 class Triangle25(val a : Vector3, val b : Vector3, val c : Vector3, val near: Array[Triangle25], val far: Array[Triangle25]) {
@@ -70,27 +71,27 @@ class Map25(val triangles : Array[Triangle25], var last:Triangle25){
 
 }
 
-object Map25 extends RegexParsers {
-  type F3 = (Float,Float,Float)
-  type I3 = (Int, Int, Int)
-
-  def index: Parser[Int] = """\d+""".r ^^ (_.toInt)
-
-  def float: Parser[Float] = """[+-]?(\d+(\.\d*)?|\d*\.\d+)([eE][+-]?\d+)?""".r ^^ (_.toFloat)
-
-  def float3 : Parser[F3] = "(" ~> repsep(float, ",") <~ ")" ^^ { l =>
-    assert(l.size == 3)
-    ( l(0), l(1), l(2) )
-  }
-
-  def index3 : Parser[I3] = "(" ~> repsep(index, ",") <~ ")" ^^ { l =>
-    assert(l.size == 3)
-    ( l(0), l(1), l(2) )
-  }
-
-  def pointInd: Parser[(List[F3], List[I3])] = ("[" ~> repsep(float3, ",") <~ "]") ~ ("{" ~> repsep(index3, ",") <~ "}") ^^ { i =>
-    (i._1, i._2)
-  }
+object Map25{ // extends RegexParsers {
+//  type F3 = (Float,Float,Float)
+//  type I3 = (Int, Int, Int)
+//
+//  def index: Parser[Int] = """\d+""".r ^^ (_.toInt)
+//
+//  def float: Parser[Float] = """[+-]?(\d+(\.\d*)?|\d*\.\d+)([eE][+-]?\d+)?""".r ^^ (_.toFloat)
+//
+//  def float3 : Parser[F3] = "(" ~> repsep(float, ",") <~ ")" ^^ { l =>
+//    assert(l.size == 3)
+//    ( l(0), l(1), l(2) )
+//  }
+//
+//  def index3 : Parser[I3] = "(" ~> repsep(index, ",") <~ ")" ^^ { l =>
+//    assert(l.size == 3)
+//    ( l(0), l(1), l(2) )
+//  }
+//
+//  def pointInd: Parser[(List[F3], List[I3])] = ("[" ~> repsep(float3, ",") <~ "]") ~ ("{" ~> repsep(index3, ",") <~ "}") ^^ { i =>
+//    (i._1, i._2)
+//  }
 
   def load(nm:String) = {
     import org.callie._
@@ -113,13 +114,14 @@ object Map25 extends RegexParsers {
     def vertexes = Seq(a, b, c)
   }
 
-  def apply(r:CharSequence, predicate:MapBuilder = new MapBuilder): Map25 = {
-    val pi = parseAll(pointInd, r).get
+  def apply(r:String, predicate:MapBuilder = new MapBuilder): Map25 = {
+    val par = new MapParser(new CommonTokenStream(new MapLexer(CharStreams.fromString(r))))
+    val pi = par.map().result
 
-    val pts = pi._1.map(Vector3(_))
+    val pts = pi.points.toList
     predicate.set(pts)
 
-    val inds = pi._2.map(i => new TriangleBuilder(i._1, i._2, i._3)).zipWithIndex
+    val inds = pi.indexes.map(i => new TriangleBuilder(i.i, i.j, i.k)).zipWithIndex
     for(i <- inds; j <- inds if i._2 != j._2){
       var k = 0
       for(a <- i._1.vertexes; b <- j._1.vertexes if predicate.test(a, b)) k += 1
