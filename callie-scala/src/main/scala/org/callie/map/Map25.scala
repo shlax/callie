@@ -5,7 +5,6 @@ import org.callie.gen.map.{MapLexer, MapParser}
 import org.callie.math.{Vector2, Vector3}
 
 import scala.collection.mutable
-import scala.io.Source
 import java.lang.{Float => jFloat}
 
 class Triangle25(val a : Vector3, val b : Vector3, val c : Vector3, val near: Array[Triangle25], val far: Array[Triangle25]) {
@@ -99,15 +98,15 @@ object Map25{ // extends RegexParsers {
 
   def load(nm:String) = {
     import org.callie._
-    Source.fromInputStream(getClass.getResourceAsStream(nm), "UTF-8")|{ s =>
-      apply(s.mkString)
+    getClass.getResourceAsStream(nm)|{ s =>
+      apply(s)
     }
   }
 
   def load(nm:String, predicate:MapBuilder): Map25 = {
     import org.callie._
-    Source.fromInputStream(getClass.getResourceAsStream(nm), "UTF-8")|{ s =>
-      apply(s.mkString, predicate)
+    getClass.getResourceAsStream(nm)|{ s =>
+      apply(s, predicate)
     }
   }
 
@@ -118,8 +117,8 @@ object Map25{ // extends RegexParsers {
     def vertexes = Seq(a, b, c)
   }
 
-  def apply(r:String, predicate:MapBuilder = new MapBuilder): Map25 = {
-    val par = new MapParser(new CommonTokenStream(new MapLexer(CharStreams.fromString(r))))
+  def apply(r:java.io.InputStream, predicate:MapBuilder = new MapBuilder): Map25 = {
+    val par = new MapParser(new CommonTokenStream(new MapLexer(CharStreams.fromStream(r))))
     val pi = par.map().result
 
     val pts = pi.points.toList
