@@ -1,6 +1,14 @@
 grammar KeyFrame;
 
+mainNode returns [org.callie.ringing.KeyFrameLoader.MainNodeKeys result]:
+    { java.util.List<org.callie.ringing.KeyFrameLoader.NodeKeys> l = new java.util.ArrayList<>(); }
+    '[' n=NAME ':' o=vector ':' a=vector (i=node {l.add($i.r);} )* ']'
+    { $result = org.callie.ringing.KeyFrameLoader.MainNodeKeys.create($n.r, $o.r, $a.r, l);  };
 
+node returns [org.callie.ringing.KeyFrameLoader.NodeKeys r]:
+    { java.util.List<org.callie.ringing.KeyFrameLoader.NodeKeys> l = new java.util.ArrayList<>(); }
+    '[' n=NAME ':' v=vector (i=node {l.add($i.r);} )* ']'
+    { $r = org.callie.ringing.KeyFrameLoader.NodeKeys.create($n.r, $v.r, l);  };
 
 vector returns [ org.callie.math.Vector3 r ]:
     '(' i=floatNum ',' j=floatNum ',' k=floatNum ')'
