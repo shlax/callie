@@ -1,9 +1,17 @@
 grammar KeyFrame;
 
+@members {
+  float scale = 1f;
+
+  public void setScale(float x){
+    scale = x;
+  }
+}
+
 mainNode returns [org.callie.ringing.KeyFrameLoader.MainNodeKeys result]:
     { java.util.List<org.callie.ringing.KeyFrameLoader.NodeKeys> l = new java.util.ArrayList<>(); }
     '[' n=NAME ':' o=vector ':' a=vector (i=node {l.add($i.r);} )* ']'
-    { $result = org.callie.ringing.KeyFrameLoader.MainNodeKeys.create($n.r, $o.r, $a.r, l);  };
+    { $result = org.callie.ringing.KeyFrameLoader.MainNodeKeys.create($n.r, $o.r.mul(scale), $a.r, l);  };
 
 node returns [org.callie.ringing.KeyFrameLoader.NodeKeys r]:
     { java.util.List<org.callie.ringing.KeyFrameLoader.NodeKeys> l = new java.util.ArrayList<>(); }
