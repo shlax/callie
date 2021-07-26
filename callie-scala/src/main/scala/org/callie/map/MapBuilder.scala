@@ -1,4 +1,4 @@
-package org.callie.map
+/* package org.callie.map
 
 import org.callie.math.Vector3
 
@@ -14,4 +14,4 @@ class MapBuilder{
   }
 
 }
-
+*/

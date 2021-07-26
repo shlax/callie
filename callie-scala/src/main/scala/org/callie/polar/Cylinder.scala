@@ -1,4 +1,4 @@
-package org.callie.polar
+/* package org.callie.polar
 
 import org.callie.map.{Map25, MapBuilder}
 import org.callie.math.{Matrix4, Vector2, Vector3}
@@ -69,3 +69,4 @@ class CylinderBuilder extends MapBuilder{
   }
 
 }
+*/
