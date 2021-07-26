@@ -1,14 +1,15 @@
 package org.callie.ringing
 
-import scala.util.parsing.combinator.RegexParsers
+import org.antlr.v4.runtime.{CharStreams, CommonTokenStream}
+import org.callie.gen.joint.{JointLexer, JointParser}
+
 import org.callie.math.{Matrix4, Vector3}
 import org.callie.math.intr.Accl
 import org.callie.ogl.GlEventListener
 import org.callie.model.{Model, MorfingObject}
 import org.callie.math.Axis
 
-import scala.collection.mutable
-import scala.io.Source
+import scala.jdk.CollectionConverters._
 
 case class AxisValue(axis:Axis, value:Float)
 
@@ -32,6 +33,13 @@ abstract class Node(off:Option[Vector3], ind:Map[String,List[Int]]){
   def join(m:Map[String, MorfingObject], offset:Vector3, parent:Option[IntrTravJoint] = None) : Joint
 }
 
+object IntNode{
+  def create(name:String, v:Vector3, ind:java.util.Map[String,java.util.Set[Integer]], childs:java.util.List[Node]) : IntNode = {
+    val i = ind.asScala.map( i => (i._1, i._2.asScala.map(_.intValue()).toList) ).toMap
+    new IntNode(name, v, i, childs.asScala.toList)
+  }
+}
+
 class IntNode(name:String, v:Vector3, ind:Map[String,List[Int]], childs:List[Node]) extends Node(Some(v), ind){
   override def join(ojbs:Map[String, MorfingObject], offset:Vector3, parent:Option[IntrTravJoint]):IntrJoint = {
     val ax = new Accl; val ay = new Accl; val az = new Accl
@@ -50,6 +58,36 @@ class IntNode(name:String, v:Vector3, ind:Map[String,List[Int]], childs:List[Nod
   }
 }
 
+class LinMap(m:String){
+  val from = Axis.apply(m.substring(0, 1))
+  val to = Axis.apply(m.substring(1, 2))
+}
+
+object LinNode{
+
+  def create(name:String, v:Vector3, m:java.util.List[LinMap], ind:java.util.Map[String,java.util.Set[Integer]]) : LinNode = {
+    val i = ind.asScala.map( i => (i._1, i._2.asScala.map(_.intValue()).toList) ).toMap
+
+    var ix = AxisValue(Axis.X, -v.x)
+    var iy = AxisValue(Axis.Y, -v.y)
+    var iz = AxisValue(Axis.Z, -v.z)
+
+    for(w <- m.asScala){
+      w.from match {
+        case Axis.X =>
+          ix = AxisValue(w.to, ix.value)
+        case Axis.Y =>
+          iy = AxisValue(w.to, iy.value)
+        case Axis.Z =>
+          iz = AxisValue(w.to, iz.value)
+      }
+    }
+
+    new LinNode(name, ix, iy, iz, i)
+  }
+
+}
+
 class LinNode(name:String, ix:AxisValue, iy:AxisValue, iz:AxisValue, ind:Map[String,List[Int]])  extends Node(None ,ind){
   override def join(ojbs:Map[String, MorfingObject], offset:Vector3, parent:Option[IntrTravJoint]):LinearJoint = {
     val (coord, normals) = cordsNormals(ojbs, offset)
@@ -59,67 +97,69 @@ class LinNode(name:String, ix:AxisValue, iy:AxisValue, iz:AxisValue, ind:Map[Str
 
 case class Group(nm:String, ind:java.util.Set[Integer])
 
-object Node extends RegexParsers {
-  type F3 = (Float,Float,Float)
-  type LinMap = (String, String)
-
-  def index: Parser[Int] = """\d+""".r ^^ (_.toInt)
-
-  def float: Parser[Float] = """[+-]?(\d+(\.\d*)?|\d*\.\d+)([eE][+-]?\d+)?""".r ^^ (_.toFloat)
-
-  def vector: Parser[F3] = "(" ~> repsep(float, ",") <~ ")" ^^ { l =>
-    assert(l.size == 3)
-    ( l(0), l(1), l(2) )
-  }
-
-  def name: Parser[String] = "[a-zA-Z0-9_]+".r
-
-  def group: Parser[(String, List[Int])] = (name <~ ":(") ~ repsep(index, ",") <~ ")" ^^ { i => (i._1, i._2) }
-
-  def groupMap: Parser[Map[String, List[Int]]] = "{" ~> repsep(group, ",") <~ "}" ^^ { v =>
-    val m = mutable.Map[String, mutable.Set[Int]]()
-    for(i <- v) m.getOrElseUpdate(i._1, mutable.Set[Int]()) ++= i._2
-    m.toMap.map{kv => (kv._1, kv._2.toList)}
-  }
-
-  def node(scale:Float) : Parser[Node] = "[" ~> ( normal(scale) | linear ) <~ "]"
-
-  def normal(scale:Float) : Parser[IntNode] = (name <~ ":" ) ~ vector ~ ( ":" ~> groupMap ) ~ rep(node(scale)) ^^ { q =>
-    new IntNode(q._1._1._1, Vector3(q._1._1._2).mul(scale), q._1._2, q._2)
-  }
-
-  def linMap : Parser[LinMap] = "|" ~> ( "x" | "y" | "z")  ~ ("x" | "y" | "z")  ^^ { a => (a._1, a._2) }
-
-  def linear : Parser[LinNode] = (name <~ "|" ) ~ vector ~ rep(linMap) ~ ( ":" ~> groupMap ) ^^ { q =>
-    var ix = AxisValue(Axis.X, - q._1._1._2._1)
-    var iy = AxisValue(Axis.Y, - q._1._1._2._2)
-    var iz = AxisValue(Axis.Z, - q._1._1._2._3)
-
-    for(w <- q._1._2){
-      val to = Axis.apply(w._2)
-      w._1 match {
-        case "x" =>
-          ix = AxisValue(to, ix.value)
-        case "y" =>
-          iy = AxisValue(to, iy.value)
-        case "z" =>
-          iz = AxisValue(to, iz.value)
-      }
-    }
-
-    new LinNode(q._1._1._1, ix, iy, iz, q._2)
-  }
+object Node { //extends RegexParsers {
+//  type F3 = (Float,Float,Float)
+//  type LinMap = (String, String)
+//
+//  def index: Parser[Int] = """\d+""".r ^^ (_.toInt)
+//
+//  def float: Parser[Float] = """[+-]?(\d+(\.\d*)?|\d*\.\d+)([eE][+-]?\d+)?""".r ^^ (_.toFloat)
+//
+//  def vector: Parser[F3] = "(" ~> repsep(float, ",") <~ ")" ^^ { l =>
+//    assert(l.size == 3)
+//    ( l(0), l(1), l(2) )
+//  }
+//
+//  def name: Parser[String] = "[a-zA-Z0-9_]+".r
+//
+//  def group: Parser[(String, List[Int])] = (name <~ ":(") ~ repsep(index, ",") <~ ")" ^^ { i => (i._1, i._2) }
+//
+//  def groupMap: Parser[Map[String, List[Int]]] = "{" ~> repsep(group, ",") <~ "}" ^^ { v =>
+//    val m = mutable.Map[String, mutable.Set[Int]]()
+//    for(i <- v) m.getOrElseUpdate(i._1, mutable.Set[Int]()) ++= i._2
+//    m.toMap.map{kv => (kv._1, kv._2.toList)}
+//  }
+//
+//  def node(scale:Float) : Parser[Node] = "[" ~> ( normal(scale) | linear ) <~ "]"
+//
+//  def normal(scale:Float) : Parser[IntNode] = (name <~ ":" ) ~ vector ~ ( ":" ~> groupMap ) ~ rep(node(scale)) ^^ { q =>
+//    new IntNode(q._1._1._1, Vector3(q._1._1._2).mul(scale), q._1._2, q._2)
+//  }
+//
+//  def linMap : Parser[LinMap] = "|" ~> ( "x" | "y" | "z")  ~ ("x" | "y" | "z")  ^^ { a => (a._1, a._2) }
+//
+//  def linear : Parser[LinNode] = (name <~ "|" ) ~ vector ~ rep(linMap) ~ ( ":" ~> groupMap ) ^^ { q =>
+//    var ix = AxisValue(Axis.X, - q._1._1._2._1)
+//    var iy = AxisValue(Axis.Y, - q._1._1._2._2)
+//    var iz = AxisValue(Axis.Z, - q._1._1._2._3)
+//
+//    for(w <- q._1._2){
+//      val to = Axis.apply(w._2)
+//      w._1 match {
+//        case "x" =>
+//          ix = AxisValue(to, ix.value)
+//        case "y" =>
+//          iy = AxisValue(to, iy.value)
+//        case "z" =>
+//          iz = AxisValue(to, iz.value)
+//      }
+//    }
+//
+//    new LinNode(q._1._1._1, ix, iy, iz, q._2)
+//  }
 
   def apply(ev:GlEventListener, m:Map[String,Model], nm:String, scale:Float = 1f): (Array[MorfingObject], Joint, Vector3) = {
     import org.callie._
-    Source.fromInputStream(getClass.getResourceAsStream(nm), "UTF-8")|{ s =>
-      load(ev, m, s.mkString, scale)
+    getClass.getResourceAsStream(nm)|{ s =>
+      load(ev, m, s, scale)
     }
   }
 
-  def load(ev:GlEventListener, m:Map[String,Model], r:CharSequence, scale:Float = 1f): (Array[MorfingObject], Joint, Vector3) = {
-    val n = parseAll(node(scale), r).get
-    n(ev, m)
+  def load(ev:GlEventListener, m:Map[String,Model], r:java.io.InputStream, scale:Float = 1f): (Array[MorfingObject], Joint, Vector3) = {
+    val par = new JointParser(new CommonTokenStream(new JointLexer(CharStreams.fromStream(r))))
+    par.setScale(scale)
+    val n = par.node().result
+    n.apply(ev, m)
   }
 
 }

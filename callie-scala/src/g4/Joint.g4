@@ -2,15 +2,28 @@ grammar Joint;
 
 @members {
   float scale = 1f;
+
+  public void setScale(float x){
+    scale = x;
+  }
 }
 
-node returns [ org.callie.ringing.Node r ]:
-    '['  ']'
-    ;
+node returns [ org.callie.ringing.Node result ]:
+    '[' ( ( l=linear { $result = $l.r; } ) | ( n=normal { $result = $n.r; } ) ) ']';
+
+linMap returns [ org.callie.ringing.LinMap r ]:
+    '|' f=NAME
+    { $r = new org.callie.ringing.LinMap($f.text); };
+
+linear returns [ org.callie.ringing.LinNode r ]:
+    { java.util.List<org.callie.ringing.LinMap> l = new java.util.ArrayList<>(); }
+    n=NAME '|' v=vector ( (l=linMap { l.add($l.r); } )* ) ':' gm=groupMap
+    { $r = org.callie.ringing.LinNode.create( $n.text, $v.r,l, $gm.r ); };
 
 normal returns [ org.callie.ringing.IntNode r ]:
-   n=NAME ':' v=vector ':' gm=groupMap ( nd=node )*
-   {  };
+   { java.util.List<org.callie.ringing.Node> l = new java.util.ArrayList<>(); }
+   n=NAME ':' v=vector ':' gm=groupMap ( ( nd=node { l.add( $nd.result ); } )* )
+   { $r = org.callie.ringing.IntNode.create($n.text, $v.r.mul(scale), $gm.r, l); };
 
 groupMap returns [ java.util.Map<String, java.util.Set<Integer>> r ]:
     { $r = new java.util.HashMap<>(); }
@@ -22,8 +35,8 @@ groupMap returns [ java.util.Map<String, java.util.Set<Integer>> r ]:
 
 group returns [ org.callie.ringing.Group r ]:
     { java.util.Set<Integer> li = new java.util.HashSet<>(); }
-    n=NAME ':' '(' i=intNum { li.add($i.r); } (in=intNum { li.add($in.r); } )* ')'
-    { new org.callie.ringing.Group( $n.text,  li ); };
+    n=NAME ':' '(' i=intNum { li.add($i.r); } ( ( ',' in=intNum { li.add($in.r); } )* ) ')'
+    { $r = new org.callie.ringing.Group( $n.text,  li ); };
 
 vector returns [ org.callie.math.Vector3 r ]:
     '(' i=floatNum ',' j=floatNum ',' k=floatNum ')'
