@@ -1,6 +1,8 @@
 package org.callie.ringing
 
+import org.antlr.v4.runtime.{CharStreams, CommonTokenStream}
 import org.callie.control
+import org.callie.gen.keyFrame.{KeyFrameLexer, KeyFrameParser}
 import org.callie.math.{Axis, Vector3}
 
 import scala.util.parsing.combinator.RegexParsers
@@ -57,7 +59,9 @@ object KeyFrameLoader { // extends RegexParsers {
   }
 
   def load(j:Joint, r:java.io.InputStream, scale:Float = 1f) = {
-    val n = parseAll(mainNode(scale), r).get
+    val par = new KeyFrameParser(new CommonTokenStream(new KeyFrameLexer(CharStreams.fromStream(r))))
+    par.setScale(scale)
+    val n = par.mainNode().result
     n.apply(j)
   }
 
