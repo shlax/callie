@@ -1,23 +1,19 @@
 package org.callie.ringing
 
 import org.antlr.v4.runtime.{CharStreams, CommonTokenStream}
-import org.callie.control
 import org.callie.gen.keyFrame.{KeyFrameLexer, KeyFrameParser}
 import org.callie.math.{Axis, Vector3}
 
-import scala.util.parsing.combinator.RegexParsers
 import scala.collection.mutable
-import scala.io.Source
-import scala.jdk.CollectionConverters._
 
 object KeyFrameLoader { // extends RegexParsers {
   // type F3 = (Float, Float, Float)
 
   def create(nm:String, angles:Vector3, childs:java.util.List[NodeKeys]) : NodeKeys = {
-    new NodeKeys(nm, angles, childs.asScala.toList)
+    new NodeKeys(nm, angles, childs.toArray(new Array[NodeKeys](0)))
   }
 
-  class NodeKeys(val nm:String, angles:Vector3, childs:List[NodeKeys]){
+  class NodeKeys(val nm:String, angles:Vector3, childs:Array[NodeKeys]){
     def apply(j:Joint, l:mutable.ArrayBuffer[KeyValue]):Unit={
       val ji = j.asInstanceOf[JointIntr]
 
@@ -35,7 +31,7 @@ object KeyFrameLoader { // extends RegexParsers {
 
   }
 
-  class MainNodeKeys(nm:String, offset:Vector3, angles:Vector3, childs:List[NodeKeys]) extends NodeKeys(nm, angles, childs){
+  class MainNodeKeys(nm:String, offset:Vector3, angles:Vector3, childs:Array[NodeKeys]) extends NodeKeys(nm, angles, childs){
     def apply(j:Joint) : OffsetFrame = {
       val l = mutable.ArrayBuffer[KeyValue]()
       apply(j, l)
@@ -44,7 +40,7 @@ object KeyFrameLoader { // extends RegexParsers {
   }
 
   def create(nm:String, offset:Vector3, angles:Vector3, childs:java.util.List[NodeKeys]) : MainNodeKeys = {
-    new MainNodeKeys(nm, offset, angles, childs.asScala.toList)
+    new MainNodeKeys(nm, offset, angles, childs.toArray(new Array[NodeKeys](0)))
   }
 
   def apply(j:Joint, nm:String, scale:Float = 1f) = {
