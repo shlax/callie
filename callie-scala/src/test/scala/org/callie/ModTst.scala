@@ -2,13 +2,9 @@ package org.callie
 
 import org.callie.model.Model
 
-import scala.io.Source
-
 object ModTst extends App{
 
-  val s = Source.fromFile("data/floor.mod")
-
-  val m = Model.load(s.mkString)
+  val m = Model.load(getClass.getResourceAsStream("data/floor.mod"))
 
   println(m.points.size.toString+" / "+m.faces.size)
 }

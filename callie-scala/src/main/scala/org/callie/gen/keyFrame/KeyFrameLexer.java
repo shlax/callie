@@ -1,4 +1,4 @@
-// Generated from C:/Users/root/IdeaProjects/callie/callie-scala/src/g4\KeyFrame.g4 by ANTLR 4.9.1
+// Generated from /home/pochodnicky/wrksp/no-git/callie/callie-scala/src/g4/KeyFrame.g4 by ANTLR 4.9.1
 package org.callie.gen.keyFrame;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;

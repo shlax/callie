@@ -13,10 +13,8 @@ import scala.jdk.CollectionConverters._
 object KeyFrameLoader { // extends RegexParsers {
   // type F3 = (Float, Float, Float)
 
-  object NodeKeys{
-    def create(nm:String, angles:Vector3, childs:java.util.List[NodeKeys]) : NodeKeys = {
-      new NodeKeys(nm, angles, childs.asScala.toList)
-    }
+  def create(nm:String, angles:Vector3, childs:java.util.List[NodeKeys]) : NodeKeys = {
+    new NodeKeys(nm, angles, childs.asScala.toList)
   }
 
   class NodeKeys(val nm:String, angles:Vector3, childs:List[NodeKeys]){
@@ -37,18 +35,16 @@ object KeyFrameLoader { // extends RegexParsers {
 
   }
 
-  object MainNodeKeys{
-    def create(nm:String, offset:Vector3, angles:Vector3, childs:java.util.List[NodeKeys]) : MainNodeKeys = {
-      new MainNodeKeys(nm, offset, angles, childs.asScala.toList)
-    }
-  }
-
   class MainNodeKeys(nm:String, offset:Vector3, angles:Vector3, childs:List[NodeKeys]) extends NodeKeys(nm, angles, childs){
     def apply(j:Joint) : OffsetFrame = {
       val l = mutable.ArrayBuffer[KeyValue]()
       apply(j, l)
       OffsetFrame(offset, new KeyFrame(l.toArray))
     }
+  }
+
+  def create(nm:String, offset:Vector3, angles:Vector3, childs:java.util.List[NodeKeys]) : MainNodeKeys = {
+    new MainNodeKeys(nm, offset, angles, childs.asScala.toList)
   }
 
   def apply(j:Joint, nm:String, scale:Float = 1f) = {

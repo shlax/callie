@@ -1,4 +1,4 @@
-// Generated from C:/Users/root/IdeaProjects/callie/callie-scala/src/g4\KeyFrame.g4 by ANTLR 4.9.1
+// Generated from /home/pochodnicky/wrksp/no-git/callie/callie-scala/src/g4/KeyFrame.g4 by ANTLR 4.9.1
 package org.callie.gen.keyFrame;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -161,7 +161,7 @@ public class KeyFrameParser extends Parser {
 			}
 			setState(23);
 			match(T__2);
-			 ((MainNodeContext)_localctx).result =  org.callie.ringing.KeyFrameLoader.MainNodeKeys.create((((MainNodeContext)_localctx).n!=null?((MainNodeContext)_localctx).n.getText():null), ((MainNodeContext)_localctx).o.r.mul(scale), ((MainNodeContext)_localctx).a.r, l);  
+			 ((MainNodeContext)_localctx).result =  org.callie.ringing.KeyFrameLoader.create((((MainNodeContext)_localctx).n!=null?((MainNodeContext)_localctx).n.getText():null), ((MainNodeContext)_localctx).o.r.mul(scale), ((MainNodeContext)_localctx).a.r, l);  
 			}
 		}
 		catch (RecognitionException re) {
@@ -229,7 +229,7 @@ public class KeyFrameParser extends Parser {
 			}
 			setState(39);
 			match(T__2);
-			 ((NodeContext)_localctx).r =  org.callie.ringing.KeyFrameLoader.NodeKeys.create((((NodeContext)_localctx).n!=null?((NodeContext)_localctx).n.getText():null), ((NodeContext)_localctx).v.r, l);  
+			 ((NodeContext)_localctx).r =  org.callie.ringing.KeyFrameLoader.create((((NodeContext)_localctx).n!=null?((NodeContext)_localctx).n.getText():null), ((NodeContext)_localctx).v.r, l);  
 			}
 		}
 		catch (RecognitionException re) {
