@@ -105,7 +105,9 @@ object Camera {
     angY() += Inputs.xDiff() * 0.005f
 
     //modMat.rotX(angX()).mul(tmp.rotY((Math.PI/2d).asInstanceOf[Float] + angY()))
-    modMat.rotY(-1f * angY()).mul(tmp.rotX(-1f * angX())).apply(light, lightDirection)
+    modMat.rotY(-1f * angY()).mul(tmp.rotX(-1f * angX()))
+    target.light(modMat)
+    modMat.apply(light, lightDirection)
 //    for(i <- lightDirectionVec) Gl.glUniform3fv(i, lightDirectionAr)
 
     //println("normalMatrix "+modMat)
@@ -121,6 +123,7 @@ object Camera {
     //modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position)) //.mul(tmp.set(off), modMat)
     //projection.mul(modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY()+1.5f)).mul(tmp.set(target.position)), viewAr)
     modMat.set(offset).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(-pos.x, -pos.y, -pos.z))
+    target.model(modMat)
     modMat.mul(projection, modMat)
     //for(i <- viewMatrix) Gl.glUniformMatrix4fv(i, true, viewAr)
 
@@ -131,6 +134,10 @@ object Camera {
 
 trait TrackingObject{
   def position: Vector3
+
+  def light(m:Matrix4){}
+  def model(m:Matrix4){}
+
 }
 
 object ZeroTrackingObject extends TrackingObject{
