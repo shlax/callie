@@ -94,7 +94,7 @@ class LinNode(name:String, ix:AxisValue, iy:AxisValue, iz:AxisValue, ind:Map[Str
     new LinearJoint(name, parent.get, ix, iy, iz, coord, normals)
   }
 }
-List[
+
 case class Group(nm:String, ind:java.util.Set[Integer])
 
 object Node { //extends RegexParsers {
