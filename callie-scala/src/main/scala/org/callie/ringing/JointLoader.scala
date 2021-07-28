@@ -13,7 +13,7 @@ import scala.jdk.CollectionConverters._
 
 case class AxisValue(axis:Axis, value:Float)
 
-abstract class Node(off:Option[Vector3], ind:Map[String,List[Int]]){
+abstract class Node(off:Option[Vector3], ind:Map[String,Array[Int]]){
 
   def apply(ev:GlEventListener, m:Map[String,Model]): (Array[MorfingObject], Joint, Vector3) = {
     val o = m.map(kv => (kv._1, MorfingObject(ev, kv._2)))
@@ -35,12 +35,12 @@ abstract class Node(off:Option[Vector3], ind:Map[String,List[Int]]){
 
 object IntNode{
   def create(name:String, v:Vector3, ind:java.util.Map[String,java.util.Set[Integer]], childs:java.util.List[Node]) : IntNode = {
-    val i = ind.asScala.map( i => (i._1, i._2.asScala.map(_.intValue()).toList) ).toMap
-    new IntNode(name, v, i, childs.asScala.toList)
+    val i = ind.asScala.map( i => (i._1, i._2.asScala.map(_.intValue()).toArray) ).toMap
+    new IntNode(name, v, i, childs.toArray(new Array[Node](0)))
   }
 }
 
-class IntNode(name:String, v:Vector3, ind:Map[String,List[Int]], childs:List[Node]) extends Node(Some(v), ind){
+class IntNode(name:String, v:Vector3, ind:Map[String,Array[Int]], childs:Array[Node]) extends Node(Some(v), ind){
   override def join(ojbs:Map[String, MorfingObject], offset:Vector3, parent:Option[IntrTravJoint]):IntrJoint = {
     val ax = new Accl; val ay = new Accl; val az = new Accl
     val m = Matrix4(v)
@@ -50,7 +50,7 @@ class IntNode(name:String, v:Vector3, ind:Map[String,List[Int]], childs:List[Nod
     val (coord, normals) = cordsNormals(ojbs, off)
     if(childs.isEmpty) new IntrJoint(name, m, ax, ay, az, coord, normals)
     else{
-      val ch = new Array[Joint](childs.size)
+      val ch = new Array[Joint](childs.length)
       val sj = Some(new IntrTravJoint(name, m, ax, ay, az, ch, coord, normals))
       for(i <- ch.indices) ch(i) = childs(i).join(ojbs, off, sj)
       sj.get
@@ -66,7 +66,7 @@ class LinMap(m:String){
 object LinNode{
 
   def create(name:String, v:Vector3, m:java.util.List[LinMap], ind:java.util.Map[String,java.util.Set[Integer]]) : LinNode = {
-    val i = ind.asScala.map( i => (i._1, i._2.asScala.map(_.intValue()).toList) ).toMap
+    val i = ind.asScala.map( i => (i._1, i._2.asScala.map(_.intValue()).toArray) ).toMap
 
     var ix = AxisValue(Axis.X, -v.x)
     var iy = AxisValue(Axis.Y, -v.y)
@@ -88,13 +88,13 @@ object LinNode{
 
 }
 
-class LinNode(name:String, ix:AxisValue, iy:AxisValue, iz:AxisValue, ind:Map[String,List[Int]])  extends Node(None ,ind){
+class LinNode(name:String, ix:AxisValue, iy:AxisValue, iz:AxisValue, ind:Map[String,Array[Int]])  extends Node(None ,ind){
   override def join(ojbs:Map[String, MorfingObject], offset:Vector3, parent:Option[IntrTravJoint]):LinearJoint = {
     val (coord, normals) = cordsNormals(ojbs, offset)
     new LinearJoint(name, parent.get, ix, iy, iz, coord, normals)
   }
 }
-
+List[
 case class Group(nm:String, ind:java.util.Set[Integer])
 
 object Node { //extends RegexParsers {
