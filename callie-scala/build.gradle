@@ -23,13 +23,13 @@ dependencies {
 
     implementation group: 'org.l33tlabs.twl', name: 'pngdecoder', version: '1.0'
 
-    runtimeOnly "org.lwjgl:lwjgl:3.2.2:natives-linux"
-    runtimeOnly "org.lwjgl:lwjgl-glfw:3.2.2:natives-linux"
-    runtimeOnly "org.lwjgl:lwjgl-opengl:3.2.2:natives-linux"
+    runtimeOnly "org.lwjgl:lwjgl:3.2.3:natives-linux"
+    runtimeOnly "org.lwjgl:lwjgl-glfw:3.2.3:natives-linux"
+    runtimeOnly "org.lwjgl:lwjgl-opengl:3.2.3:natives-linux"
 
-    runtimeOnly "org.lwjgl:lwjgl:3.2.2:natives-windows"
-    runtimeOnly "org.lwjgl:lwjgl-glfw:3.2.2:natives-windows"
-    runtimeOnly "org.lwjgl:lwjgl-opengl:3.2.2:natives-windows"
+    runtimeOnly 'org.lwjgl:lwjgl:3.2.3:natives-windows'
+    runtimeOnly 'org.lwjgl:lwjgl-glfw:3.2.3:natives-windows'
+    runtimeOnly 'org.lwjgl:lwjgl-opengl:3.2.3:natives-windows'
 
     testImplementation 'javax.vecmath:vecmath:1.5.2'
     
