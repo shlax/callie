@@ -91,8 +91,8 @@ class MovingObject(map:Map25, height:Float, pos2D: Vector2 = Vector2(), lookFrom
 
       if (!jFloat.isNaN(z)) calculate(z)
       else { // collision
-        pos2D.x = -1f * position.x
-        pos2D.y = -1f * position.z
+        pos2D.x = position.x
+        pos2D.y = position.z
 
         speed = 0f
       }

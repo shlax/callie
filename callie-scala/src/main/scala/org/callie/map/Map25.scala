@@ -1,13 +1,8 @@
 package org.callie.map
 
-import org.antlr.v4.runtime.{CharStreams, CommonTokenStream}
-import org.callie.gen.map.{MapLexer, MapParser}
 import org.callie.math.{Vector2, Vector3}
 
-import scala.collection.mutable
-import java.lang.{Float => jFloat}
-
-class Triangle25(val a : Vector3, val b : Vector3, val c : Vector3, val near: Array[Triangle25], val far: Array[Triangle25]) {
+class Triangle25(val a : Vector3, val b : Vector3, val c : Vector3, override val near: Array[Triangle25], override val far: Array[Triangle25]) extends AbstractTriangle[Triangle25] {
 
   val ab = Vector2(b.x-a.x, b.z-a.z)
   val bc = Vector2(c.x-b.x, c.z-b.z)
@@ -27,52 +22,11 @@ class Triangle25(val a : Vector3, val b : Vector3, val c : Vector3, val near: Ar
   }
 }
 
-class Map25(val triangles : Array[Triangle25], var last:Triangle25){
-
-  def find[T](v: Vector2) : Option[(Float,Triangle25)] = {
-    for(t <- triangles){
-      val tmp = t(v)
-      if(!jFloat.isNaN(tmp)) return Some(tmp, t)
-    }
-    None
-  }
-
-  def fast(v: Vector2): Float = {
-    val tmp = last(v)
-    if(!jFloat.isNaN(tmp)) return tmp
-    for(t <- last.near){
-      val tmp = t(v)
-      if(!jFloat.isNaN(tmp)) {
-        last = t
-        return tmp
-      }
-    }
-    for(t <- last.far){
-      val tmp = t(v)
-      if(!jFloat.isNaN(tmp)) {
-        last = t
-        return tmp
-      }
-    }
-    Float.NaN
-  }
-
-  def apply(v: Vector2): Float = {
-    val f = fast(v)
-    if(!jFloat.isNaN(f)) return f
-    val s = find(v)
-    if(s.isDefined){
-      val v = s.get
-      last = v._2
-      v._1
-    }else Float.NaN
-  }
-
+class Map25(triangles : Array[Triangle25], last:Triangle25) extends AbstractMap[Triangle25, Vector2](triangles, last){
+  override def test(t: Triangle25, r: Vector2): Float = t.apply(r)
 }
 
-case class Triangle(i:Int, j:Int, k:Int)
-
-case class MapData(points: Array[Vector3], indexes: Array[Triangle])
+case class MapData(points: Array[Vector3], indexes: Array[IndexTriangle])
 
 object Map25{ // extends RegexParsers {
 //  type F3 = (Float,Float,Float)
@@ -110,27 +64,8 @@ object Map25{ // extends RegexParsers {
     }
   }
 
-  class TriangleBuilder(val a:Int, val b:Int, val c:Int){
-    val near = new mutable.ListBuffer[Int]
-    val far = new mutable.ListBuffer[Int]
-
-    def vertexes = Seq(a, b, c)
-  }
-
   def apply(r:java.io.InputStream /* , predicate:MapBuilder = new MapBuilder*/): Map25 = {
-    val par = new MapParser(new CommonTokenStream(new MapLexer(CharStreams.fromStream(r))))
-    val pi = par.map().result
-
-    val pts = pi.points
-    //predicate.set(pts)
-
-    val inds = pi.indexes.map(i => new TriangleBuilder(i.i, i.j, i.k)).zipWithIndex
-    for(i <- inds; j <- inds if i._2 != j._2){
-      var k = 0
-      for(a <- i._1.vertexes; b <- j._1.vertexes if a == b/*predicate.test(a, b)*/) k += 1
-      if(k == 2) i._1.near += j._2
-      else if(k == 1) i._1.far += j._2
-    }
+    val (pts, inds) = MapLoader.apply(r)
 
     val trgs = inds.map{ i =>
       val ind = i._1

@@ -3,15 +3,15 @@ grammar Map;
 map returns [ org.callie.map.MapData result ]:
      {
         java.util.ArrayList<org.callie.math.Vector3> lf = new java.util.ArrayList<>();
-        java.util.ArrayList<org.callie.map.Triangle> li = new java.util.ArrayList<>();
+        java.util.ArrayList<org.callie.map.IndexTriangle> li = new java.util.ArrayList<>();
      }
     '[' f=float3 { lf.add($f.r); } (',' fi=float3 { lf.add($fi.r); } )* ']'
     '{' i=int3 { li.add($i.r); } (',' ii=int3 { li.add($ii.r); } )* '}'
-    { $result = new org.callie.map.MapData(lf.toArray(new org.callie.math.Vector3[0]), li.toArray(new org.callie.map.Triangle[0])); };
+    { $result = new org.callie.map.MapData(lf.toArray(new org.callie.math.Vector3[0]), li.toArray(new org.callie.map.IndexTriangle[0])); };
 
-int3 returns [ org.callie.map.Triangle r ]:
+int3 returns [ org.callie.map.IndexTriangle r ]:
     '(' i=intNum ',' j=intNum ',' k=intNum ')'
-    { $r = new org.callie.map.Triangle($i.r, $j.r, $k.r); };
+    { $r = new org.callie.map.IndexTriangle($i.r, $j.r, $k.r); };
 
 float3 returns [ org.callie.math.Vector3 r ]:
     '(' i=floatNum ',' j=floatNum ',' k=floatNum ')'
