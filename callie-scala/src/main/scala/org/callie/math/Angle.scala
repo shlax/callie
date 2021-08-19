@@ -1,10 +1,11 @@
 package org.callie.math
 
 object Angle{
+  val PI5 = (Math.PI/2d).asInstanceOf[Float]
   val PI1 = Math.PI.asInstanceOf[Float]
   val PI2 = (Math.PI*2d).asInstanceOf[Float]
 
-  def apply(start:Float = 0, min:Float = -Angle.PI2, max:Float = Angle.PI2) = new Angle(min, max)
+  def apply(start:Float = 0, min:Float = -Angle.PI2, max:Float = Angle.PI2) = new Angle(start, min, max)
 }
 
 class Angle(start:Float = 0, min:Float = -Angle.PI2, max:Float = Angle.PI2) {
