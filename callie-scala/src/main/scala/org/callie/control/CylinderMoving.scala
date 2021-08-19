@@ -54,7 +54,7 @@ class CylinderMoving(map:Map3D, height:Float) extends TrackingObject{
       if(!jFloat.isNaN(f)){
         calculate(f)
       }else{
-        angle() = a
+        angle.angle = a
       }
 
     }
