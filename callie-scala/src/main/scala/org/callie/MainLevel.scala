@@ -102,7 +102,6 @@ object MainLevel extends App {
       //sphere.update(gl)
 
       camProg.light()
-
       attachments.update()
 
       camProg.identity()

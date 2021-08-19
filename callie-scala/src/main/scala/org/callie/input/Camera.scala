@@ -135,8 +135,7 @@ object Camera {
 trait TrackingObject{
   def position: Vector3
 
-  def light(m:Matrix4){
-  }
+  def light(m:Matrix4){}
 
   def model(m:Matrix4){
     light(m)
