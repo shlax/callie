@@ -31,9 +31,8 @@ class CylinderMoving(map:Map3D, height:Float) extends TrackingObject{
     radius = f
     val d = f - height
 
-    val a = angle.apply()
-    position.x = d * Math.cos(a).asInstanceOf[Float]
-    position.y = d * Math.sin(a).asInstanceOf[Float]
+    position.x = d * dir.x
+    position.y = d * dir.y
     position.z = point.z
   }
 
