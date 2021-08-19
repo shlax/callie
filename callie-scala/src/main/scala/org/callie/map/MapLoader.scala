@@ -34,4 +34,12 @@ object MapLoader{
     (pts, inds)
   }
 
+  def connect[T <: AbstractTriangle[T]](inds: Array[(TriangleBuilder, Int)], trgs:Array[T]):Unit = {
+    for(i <- inds){ // connect map
+      val t = trgs(i._2)
+      for(j <- i._1.near.zipWithIndex) t.near(j._2) = trgs(j._1)
+      for(j <- i._1.far.zipWithIndex) t.far(j._2) = trgs(j._1)
+    }
+  }
+
 }

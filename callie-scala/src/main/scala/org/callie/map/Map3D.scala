@@ -28,11 +28,7 @@ object Map3D{
       new Triangle3D(t, new Array[Triangle3D](i._1.near.size), new Array[Triangle3D](i._1.far.size))
     }
 
-    for(i <- inds){ // connect map
-      val t = trgs(i._2)
-      for(j <- i._1.near.zipWithIndex) t.near(j._2) = trgs(j._1)
-      for(j <- i._1.far.zipWithIndex) t.far(j._2) = trgs(j._1)
-    }
+    MapLoader.connect(inds, trgs)
 
     new Map3D(trgs, trgs.head)
   }
