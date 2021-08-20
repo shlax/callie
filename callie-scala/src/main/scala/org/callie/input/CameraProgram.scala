@@ -4,7 +4,6 @@ import org.callie.math.Matrix4
 import org.callie.ogl.Gl
 
 object CameraProgram{
-  val identityMatrix = Matrix4().toArray
   val matrixArray = new Array[Float](16)
   val vectorArray = new Array[Float](3)
 
@@ -18,40 +17,26 @@ object CameraProgram{
 
 class CameraProgram(view: Int, normal:Int, lightDirectionVec:Int){
 
-  val vectorArray = CameraProgram.vectorArray
-  val lightDirection = Camera.lightDirection
-
   def light() : Unit= {
-    lightDirection.toArray(vectorArray)
-    Gl.glUniform3fv(lightDirectionVec, vectorArray)
+    Camera.lightDirection.toArray(CameraProgram.vectorArray)
+    Gl.glUniform3fv(lightDirectionVec, CameraProgram.vectorArray)
   }
-
-  val matrixArray = CameraProgram.matrixArray
-  val modMat = Camera.modMat
 
   def update(model:Matrix4, norm:Matrix4):Unit={
-    norm.toArray(matrixArray)
-    Gl.glUniformMatrix4fv(normal, true, matrixArray)
+    Camera.norMat.mul(norm, CameraProgram.matrixArray)
+    Gl.glUniformMatrix4fv(normal, true, CameraProgram.matrixArray)
 
-    modMat.mul(model, matrixArray)
-    Gl.glUniformMatrix4fv(view, true, matrixArray)
+    Camera.modMat.mul(model, CameraProgram.matrixArray)
+    Gl.glUniformMatrix4fv(view, true, CameraProgram.matrixArray)
   }
 
-  val identityMatrix = CameraProgram.identityMatrix
 
-  def identity():Unit={
-    Gl.glUniformMatrix4fv(normal, true, identityMatrix)
+  def update():Unit={
+    Camera.norMat.toArray(CameraProgram.matrixArray)
+    Gl.glUniformMatrix4fv(normal, true, CameraProgram.matrixArray)
 
-    modMat.toArray(matrixArray)
-    Gl.glUniformMatrix4fv(view, true, matrixArray)
-  }
-
-  def identity(norm:Matrix4):Unit={
-    norm.toArray(matrixArray)
-    Gl.glUniformMatrix4fv(normal, true, matrixArray)
-
-    modMat.toArray(matrixArray)
-    Gl.glUniformMatrix4fv(view, true, matrixArray)
+    Camera.modMat.toArray(CameraProgram.matrixArray)
+    Gl.glUniformMatrix4fv(view, true, CameraProgram.matrixArray)
   }
 
 }

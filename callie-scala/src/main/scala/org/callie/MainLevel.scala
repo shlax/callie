@@ -104,7 +104,7 @@ object MainLevel extends App {
       camProg.light()
       attachments.update()
 
-      camProg.identity()
+      camProg.update()
       for (o <- objects) o.update()
     }
 

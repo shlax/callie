@@ -156,6 +156,15 @@ class Matrix4(var m00: Float, var m01: Float, var m02: Float, var m03: Float,   
 
   def mul(m : Matrix4, out:Array[Float]): Array[Float] = Matrix4.mul(this, m, out)
 
+  def set(v: Matrix4) = {
+    m00 = v.m00; m01 = v.m01; m02 = v.m02; m03 = v.m03
+    m10 = v.m10; m11 = v.m11; m12 = v.m12; m13 = v.m13
+    m20 = v.m20; m21 = v.m21; m22 = v.m22; m23 = v.m23
+    m30 = v.m30; m31 = v.m31; m32 = v.m32; m33 = v.m33
+
+    this
+  }
+
   def set(v: Vector3) = {
     m00 = 1f; m01 = 0f; m02 = 0f; m03 = v.x
     m10 = 0f; m11 = 1f; m12 = 0f; m13 = v.y

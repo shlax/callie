@@ -29,8 +29,9 @@ class CylinderMoving(map:Map3D, height:Float) extends TrackingObject{
 
   val rotZ = Matrix4()
 
-  override def model(m: Matrix4): Unit = {
-    m.mul(rotZ)
+  override def lookAt(m: Matrix4): Boolean = {
+    m.set(rotZ)
+    true
   }
 
   var radius:Float = 0

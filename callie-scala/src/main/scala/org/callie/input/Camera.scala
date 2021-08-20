@@ -42,6 +42,7 @@ object Camera {
 
   val tmp = Matrix4()
   val modMat = Matrix4()
+  val norMat = Matrix4()
 
 //  val pi = Math.PI.toFloat
 //  val pi2 = (2 * Math.PI).toFloat
@@ -122,7 +123,8 @@ object Camera {
     //modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(target.position)) //.mul(tmp.set(off), modMat)
     //projection.mul(modMat.set(off).mul(tmp.rotX(angX())).mul(tmp.rotY(angY()+1.5f)).mul(tmp.set(target.position)), viewAr)
     modMat.set(offset).mul(tmp.rotX(angX())).mul(tmp.rotY(angY())).mul(tmp.set(-pos.x, -pos.y, -pos.z))
-    target.model(modMat)
+    if(target.lookAt(norMat)) modMat.mul(norMat)
+
     modMat.mul(projection, modMat)
     //for(i <- viewMatrix) Gl.glUniformMatrix4fv(i, true, viewAr)
 
@@ -134,7 +136,7 @@ object Camera {
 trait TrackingObject{
   def position: Vector3
 
-  def model(m:Matrix4){}
+  def lookAt(m:Matrix4):Boolean = false
 }
 
 object ZeroTrackingObject extends TrackingObject{
