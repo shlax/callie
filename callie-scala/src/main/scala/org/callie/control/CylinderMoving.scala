@@ -27,10 +27,8 @@ class CylinderMoving(map:Map3D, height:Float) extends TrackingObject{
 
   override val position = Vector3()
 
-  val rotZ = Matrix4()
-
   override def lookAt(m: Matrix4): Boolean = {
-    m.set(rotZ)
+    m.rotZ(angle())
     true
   }
 
@@ -38,8 +36,6 @@ class CylinderMoving(map:Map3D, height:Float) extends TrackingObject{
   def calculate(f:Float){
     radius = f
     val d = f - height
-
-    rotZ.rotZ(angle())
 
     position.y = -d
     position.z = point.z
