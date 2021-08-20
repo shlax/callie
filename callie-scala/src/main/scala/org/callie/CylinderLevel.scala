@@ -32,10 +32,10 @@ object CylinderLevel extends App {
     (dt:Float) => {
       Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT)
       Camera.update()
+      camProg.light()
 
       moving.apply(dt)
 
-      camProg.light()
       camProg.update()
       for (o <- objects) o.update()
     }

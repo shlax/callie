@@ -96,12 +96,13 @@ object MainLevel extends App {
       Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT)
 
       Camera.update()
+      camProg.light()
+
       anim.apply(dt)
 
       //char.update(gl)
       //sphere.update(gl)
 
-      camProg.light()
       attachments.update()
 
       camProg.update()
