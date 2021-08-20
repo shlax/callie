@@ -2,7 +2,8 @@ package org.callie.control
 
 import org.callie.input.{Inputs, TrackingObject}
 import org.callie.map.Map3D
-import org.callie.math.{Angle, Ray, Vector3}
+import org.callie.math.{Angle, Matrix4, Ray, Vector3}
+
 import java.lang.{Float => jFloat}
 
 class CylinderMoving(map:Map3D, height:Float) extends TrackingObject{
@@ -26,13 +27,20 @@ class CylinderMoving(map:Map3D, height:Float) extends TrackingObject{
 
   override val position = Vector3()
 
+  val rotZ = Matrix4()
+
+  override def light(m: Matrix4): Unit = {
+    m.mul(rotZ)
+  }
+
   var radius:Float = 0
   def calculate(f:Float){
     radius = f
     val d = f - height
 
-    position.x = d * dir.x
-    position.y = d * dir.y
+    rotZ.rotZ(angle())
+
+    position.y = d
     position.z = point.z
   }
 
