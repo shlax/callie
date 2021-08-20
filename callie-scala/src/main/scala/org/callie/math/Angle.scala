@@ -16,7 +16,7 @@ class Angle(start:Float = 0, min:Float = -Angle.PI2, max:Float = Angle.PI2) {
   def update(v:Float):Unit={
     var tmp = v
     if(tmp < min) tmp += Angle.PI2
-    if(tmp > max) tmp -= Angle.PI2
+    else if(tmp > max) tmp -= Angle.PI2
     angle = tmp
   }
 
@@ -49,7 +49,7 @@ class Angle(start:Float = 0, min:Float = -Angle.PI2, max:Float = Angle.PI2) {
           }
 
           if (angle < min) angle += Angle.PI2
-          if (angle > max) angle -= Angle.PI2
+          else if (angle > max) angle -= Angle.PI2
 
           ret
         }
@@ -67,7 +67,7 @@ class Angle(start:Float = 0, min:Float = -Angle.PI2, max:Float = Angle.PI2) {
           }
 
           if (angle < min) angle += Angle.PI2
-          if (angle > max) angle -= Angle.PI2
+          else if (angle > max) angle -= Angle.PI2
 
           ret
         }
