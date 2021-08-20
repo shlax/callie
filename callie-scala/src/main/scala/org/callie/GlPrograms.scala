@@ -40,6 +40,7 @@ object GlPrograms {
         |
         |  vec3 nv = (normalMatrix * vec4(inNormal,1)).xyz;
         |  lightIntensity = 0.35 + (max(dot(nv, lightDirection), 0.0) * 0.65);
+        |  //lightIntensity = 0.1 + (max(dot(nv, lightDirection), 0.0) * 0.9);
         |
         |  texCoord1 = inTextureCoord1;
         |  /*lightMap*/texCoord2 = inTextureCoord2;

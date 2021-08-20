@@ -40,10 +40,18 @@ class CameraProgram(view: Int, normal:Int, lightDirectionVec:Int){
   val identityMatrix = CameraProgram.identityMatrix
 
   def identity():Unit={
+    Gl.glUniformMatrix4fv(normal, true, identityMatrix)
+
     modMat.toArray(matrixArray)
     Gl.glUniformMatrix4fv(view, true, matrixArray)
+  }
 
-    Gl.glUniformMatrix4fv(normal, true, identityMatrix)
+  def identity(norm:Matrix4):Unit={
+    norm.toArray(matrixArray)
+    Gl.glUniformMatrix4fv(normal, true, matrixArray)
+
+    modMat.toArray(matrixArray)
+    Gl.glUniformMatrix4fv(view, true, matrixArray)
   }
 
 }

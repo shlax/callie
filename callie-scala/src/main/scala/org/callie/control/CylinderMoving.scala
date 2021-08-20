@@ -1,6 +1,6 @@
 package org.callie.control
 
-import org.callie.input.{Inputs, TrackingObject}
+import org.callie.input.{Camera, Inputs, TrackingObject}
 import org.callie.map.Map3D
 import org.callie.math.{Angle, Matrix4, Ray, Vector3}
 
@@ -29,7 +29,7 @@ class CylinderMoving(map:Map3D, height:Float) extends TrackingObject{
 
   val rotZ = Matrix4()
 
-  override def light(m: Matrix4): Unit = {
+  override def model(m: Matrix4): Unit = {
     m.mul(rotZ)
   }
 
@@ -40,7 +40,7 @@ class CylinderMoving(map:Map3D, height:Float) extends TrackingObject{
 
     rotZ.rotZ(angle())
 
-    position.y = d
+    position.y = -d
     position.z = point.z
   }
 
@@ -49,11 +49,20 @@ class CylinderMoving(map:Map3D, height:Float) extends TrackingObject{
   def apply(delta:Float):Unit = {
 
     if(Inputs.keyW){
-      val s = 10f * delta // v*t
+      val ca = Camera.angY()
+      val cx = -Math.sin(ca).asInstanceOf[Float]
+      val cz = -Math.cos(ca).asInstanceOf[Float]
+
+      val sx = 10f * cx * delta // v*t
+      val sz = 10f * cz * delta
 
       val a = angle.apply()
-      val da = Math.asin(s/radius).asInstanceOf[Float]
+      val da = Math.asin(sx/radius).asInstanceOf[Float]
+
+      val z = point.z
+
       angle() = a + da
+      point.z = z + sz
 
       angle2dir()
       val f = map.fast(ray)
@@ -62,6 +71,7 @@ class CylinderMoving(map:Map3D, height:Float) extends TrackingObject{
         calculate(f)
       }else{
         angle.angle = a
+        point.z = z
       }
 
     }

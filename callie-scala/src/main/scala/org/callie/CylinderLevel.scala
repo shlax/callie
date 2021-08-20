@@ -36,7 +36,7 @@ object CylinderLevel extends App {
       moving.apply(dt)
 
       camProg.light()
-      camProg.identity()
+      camProg.identity(moving.rotZ)
       for (o <- objects) o.update()
     }
   }

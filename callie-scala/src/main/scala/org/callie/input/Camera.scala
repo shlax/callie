@@ -105,8 +105,7 @@ object Camera {
     angY() += Inputs.xDiff() * 0.005f
 
     //modMat.rotX(angX()).mul(tmp.rotY((Math.PI/2d).asInstanceOf[Float] + angY()))
-    modMat.rotY(-1f * angY()).mul(tmp.rotX(-1f * angX()))
-    target.light(modMat)
+    modMat.rotY(-angY()).mul(tmp.rotX(-angX()))
     modMat.apply(light, lightDirection)
 //    for(i <- lightDirectionVec) Gl.glUniform3fv(i, lightDirectionAr)
 
@@ -135,12 +134,7 @@ object Camera {
 trait TrackingObject{
   def position: Vector3
 
-  def light(m:Matrix4){}
-
-  def model(m:Matrix4){
-    light(m)
-  }
-
+  def model(m:Matrix4){}
 }
 
 object ZeroTrackingObject extends TrackingObject{
