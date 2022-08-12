@@ -33,7 +33,7 @@ class CylinderMoving(map:Map3D, height:Float) extends TrackingObject{
   }
 
   var radius:Float = 0
-  def calculate(f:Float){
+  def calculate(f:Float) = {
     radius = f
     val d = f - height
 

@@ -185,7 +185,7 @@ object MorfingObject{
       prPoint += ( (Vector3(i._1.x, i._1.y, i._1.z), Vector3(coords, t.map(_._2 * size).toArray )) )
       prNormals += t.map{j =>
         ( j._1.normal, j._2 * size + 3)
-      }.groupBy(_._1).map{ e : (Point3, ListBuffer[(Point3, Int)] ) =>
+      }.groupBy(_._1).map{ (e : (Point3, ListBuffer[(Point3, Int)] ) ) =>
         (Vector3(e._1.x, e._1.y, e._1.z), Vector3(coords,  e._2.map(_._2).toArray))
       }.toArray
     }

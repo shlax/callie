@@ -7,7 +7,7 @@ import org.callie.model.{GlObject, Model, StaticObject, TextureGroup}
 import org.callie.ogl.{Gl, GlEventListener, LwglFrame}
 
 object CylinderLevel extends App {
-  LwglFrame { gl: GlEventListener =>
+  LwglFrame { (gl: GlEventListener) =>
     val moving = new CylinderMoving(Map3D.load("/demo/cylinder/cylinder.map"), 1.65f)
 
     Camera.lookAt(moving)

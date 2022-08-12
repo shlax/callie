@@ -10,7 +10,7 @@ import org.callie.ringing.{Joint, JointAttachment, KeyFrameLoader, Node}
 
 object MainLevel extends App {
 
-  LwglFrame{gl: GlEventListener =>
+  LwglFrame{ (gl: GlEventListener) =>
     val camCtrl = MovingObject(Map25.load("/data/map/data.map"), 1.65f)
     Camera.lookAt(camCtrl)
 

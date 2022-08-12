@@ -10,15 +10,16 @@ class Triangle25(val a : Vector3, val b : Vector3, val c : Vector3, override val
   
   val (ta, tb, tc, td) = {
     val tmp = Vector3.cross( Vector3(c.x-a.x, c.y-a.y, c.z-a.z ), Vector3(b.x-a.x, b.y-a.y, b.z-a.z) )
-	  (tmp.x, tmp.y, tmp.z, -((tmp.x*c.x)+(tmp.y*c.y)+(tmp.z*c.z)))
+    (tmp.x, tmp.y, tmp.z, -((tmp.x*c.x)+(tmp.y*c.y)+(tmp.z*c.z)))
   }
   
   def apply(p : Vector2):Float = {
     val na = ((p.x-a.x)*ab.y)-(ab.x*(p.y-a.z))
-	  val nb = ((p.x-b.x)*bc.y)-(bc.x*(p.y-b.z))
-	  val nc = ((p.x-c.x)*ca.y)-(ca.x*(p.y-c.z))
-	  if( ( na > 0 && nb > 0 && nc > 0 ) || ( na < 0 && nb < 0 && nc < 0 ) ) -(((ta*p.x)+(tc*p.y)+td)/tb)
-	  else Float.NaN
+    val nb = ((p.x-b.x)*bc.y)-(bc.x*(p.y-b.z))
+    val nc = ((p.x-c.x)*ca.y)-(ca.x*(p.y-c.z))
+    if( ( na > 0 && nb > 0 && nc > 0 ) || ( na < 0 && nb < 0 && nc < 0 ) ){
+      -(((ta*p.x)+(tc*p.y)+td)/tb)
+    }else Float.NaN
   }
 }
 
